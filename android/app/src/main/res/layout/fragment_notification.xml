@@ -19,9 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="50dp"
-            android:text="Uống thuốc buổi tối"
             android:textColor="?attr/colorOnBackground"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Uống thuốc buổi tối" />
 
         <TextView
             android:id="@+id/tv_description"
@@ -30,19 +30,17 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="16dp"
-            android:text="Cố gắng vì một ngày mai tươi sáng hơn"
-            android:textColor="?attr/colorOnBackgroundVariant" />
+            android:textColor="?attr/colorOnBackgroundVariant"
+            tools:text="Cố gắng vì một ngày mai tươi sáng hơn" />
 
         <ImageView
-            android:id="@+id/frame_photo"
+            android:id="@+id/iv_photo"
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
             android:elevation="6dp"
-            android:src="@drawable/img_reminder"
-            app:layout_collapseMode="none"
-            app:layout_collapseParallaxMultiplier="0.7" />
+            tools:src="@drawable/img_reminder_0" />
     </LinearLayout>
 
     <com.simple.coreapp.ui.view.round.RoundLinearLayout

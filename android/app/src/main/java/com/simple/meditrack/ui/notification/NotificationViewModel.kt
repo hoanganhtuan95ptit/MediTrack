@@ -12,17 +12,20 @@ import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.meditrack.R
-import com.simple.meditrack.entities.Medicine
-import com.simple.meditrack.entities.MedicineNotification
+import com.simple.meditrack.domain.usecases.GetAlarmByIdAsyncUseCase
+import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.toSuccess
-import kotlinx.coroutines.delay
 
-class NotificationViewModel : TransitionViewModel() {
+class NotificationViewModel(
+    private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase
+) : TransitionViewModel() {
+
+    val id: LiveData<String> = mediatorLiveData { }
 
     val theme: LiveData<AppTheme> = mediatorLiveData {
 
@@ -33,13 +36,14 @@ class NotificationViewModel : TransitionViewModel() {
     }
 
     @VisibleForTesting
-    val notificationState: LiveData<ResultState<MedicineNotification>> = mediatorLiveData {
+    val notificationState: LiveData<ResultState<Alarm>> = combineSources(id) {
 
         postValue(ResultState.Start)
 
-        delay(500)
+        getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id.get())).collect {
 
-        postDifferentValue(ResultState.Success(notificationFake))
+            postDifferentValue(ResultState.Success(it))
+        }
     }
 
 
@@ -50,7 +54,7 @@ class NotificationViewModel : TransitionViewModel() {
             TitleInfo(
                 note = it.note,
                 title = it.name,
-                image = R.drawable.img_reminder
+                image = it.image
             )
         }?.let {
 
@@ -115,9 +119,9 @@ class NotificationViewModel : TransitionViewModel() {
 
                 name = item.medicine.name.with(ForegroundColorSpan(theme.colorOnBackground)),
                 desciption = if (item.note.isNotBlank()) {
-                    (item.dosage + " - " + item.note).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.note, ForegroundColorSpan(theme.colorOnBackgroundVariant))
+                    (item.dosage.toString() + " - " + item.note).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.note, ForegroundColorSpan(theme.colorOnBackgroundVariant))
                 } else {
-                    item.dosage.with(ForegroundColorSpan(theme.colorOnBackground))
+                    item.dosage.toString().with(ForegroundColorSpan(theme.colorOnBackground))
 
                 },
 
@@ -181,6 +185,11 @@ class NotificationViewModel : TransitionViewModel() {
         postDifferentValue(info)
     }
 
+    fun updateId(id: String) {
+
+        this.id.postDifferentValue(id)
+    }
+
     fun nextAction() {
 
         val currentAction = actionState.value ?: ActionState.NOT_VIEW
@@ -212,7 +221,7 @@ class NotificationViewModel : TransitionViewModel() {
     data class TitleInfo(
         val note: String,
         val title: String,
-        val image: Int
+        val image: String
     )
 
     data class ButtonInfo(
@@ -229,44 +238,4 @@ class NotificationViewModel : TransitionViewModel() {
     enum class MedicineState {
         NONE, FOCUS
     }
-
-    private val notificationFake = MedicineNotification(
-
-        note = "Cố gắng để khỏi bệnh",
-        name = "Uống thuốc buổi tối",
-        image = "",
-
-        time = "8",
-        step = 1,
-
-        item = listOf(
-            MedicineNotification.MedicineItem(
-                note = "Nhai nuốt",
-                dosage = "1/2 viên",
-                medicine = Medicine(
-                    id = "1",
-                    name = "Viên vàng tròn",
-                    image = ""
-                )
-            ),
-            MedicineNotification.MedicineItem(
-                note = "",
-                dosage = "1.5 viên",
-                medicine = Medicine(
-                    id = "2",
-                    name = "Viên trong vỉ",
-                    image = ""
-                )
-            ),
-            MedicineNotification.MedicineItem(
-                note = "",
-                dosage = "1 viên",
-                medicine = Medicine(
-                    id = "3",
-                    name = "Viên trắng tròn",
-                    image = ""
-                )
-            )
-        )
-    )
 }

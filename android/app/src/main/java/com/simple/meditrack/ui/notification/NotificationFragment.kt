@@ -26,6 +26,7 @@ import com.simple.coreapp.utils.extentions.postValue
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.image.setImage
 import com.simple.meditrack.Deeplink
+import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentNotificationBinding
 import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
@@ -113,7 +114,7 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
             binding.tvName.text = it.title
             binding.tvDescription.text = it.note
 
-            binding.framePhoto.setImage(it.image)
+            binding.ivPhoto.setImage(it.image)
         }
 
         actionState.observe(viewLifecycleOwner) {
@@ -147,15 +148,20 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
             val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
             binding.recyclerView.beginTransitionAwait(transition)
         }
+
+        arguments?.getString(Param.ID)?.let {
+
+            viewModel.updateId(it)
+        }
     }
 }
 
 
 @com.tuanha.deeplink.annotation.Deeplink
-class CameraDeeplink : DeeplinkHandler {
+class NotificationViewDeeplink : DeeplinkHandler {
 
     override fun getDeeplink(): String {
-        return Deeplink.NOTIFICATION
+        return Deeplink.NOTIFICATION_VIEW
     }
 
     override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {

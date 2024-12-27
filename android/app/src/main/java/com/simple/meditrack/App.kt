@@ -2,6 +2,8 @@ package com.simple.meditrack
 
 import android.app.Application
 import android.content.Context
+import com.simple.meditrack.di.repositoryModule
+import com.simple.meditrack.di.usecaseModule
 import com.simple.meditrack.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -38,9 +40,9 @@ class App : Application() {
 //
 //                realtimeModule,
 //                appModule,
-//                usecaseModule,
+                usecaseModule,
                 viewModelModule,
-//                repositoryModule
+                repositoryModule
             )
         }
 

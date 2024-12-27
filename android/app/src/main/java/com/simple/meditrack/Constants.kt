@@ -7,7 +7,7 @@ object Tag {
 
 object Param {
 
-    const val TEXT = "TEXT"
+    const val ID = "ID"
     const val FIRST = "FIRST"
     const val IMAGE_PATH = "IMAGE_PATH"
     const val LANGUAGE_CODE = "LANGUAGE_CODE"
@@ -24,7 +24,7 @@ object Payload {
     const val THEME = "THEME"
 }
 
-object EventName{
+object EventName {
 
     const val RETRY = "RETRY"
 }
@@ -32,6 +32,7 @@ object EventName{
 object Deeplink {
 
     const val NOTIFICATION = "app://notification"
+    const val NOTIFICATION_VIEW = "app://notification_view"
     const val RESULT = "app://result"
     const val CONFIRM = "app://confirm"
 }
