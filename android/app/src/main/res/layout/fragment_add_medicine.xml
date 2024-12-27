@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/TextBody2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên thuốc"
+        android:textColor="?attr/colorOnBackground" />
+
+    <com.simple.coreapp.ui.view.round.RoundLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:rv_backgroundColor="?attr/colorSurface"
+        app:rv_cornerRadius="16dp"
+        app:rv_strokeColor="?attr/colorDivider"
+        app:rv_strokeWidth="1dp">
+
+        <EditText
+            android:id="@+id/edt_name"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:color/transparent"
+            android:hint="Nhập tên thuốc"
+            android:paddingHorizontal="16dp" />
+
+    </com.simple.coreapp.ui.view.round.RoundLinearLayout>
+
+    <TextView
+        android:id="@+id/tv_quantity"
+        style="@style/TextBody2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Số lượng thuốc đang có"
+        android:textColor="?attr/colorOnBackground" />
+
+    <com.simple.coreapp.ui.view.round.RoundLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:rv_backgroundColor="?attr/colorSurface"
+        app:rv_cornerRadius="16dp"
+        app:rv_strokeColor="?attr/colorDivider"
+        app:rv_strokeWidth="1dp">
+
+        <EditText
+            android:id="@+id/edt_quantity"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Nhập số lượng thuốc"
+            android:paddingHorizontal="16dp" />
+
+        <TextView
+            android:id="@+id/tv_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:text="ml" />
+
+        <ImageView
+            android:id="@+id/iv_unit"
+            android:layout_width="40dp"
+            android:layout_height="56dp"
+            android:paddingHorizontal="8dp" />
+    </com.simple.coreapp.ui.view.round.RoundLinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.simple.coreapp.ui.view.round.RoundTextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:text="add"
+        app:rv_backgroundColor="?attr/colorPrimary"
+        app:rv_cornerRadius="150dp" />
+</LinearLayout>

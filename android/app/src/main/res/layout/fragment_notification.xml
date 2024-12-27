@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFD043"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="?attr/textHeadline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="50dp"
+            android:text="Uống thuốc buổi tối"
+            android:textColor="?attr/colorOnBackground"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            style="?attr/textBody1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:text="Cố gắng vì một ngày mai tươi sáng hơn"
+            android:textColor="?attr/colorOnBackgroundVariant" />
+
+        <ImageView
+            android:id="@+id/frame_photo"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:elevation="6dp"
+            android:src="@drawable/img_reminder"
+            app:layout_collapseMode="none"
+            app:layout_collapseParallaxMultiplier="0.7" />
+    </LinearLayout>
+
+    <com.simple.coreapp.ui.view.round.RoundLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        app:rv_backgroundColor="#FFFFFF"
+        app:rv_cornerRadius_TL="40dp"
+        app:rv_cornerRadius_TR="40dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="5"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_medicine"
+            tools:orientation="vertical" />
+
+        <com.ncorti.slidetoact.SlideToActView
+            android:id="@+id/slide_to_act_view"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="24dp"
+            app:animation_duration="350"
+            app:area_margin="4dp"
+            app:border_radius="150dp"
+            app:bounce_on_start="true"
+            app:outer_color="#FFD043"
+            app:slider_height="80dp"
+            app:slider_locked="false"
+            app:text_color="#000000"
+            app:text_size="14sp" />
+    </com.simple.coreapp.ui.view.round.RoundLinearLayout>
+</FrameLayout>

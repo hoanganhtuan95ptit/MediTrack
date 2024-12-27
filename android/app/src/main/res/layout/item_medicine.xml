@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.simple.coreapp.ui.view.round.RoundLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="4dp"
+    android:elevation="6dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="16dp"
+    app:rv_cornerRadius="16dp"
+    app:rv_strokeColor="#5b5b5b"
+    app:rv_strokeDashGap="4dp"
+    app:rv_strokeDashWidth="4dp"
+    app:rv_strokeWidth="1dp">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_tick_24dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="@integer/material_motion_duration_long_1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="?attr/textBody1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold"
+            tools:text="Viên trắng tròn" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            style="?attr/textBody2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="1.5 viên, nhai nuốt" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_right_24dp"
+        android:visibility="gone" />
+</com.simple.coreapp.ui.view.round.RoundLinearLayout>
