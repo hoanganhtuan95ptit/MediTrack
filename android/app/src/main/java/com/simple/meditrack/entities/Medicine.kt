@@ -1,6 +1,7 @@
 package com.simple.meditrack.entities
 
 import androidx.annotation.Keep
+import java.io.Serializable
 import java.util.UUID
 
 @Keep
@@ -9,14 +10,23 @@ data class Medicine(
     val name: String,
     val image: String,
 
-    val total: Long = 0,
-    val current: Long = 0,
+    val note: String = "",
 
-    val unit: Unit = Unit.TABLET // loại thuốc
-) {
+    val current: Double = 0.0,
+    val quantity: Double = UNLIMITED,
 
-    enum class Unit {
-        TABLET, // dạng viên
-        LIQUID// dạng nước
+    val unit: Int = Unit.TABLET.value // loại thuốc
+) : Serializable {
+
+    enum class Unit(val value: Int) {
+        TABLET(0), // dạng viên
+        LIQUID(1)// dạng nước
+    }
+
+    companion object {
+
+        const val UNLIMITED = -1.0
+
+        fun Int.toUnit() = Unit.entries.find { it.value == this }
     }
 }

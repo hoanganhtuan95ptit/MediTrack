@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_medicine
+package com.simple.meditrack.ui.add_alarm
 
 import android.os.Bundle
 import android.view.View
@@ -15,12 +15,11 @@ import com.simple.adapter.MultiAdapter
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
-import com.simple.coreapp.utils.ext.getSerializableOrNull
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
-import com.simple.coreapp.utils.extentions.getOrEmpty
+import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.EventName
@@ -29,22 +28,38 @@ import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
 import com.simple.meditrack.entities.Alarm
-import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.MainActivity
-import com.simple.meditrack.ui.base.adapters.CheckboxAdapter
+import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineAdapter
+import com.simple.meditrack.ui.add_alarm.adapters.AlarmTimeAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
-import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextAdapter
-import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
+import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
-import com.simple.meditrack.utils.sendEvent
-import java.util.UUID
 
-class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineViewModel>() {
+class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        doListenerEvent(lifecycle, EventName.TIME) {
+
+            val hour = it.asObject<Bundle>().getInt(Param.HOUR)
+            val minute = it.asObject<Bundle>().getInt(Param.MINUTE)
+
+            viewModel.updateTime(hour, minute)
+        }
+
+        doListenerEvent(lifecycle, EventName.ADD_MEDICINE) {
+
+            val medicine = it.asObject<Alarm.MedicineItem>()
+
+            viewModel.updateMedicine(medicine)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,28 +75,6 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
         binding.tvAction.setDebouncedClickListener {
 
-            val viewItemList = viewModel.viewItemList.getOrEmpty()
-
-            val texts = viewItemList.filterIsInstance<TextViewItem>()
-            val inputs = viewItemList.filterIsInstance<InputViewItem>()
-
-
-            val medicine = Alarm.MedicineItem(
-                id = viewModel.medicineItem.value?.id ?: UUID.randomUUID().toString(),
-                dosage = inputs.find { it.id == Id.DOSAGE }?.text?.toString().orEmpty().toDoubleOrNull() ?: 0.0,
-                medicine = Medicine(
-                    id = viewModel.medicineItem.value?.medicine?.id ?: UUID.randomUUID().toString(),
-                    name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
-                    image = "",
-                    unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
-                    note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
-                    quantity = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
-                )
-            )
-
-            sendEvent(EventName.ADD_MEDICINE, medicine)
-
-            parentFragmentManager.popBackStack()
         }
 
         binding.frameHeader.ivBack.setDebouncedClickListener {
@@ -98,16 +91,11 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
         val binding = binding ?: return
 
-        doListenerEvent(viewLifecycleOwner.lifecycle, EventName.CHANGE_UNIT) {
-
-            viewModel.updateUnit(it.asObject<Medicine.Unit>())
-        }
-
         val textAdapter = TextAdapter { view, item ->
 
-            if (item.id == Id.UNIT) {
+            if (item.id == Id.ADD_MEDICINE) {
 
-                sendDeeplink(Deeplink.CHOOSE_UNIT, extras = bundleOf(Param.ID to item.data.asObject<Medicine.Unit>().value))
+                sendDeeplink(Deeplink.ADD_MEDICINE)
             }
         }
 
@@ -116,12 +104,28 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             viewModel.refreshButtonInfo()
         }
 
-        val checkboxAdapter = CheckboxAdapter { view, item ->
+        val alarmTimeAdapter = AlarmTimeAdapter(
+            onTimeClick = { view, item ->
 
-            viewModel.switchLowOnMedication()
-        }
+                sendDeeplink(Deeplink.PICK_TIME, extras = bundleOf(Param.HOUR to viewModel.hour.get(), Param.MINUTE to viewModel.minute.get()))
+            },
+            onImageClick = { view, item ->
 
-        adapter = MultiAdapter(textAdapter, inputAdapter, checkboxAdapter).apply {
+            }
+        )
+
+        val alarmMedicineAdapter = AlarmMedicineAdapter(
+            onRemoveClick = { view, item ->
+
+                viewModel.removeMedicine(item)
+            },
+            onItemClick = { view, item ->
+
+                sendDeeplink(Deeplink.ADD_MEDICINE, extras = bundleOf(Param.MEDICINE to item.data))
+            }
+        )
+
+        adapter = MultiAdapter(textAdapter, inputAdapter, alarmTimeAdapter, alarmMedicineAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null
@@ -134,11 +138,15 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
     private fun observeData() = with(viewModel) {
 
+        lockTransition(Tag.TITLE.name, Tag.BUTTON.name, Tag.VIEW_ITEM.name)
+
         title.observe(viewLifecycleOwner) {
 
             val binding = binding ?: return@observe
 
             binding.frameHeader.tvTitle.text = it
+
+            unlockTransition(Tag.TITLE.name)
         }
 
         buttonInfo.asFlow().launchCollect(viewLifecycleOwner) {
@@ -147,9 +155,9 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
             binding.tvAction.text = it.title
 
-            it.background.backgroundColor?.let {
-                binding.tvAction.delegate.backgroundColor = it
-            }
+            binding.tvAction.delegate.setBackground(it.background)
+
+            unlockTransition(Tag.BUTTON.name)
         }
 
         viewItemList.asFlow().launchCollect(viewLifecycleOwner) {
@@ -162,12 +170,14 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
             val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
             binding.recyclerView.beginTransitionAwait(transition)
-        }
 
-        arguments?.getSerializableOrNull<Alarm.MedicineItem>(Param.MEDICINE)?.let {
-
-            viewModel.updateMedicine(it)
+            unlockTransition(Tag.VIEW_ITEM.name)
         }
+    }
+
+    private enum class Tag {
+
+        TITLE, BUTTON, VIEW_ITEM
     }
 }
 
@@ -175,14 +185,14 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 class AddMedicineViewDeeplink : DeeplinkHandler {
 
     override fun getDeeplink(): String {
-        return Deeplink.ADD_MEDICINE
+        return Deeplink.ADD_ALARM
     }
 
     override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {
 
         if (activity !is MainActivity) return false
 
-        val fragment = AddMedicineFragment()
+        val fragment = AddAlarmFragment()
         fragment.arguments = extras
 
         val fragmentTransaction = activity.supportFragmentManager

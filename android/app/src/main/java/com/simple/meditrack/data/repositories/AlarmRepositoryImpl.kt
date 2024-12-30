@@ -35,7 +35,7 @@ val alarmFake = listOf(
     Alarm(
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi sáng",
-        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder.png",
+        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_5.png",
 
         hour = 8,
         minute = 0,
@@ -45,13 +45,12 @@ val alarmFake = listOf(
 
         item = listOf(
             Alarm.MedicineItem(
-                note = "",
                 dosage = 1.0,
                 medicine = Medicine(
                     id = "3",
                     name = "Viên trắng tròn",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    unit = Medicine.Unit.TABLET.value
                 )
             )
         )
@@ -60,7 +59,7 @@ val alarmFake = listOf(
 
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi trưa",
-        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_2.png",
+        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_7.png",
 
         hour = 12,
         minute = 0,
@@ -68,23 +67,21 @@ val alarmFake = listOf(
 
         item = listOf(
             Alarm.MedicineItem(
-                note = "",
                 dosage = 0.5,
                 medicine = Medicine(
                     id = "2",
                     name = "Viên trong vỉ",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    unit = Medicine.Unit.TABLET.value
                 )
             ),
             Alarm.MedicineItem(
-                note = "",
                 dosage = 1.0,
                 medicine = Medicine(
                     id = "3",
                     name = "Viên trắng tròn",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    unit = Medicine.Unit.TABLET.value
                 )
             )
         )
@@ -93,7 +90,7 @@ val alarmFake = listOf(
 
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi tối",
-        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder.png",
+        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
 
         hour = 20,
         minute = 0,
@@ -101,33 +98,31 @@ val alarmFake = listOf(
 
         item = listOf(
             Alarm.MedicineItem(
-                note = "Nhai nuốt",
                 dosage = 0.5,
                 medicine = Medicine(
                     id = "1",
                     name = "Viên vàng tròn",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    note = "Nhai nuốt",
+                    unit = Medicine.Unit.TABLET.value
                 )
             ),
             Alarm.MedicineItem(
-                note = "",
                 dosage = 1.5,
                 medicine = Medicine(
                     id = "2",
                     name = "Viên trong vỉ",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    unit = Medicine.Unit.TABLET.value
                 )
             ),
             Alarm.MedicineItem(
-                note = "",
                 dosage = 1.0,
                 medicine = Medicine(
                     id = "3",
                     name = "Viên trắng tròn",
                     image = "",
-                    unit = Medicine.Unit.TABLET
+                    unit = Medicine.Unit.TABLET.value
                 )
             )
         )

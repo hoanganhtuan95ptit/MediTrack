@@ -1,6 +1,9 @@
 package com.simple.meditrack.di
 
 import com.simple.ai.english.ui.base.transition.TransitionGlobalViewModel
+import com.simple.meditrack.ui.add_alarm.AddAlarmViewModel
+import com.simple.meditrack.ui.add_medicine.AddMedicineViewModel
+import com.simple.meditrack.ui.add_medicine.unit.ChooseUnitViewModel
 import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
 import com.simple.meditrack.ui.notification.NotificationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,5 +22,17 @@ val viewModelModule = module {
 
     viewModel {
         AlarmListViewModel(get())
+    }
+
+    viewModel {
+        AddMedicineViewModel()
+    }
+
+    viewModel {
+        AddAlarmViewModel()
+    }
+
+    viewModel {
+        ChooseUnitViewModel()
     }
 }

@@ -4,8 +4,12 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
@@ -16,6 +20,7 @@ import com.simple.adapter.MultiAdapter
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.launchCollect
+import com.simple.coreapp.utils.ext.setDebouncedClickListener
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusChange
 import com.simple.coreapp.utils.extentions.submitListAwait
@@ -32,6 +37,14 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
     private var adapter by autoCleared<MultiAdapter>()
 
+    private val overlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (Settings.canDrawOverlays(requireContext())) {
+            // Quyền được cấp
+        } else {
+            // Quyền bị từ chối
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,6 +53,21 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
             val binding = binding ?: return@doOnHeightStatusChange
 
             binding.root.updatePadding(top = it)
+        }
+
+        val binding = binding ?: return
+
+        binding.tvAdd.setDebouncedClickListener {
+
+            val transitionName = binding.tvAdd.transitionName
+
+            sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.tvAdd))
+        }
+
+        if (!Settings.canDrawOverlays(requireContext())) {
+
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${requireContext().packageName}"))
+            overlayPermissionLauncher.launch(intent)
         }
 
         setupRecyclerView()
@@ -84,7 +112,7 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
                 // Thiết lập thời gian
                 val calendar: Calendar = Calendar.getInstance()
-                calendar.setTimeInMillis(System.currentTimeMillis() + 30 * 1000)
+                calendar.setTimeInMillis(System.currentTimeMillis())
                 calendar.set(Calendar.HOUR_OF_DAY, it.hour)
                 calendar.set(Calendar.MINUTE, it.minute)
                 calendar.set(Calendar.SECOND, 0)

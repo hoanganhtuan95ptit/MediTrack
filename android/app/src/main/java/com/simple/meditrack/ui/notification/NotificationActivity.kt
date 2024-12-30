@@ -48,7 +48,7 @@ class NotificationDeeplink : DeeplinkHandler {
 
     override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {
 
-        if (activity is NotificationActivity) return true
+        if (activity is NotificationActivity) return false
 
         val intent = Intent(activity, NotificationActivity::class.java)
         intent.putExtras(extras ?: bundleOf())

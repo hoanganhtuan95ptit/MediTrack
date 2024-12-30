@@ -1,12 +1,9 @@
 package com.simple.meditrack.ui.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.view.updatePadding
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
@@ -22,7 +19,6 @@ import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
-import com.simple.coreapp.utils.extentions.postValue
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.image.setImage
 import com.simple.meditrack.Deeplink
@@ -30,10 +26,8 @@ import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentNotificationBinding
 import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
-import com.simple.meditrack.ui.notification.adapters.TextAdapter
+import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 
@@ -156,7 +150,6 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
     }
 }
 
-
 @com.tuanha.deeplink.annotation.Deeplink
 class NotificationViewDeeplink : DeeplinkHandler {
 
@@ -166,7 +159,7 @@ class NotificationViewDeeplink : DeeplinkHandler {
 
     override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {
 
-        if (activity !is FragmentActivity) return false
+        if (activity !is NotificationActivity) return false
 
         val fragment = NotificationFragment()
         fragment.arguments = extras
@@ -180,8 +173,7 @@ class NotificationViewDeeplink : DeeplinkHandler {
         }
 
         fragmentTransaction
-            .replace(R.id.fragment_container, fragment, "")
-            .addToBackStack("")
+            .add(R.id.fragment_container, fragment, "")
             .commit()
 
         return true

@@ -118,8 +118,8 @@ class NotificationViewModel(
                 id = item.medicine.id,
 
                 name = item.medicine.name.with(ForegroundColorSpan(theme.colorOnBackground)),
-                desciption = if (item.note.isNotBlank()) {
-                    (item.dosage.toString() + " - " + item.note).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.note, ForegroundColorSpan(theme.colorOnBackgroundVariant))
+                desciption = if (item.medicine.note.isNotBlank()) {
+                    (item.dosage.toString() + " - " + item.medicine.note).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.medicine.note, ForegroundColorSpan(theme.colorOnBackgroundVariant))
                 } else {
                     item.dosage.toString().with(ForegroundColorSpan(theme.colorOnBackground))
 

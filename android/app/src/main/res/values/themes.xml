@@ -8,8 +8,9 @@
     <style name="Theme.MediTrack" parent="Theme.Night">
 
         <item name="colorPrimary">#FFD043</item>
+        <item name="colorOnPrimary">#000000</item>
 
-        <item name="colorPrimaryVariant">#23342D</item>
+        <item name="colorPrimaryVariant">#50FFD043</item>
         <item name="colorOnPrimaryVariant">#FFFFFF</item>
 
         <item name="colorOnSurface">#000000</item>
