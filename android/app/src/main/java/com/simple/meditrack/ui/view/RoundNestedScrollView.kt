@@ -2,13 +2,13 @@ package com.simple.meditrack.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.widget.NestedScrollView
 import com.simple.coreapp.ui.view.round.RoundViewDelegate
 import kotlin.math.max
 
-class RoundRecyclerView @JvmOverloads constructor(
+class RoundNestedScrollView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-) : RecyclerView(context, attrs) {
+) : NestedScrollView(context, attrs) {
 
     private var delegate: RoundViewDelegate = RoundViewDelegate(this, context, attrs)
 
@@ -36,6 +36,7 @@ class RoundRecyclerView @JvmOverloads constructor(
 
         if (this.delegate.isRadiusHalfHeight) {
             this.delegate.cornerRadius = this.height / 2
+            this.delegate.setBgSelector()
         } else {
             this.delegate.setBgSelector()
         }

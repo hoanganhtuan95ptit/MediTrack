@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RoundRecyclerView">
+
+    <declare-styleable name="RoundNestedScrollView">
         <attr name="rv_backgroundColor" />
         <attr name="rv_backgroundPressColor" />
         <attr name="rv_cornerRadius" />

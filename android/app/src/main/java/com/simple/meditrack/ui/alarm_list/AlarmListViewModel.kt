@@ -3,9 +3,11 @@ package com.simple.meditrack.ui.alarm_list
 import androidx.lifecycle.LiveData
 import com.simple.adapter.entities.ViewItem
 import com.simple.ai.english.ui.base.transition.TransitionViewModel
+import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
+import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.domain.usecases.alarm.GetListAlarmAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmViewItem
@@ -48,6 +50,7 @@ class AlarmListViewModel(
         state.data.map {
 
             AlarmViewItem(
+                id = it.id,
                 data = it,
                 name = it.name,
                 image = it.image,
@@ -61,4 +64,6 @@ class AlarmListViewModel(
 
         postDifferentValue(list)
     }
+
+    val alarmViewItemEvent: LiveData<Event<List<ViewItem>>> = alarmViewItem.toEvent()
 }

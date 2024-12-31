@@ -3,9 +3,9 @@ package com.simple.meditrack.utils.exts
 import com.simple.coreapp.ui.view.round.RoundViewDelegate
 import com.simple.meditrack.ui.view.Background
 
-fun RoundViewDelegate.setBackground(_background: Background? = null){
+fun RoundViewDelegate.setBackground(_background: Background? = null) {
 
-    val background = _background?: return
+    val background = _background ?: return
 
     background.backgroundColor?.let {
         this.backgroundColor = it
@@ -40,10 +40,12 @@ fun RoundViewDelegate.setBackground(_background: Background? = null){
     }
 
     background.strokeDashGap?.let {
-        this.setStrokeDashGap(it)
+        this.strokeDashGap = it
     }
 
     background.strokeDashWidth?.let {
-        this.setStrokeDashWidth(it)
+        this.strokeDashWidth = it
     }
+
+    setBgSelector()
 }

@@ -1,8 +1,9 @@
 package com.simple.meditrack.ui.add_alarm
 
+import android.graphics.Typeface
 import android.text.InputType
 import android.text.style.ForegroundColorSpan
-import android.util.Log
+import android.view.Gravity
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
@@ -21,21 +22,22 @@ import com.simple.coreapp.utils.extentions.listenerSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
+import com.simple.coreapp.utils.extentions.postValue
 import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
 import com.simple.meditrack.entities.Alarm
-import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
 import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineViewItem
-import com.simple.meditrack.ui.add_alarm.adapters.AlarmTimeViewItem
+import com.simple.meditrack.ui.add_alarm.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.ui.view.Size
+import com.simple.meditrack.ui.view.TextStyle
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
@@ -75,7 +77,7 @@ class AddAlarmViewModel(
         val theme = theme.value ?: return@combineSources
         val translate = translate.value ?: return@combineSources
 
-        postDifferentValue(translate["title_add_alarm"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
+        postDifferentValue(translate["Thêm thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
     }
 
     val alarmId: LiveData<String> = MediatorLiveData()
@@ -88,36 +90,97 @@ class AddAlarmViewModel(
         }
     }
 
-    val hour: LiveData<Int> = MediatorLiveData(0)
+    val hour: LiveData<Int> = combineSources<Int>(alarm) {
 
-    val minute: LiveData<Int> = MediatorLiveData(0)
+        val alarm = alarm.value ?: return@combineSources
 
-    val image: LiveData<String> = MediatorLiveData("https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png")
+        postDifferentValue(alarm.hour)
+    }.apply {
 
-    val medicineMap: LiveData<Map<String, Alarm.MedicineItem>> = MediatorLiveData(hashMapOf())
+        postValue(0)
+    }
 
-    val viewItemList: LiveData<List<ViewItem>> = combineSources(theme, translate, hour, minute, image, medicineMap) {
+    val minute: LiveData<Int> = combineSources<Int>(alarm) {
 
-        val theme = theme.value ?: return@combineSources
-        val translate = translate.value ?: return@combineSources
+        val alarm = alarm.value ?: return@combineSources
 
-        val hour = hour.value ?: return@combineSources
-        val minute = minute.value ?: return@combineSources
-        val medicineMap = medicineMap.value ?: return@combineSources
+        postDifferentValue(alarm.minute)
+    }.apply {
+
+        postValue(0)
+    }
+
+    val image: LiveData<String> = combineSources<String>(alarm) {
+
+        val alarm = alarm.value ?: return@combineSources
+
+        postDifferentValue(alarm.image)
+    }.apply {
+
+        postValue("https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png")
+    }
+
+    val medicineMap: LiveData<Map<String, Alarm.MedicineItem>> = combineSources<Map<String, Alarm.MedicineItem>>(alarm) {
+
+        val alarm = alarm.value ?: return@combineSources
+
+        postDifferentValue(alarm.item.associateBy { it.id })
+    }.apply {
+
+        postValue(hashMapOf())
+    }
+
+    @VisibleForTesting
+    val viewItemList: LiveData<List<ViewItem>> = listenerSources(theme, translate, alarm, hour, minute, image, medicineMap) {
+
+        val theme = theme.value ?: return@listenerSources
+        val translate = translate.value ?: return@listenerSources
+
+        val hour = hour.value ?: return@listenerSources
+        val minute = minute.value ?: return@listenerSources
+        val medicineMap = medicineMap.value ?: return@listenerSources
 
         val list = arrayListOf<ViewItem>()
 
-        AlarmTimeViewItem(
-            id = Id.TIME,
-            time = "${DecimalFormat("00").format(hour)}:${DecimalFormat("00").format(minute)}".with(ForegroundColorSpan(theme.colorOnSurface)),
-            image = image.value.orEmpty(),
-            background = Background(
-                strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 8
-            ),
+        ImageViewItem(
+            id = Id.IMAGE,
+            image = image.value.orEmpty()
         ).let {
 
+            list.add(SpaceViewItem(height = DP.DP_8))
+            list.add(it)
+        }
+
+        TextViewItem(
+            id = Id.TIME,
+            text = "${DecimalFormat("00").format(hour)}:${DecimalFormat("00").format(minute)}".with(ForegroundColorSpan(theme.colorOnSurface)),
+            image = TextViewItem.Image(
+                end = R.drawable.ic_arrow_down_24dp
+            ),
+            size = Size(
+                width = ViewGroup.LayoutParams.MATCH_PARENT,
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+            ),
+            padding = Padding(
+                top = DP.DP_8,
+                left = DP.DP_16,
+                right = DP.DP_16,
+                bottom = DP.DP_8
+            ),
+            textStyle = TextStyle(
+                textSize = 56.0f,
+                typeface = Typeface.BOLD,
+                textGravity = Gravity.CENTER
+            ),
+            background = Background(
+                strokeWidth = DP.DP_2,
+                strokeColor = theme.colorDivider,
+                cornerRadius = DP.DP_8
+            )
+        ).let {
+
+            list.add(SpaceViewItem(height = DP.DP_16))
+            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["Giờ (*)"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -125,11 +188,11 @@ class AddAlarmViewModel(
         InputViewItem(
             id = Id.NAME,
             hint = translate["Nhập tên thông báo"].orEmpty(),
-            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
+            text = alarm.value?.name ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 8
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_8
             )
         ).let {
 
@@ -143,11 +206,11 @@ class AddAlarmViewModel(
             id = Id.NOTE,
             hint = translate["Nhập ghi chú"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT,
-            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
+            text = alarm.value?.note ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 8
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_8
             )
         ).let {
 
@@ -169,7 +232,7 @@ class AddAlarmViewModel(
                 text = it.value.medicine?.name.orEmpty(),
                 description = it.value.dosage.toString() + " " + translate[it.value.medicine?.unit?.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
                 background = Background(
-                    cornerRadius = 8
+                    cornerRadius = DP.DP_8
                 )
             )
         }.apply {
@@ -195,12 +258,14 @@ class AddAlarmViewModel(
             ),
             background = Background(
                 backgroundColor = theme.colorPrimaryVariant,
-                cornerRadius = 8
+                cornerRadius = DP.DP_8
             )
         ).let {
 
             list.add(it)
         }
+
+        list.add(SpaceViewItem(height = DP.DP_350))
 
         postDifferentValueIfActive(list)
     }
@@ -257,6 +322,11 @@ class AddAlarmViewModel(
     fun refreshButtonInfo() {
 
         refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
+    }
+
+    fun updateId(it: String) {
+
+        alarmId.postDifferentValue(it)
     }
 
     fun updateTime(hour: Int, minute: Int) {

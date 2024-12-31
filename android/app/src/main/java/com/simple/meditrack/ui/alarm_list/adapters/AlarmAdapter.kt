@@ -17,6 +17,8 @@ open class AlarmAdapter(onItemClick: (View, AlarmViewItem) -> Unit = { _, _ -> }
     override fun bind(binding: ItemAlarmBinding, viewType: Int, position: Int, item: AlarmViewItem) {
         super.bind(binding, viewType, position, item)
 
+        binding.root.transitionName = item.id
+
         binding.tvName.text = item.name
 
         binding.ivImage.setImage(item.image)
@@ -30,6 +32,7 @@ open class AlarmAdapter(onItemClick: (View, AlarmViewItem) -> Unit = { _, _ -> }
 }
 
 class AlarmViewItem(
+    val id: String,
     val data: Alarm,
 
     val image: String,
@@ -41,7 +44,7 @@ class AlarmViewItem(
 ) : ViewItem {
 
     override fun areItemsTheSame(): List<Any> = listOf(
-        time
+        id
     )
 
     override fun getContentsCompare(): List<Pair<Any, String>> = listOf(

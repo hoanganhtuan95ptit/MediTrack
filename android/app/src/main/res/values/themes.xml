@@ -18,6 +18,7 @@
         <item name="colorOnSurfaceVariant">#B1B1B1</item>
 
         <item name="android:colorBackground">#FFFFFF</item>
+        <item name="colorBackground">#ECEEFA</item>
         <item name="colorOnBackground">#000000</item>
 
         <item name="colorBackgroundVariant">#F5F6FA</item>
@@ -25,6 +26,6 @@
 
         <item name="colorAccent">#1ED760</item>
         <item name="colorLoading">#F8F8F9</item>
-        <item name="colorDivider">#B1B1B1</item>
+        <item name="colorDivider">#ECEEFA</item>
     </style>
 </resources>

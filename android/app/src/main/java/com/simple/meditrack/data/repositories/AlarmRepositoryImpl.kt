@@ -18,7 +18,7 @@ class AlarmRepositoryImpl : AlarmRepository {
 
         list.asFlow().launchCollect(this) {
 
-            trySend(it)
+            trySend(it.sortedBy { it.minute }.sortedBy { it.hour })
         }
 
         awaitClose()

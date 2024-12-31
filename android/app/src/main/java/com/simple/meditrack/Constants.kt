@@ -6,6 +6,7 @@ object Id {
     const val NAME = "NAME"
     const val NOTE = "NOTE"
     const val TIME = "TIME"
+    const val IMAGE = "IMAGE"
     const val DOSAGE = "DOSAGE"
     const val MEDICINE = "MEDICINE"
     const val QUANTITY = "QUANTITY"

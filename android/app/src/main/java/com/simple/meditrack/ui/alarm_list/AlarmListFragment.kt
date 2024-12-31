@@ -21,9 +21,12 @@ import androidx.transition.TransitionSet
 import com.simple.adapter.MultiAdapter
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
+import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
+import com.simple.coreapp.utils.ext.updateMargin
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
+import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
 import com.simple.coreapp.utils.extentions.doOnHeightStatusChange
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
@@ -35,6 +38,7 @@ import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
 import com.simple.meditrack.ui.notification.NotificationActivity
 import com.simple.meditrack.ui.notification.NotificationFragment
 import com.simple.meditrack.utils.DeeplinkHandler
+import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
 import java.util.Calendar
@@ -54,20 +58,21 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        doOnHeightStatusChange {
-
-            val binding = binding ?: return@doOnHeightStatusChange
-
-            binding.root.updatePadding(top = it)
-        }
+//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+//
+//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+//
+//            binding.root.updatePadding(top = heightStatusBar)
+//            binding.frameAdd.updateMargin(bottom = DP.DP_16 + heightNavigationBar)
+//        }
 
         val binding = binding ?: return
 
-        binding.tvAdd.setDebouncedClickListener {
+        binding.frameAdd.setDebouncedClickListener {
 
-            val transitionName = binding.tvAdd.transitionName
+            val transitionName = binding.frameAdd.transitionName
 
-            sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.tvAdd))
+            sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.frameAdd))
         }
 
         if (!Settings.canDrawOverlays(requireContext())) {
@@ -87,9 +92,18 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
         val alarmAdapter = AlarmAdapter { view, item ->
 
-            val extras = bundleOf(Param.ID to item.data.id)
+            val transitionName = view.transitionName
 
-            sendDeeplink(Deeplink.NOTIFICATION, extras = extras)
+            val extras = bundleOf(
+                Param.ID to item.data.id,
+                Param.ROOT_TRANSITION_NAME to transitionName
+            )
+
+            val sharedElement = mapOf(
+                transitionName to view
+            )
+
+            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
         }
 
         adapter = MultiAdapter(alarmAdapter).apply {
@@ -99,6 +113,8 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
     }
 
     private fun observeData() = with(viewModel) {
+
+        lockTransition(Tag.VIEW_ITEM.name)
 
         alarmState.observe(viewLifecycleOwner) { state ->
 
@@ -139,18 +155,32 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
             }
         }
 
-        alarmViewItem.asFlow().launchCollect(viewLifecycleOwner) {
+        alarmViewItemEvent.launchCollect(viewLifecycleOwner) { it, anim ->
 
             val binding = binding ?: return@launchCollect
 
-//            awaitTransition()
+            if (anim) {
 
-            binding.recyclerView.submitListAwait(it)
+                unlockTransition(Tag.VIEW_ITEM.name)
 
-            Log.d("tuanha", "observeData: ")
-            val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
-            binding.recyclerView.beginTransitionAwait(transition)
+                awaitTransition()
+
+                binding.recyclerView.submitListAwait(it)
+
+                val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
+                binding.recyclerView.beginTransitionAwait(transition)
+            } else {
+
+                binding.recyclerView.submitListAwait(it)
+
+                unlockTransition(Tag.VIEW_ITEM.name)
+            }
         }
+    }
+
+    private enum class Tag {
+
+        VIEW_ITEM
     }
 }
 

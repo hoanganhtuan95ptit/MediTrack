@@ -22,6 +22,7 @@ data class Padding(
 )
 
 data class TextStyle(
+    val typeface: Int? = null,
     val textSize: Float? = null,
     val textGravity: Int? = null
 )

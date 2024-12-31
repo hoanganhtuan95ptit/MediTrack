@@ -8,6 +8,10 @@ fun TextView.setTextStyle(textStyle: TextStyle? = null) {
 
     textStyle ?: return
 
+    textStyle.typeface?.let {
+        this.setTypeface(null, it)
+    }
+
     textStyle.textSize?.let {
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, it)
     }
@@ -15,5 +19,4 @@ fun TextView.setTextStyle(textStyle: TextStyle? = null) {
     textStyle.textGravity?.let {
         this.gravity = it
     }
-
 }

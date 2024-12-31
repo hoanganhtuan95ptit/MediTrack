@@ -29,8 +29,8 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+
         // Do something with the time the user picks.
-        Log.d("tuanha", "onTimeSet: ")
         sendEvent(EventName.TIME, bundleOf(Param.HOUR to hourOfDay, Param.MINUTE to minute))
     }
 }

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    app:rv_backgroundColor="?android:attr/colorBackground"
+    app:rv_backgroundColor="?attr/colorSurface"
     app:rv_cornerRadius_TL="16dp"
     app:rv_cornerRadius_TR="16dp">
 

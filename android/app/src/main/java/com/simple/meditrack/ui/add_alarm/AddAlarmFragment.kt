@@ -1,22 +1,22 @@
 package com.simple.meditrack.ui.add_alarm
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.viewModelScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.simple.adapter.MultiAdapter
-import com.simple.adapter.entities.ViewItem
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
+import com.simple.coreapp.utils.ext.getStringOrEmpty
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
@@ -29,10 +29,11 @@ import com.simple.meditrack.Id
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
+import com.simple.meditrack.databinding.FragmentNestscrollBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.MainActivity
 import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineAdapter
-import com.simple.meditrack.ui.add_alarm.adapters.AlarmTimeAdapter
+import com.simple.meditrack.ui.add_alarm.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
@@ -41,9 +42,11 @@ import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.doSuccess
-import kotlinx.coroutines.launch
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
-class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewModel>() {
+
+class AddAlarmFragment : TransitionFragment<FragmentNestscrollBinding, AddAlarmViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
@@ -69,12 +72,13 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
-
-            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
-
-            binding.root.updatePadding(top = heightStatusBar, bottom = heightNavigationBar)
-        }
+//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+//
+//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+//
+//            binding.root.updatePadding(top = heightStatusBar)
+//            binding.frameAction.updatePadding(bottom = heightNavigationBar)
+//        }
 
         val binding = binding ?: return
 
@@ -104,6 +108,9 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             if (item.id == Id.ADD_MEDICINE) {
 
                 sendDeeplink(Deeplink.ADD_MEDICINE, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to view))
+            } else if (item.id == Id.TIME) {
+
+                sendDeeplink(Deeplink.PICK_TIME, extras = bundleOf(Param.HOUR to viewModel.hour.get(), Param.MINUTE to viewModel.minute.get()))
             }
         }
 
@@ -112,15 +119,9 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             viewModel.refreshButtonInfo()
         }
 
-        val alarmTimeAdapter = AlarmTimeAdapter(
-            onTimeClick = { view, item ->
+        val imageAdapter = ImageAdapter { view, item ->
 
-                sendDeeplink(Deeplink.PICK_TIME, extras = bundleOf(Param.HOUR to viewModel.hour.get(), Param.MINUTE to viewModel.minute.get()))
-            },
-            onImageClick = { view, item ->
-
-            }
-        )
+        }
 
         val alarmMedicineAdapter = AlarmMedicineAdapter(
             onRemoveClick = { view, item ->
@@ -135,7 +136,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             }
         )
 
-        adapter = MultiAdapter(textAdapter, inputAdapter, alarmTimeAdapter, alarmMedicineAdapter).apply {
+        adapter = MultiAdapter(textAdapter, inputAdapter, imageAdapter, alarmMedicineAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null
@@ -144,6 +145,10 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             layoutManager.justifyContent = JustifyContent.FLEX_START
             binding.recyclerView.layoutManager = layoutManager
         }
+
+        setEventListener(requireActivity(), viewLifecycleOwner, KeyboardVisibilityEventListener {
+            Log.d("tuanha", "setupRecyclerView: $it")
+        })
     }
 
     private fun observeData() = with(viewModel) {
@@ -176,7 +181,9 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
             if (anim) {
 
-                viewModel.awaitTransition()
+                unlockTransition(Tag.VIEW_ITEM.name)
+
+                awaitTransition()
 
                 binding.recyclerView.submitListAwait(list)
 
@@ -195,6 +202,11 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             it.doSuccess {
                 parentFragmentManager.popBackStack()
             }
+        }
+
+        arguments.getStringOrEmpty(Param.ID)?.let {
+
+            viewModel.updateId(it)
         }
     }
 

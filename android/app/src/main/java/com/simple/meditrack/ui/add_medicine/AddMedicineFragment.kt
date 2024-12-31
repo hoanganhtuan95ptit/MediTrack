@@ -28,9 +28,11 @@ import com.simple.meditrack.Id
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
+import com.simple.meditrack.databinding.FragmentNestscrollBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.MainActivity
+import com.simple.meditrack.ui.add_alarm.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.CheckboxAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.InputViewItem
@@ -39,23 +41,25 @@ import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
+import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
 import java.util.UUID
 
-class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineViewModel>() {
+class AddMedicineFragment : TransitionFragment<FragmentNestscrollBinding, AddMedicineViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
-
-            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
-
-            binding.root.updatePadding(top = heightStatusBar, bottom = heightNavigationBar)
-        }
+//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+//
+//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+//
+//            binding.root.updatePadding(top = heightStatusBar)
+//            binding.frameAction.updatePadding(bottom = heightNavigationBar)
+//        }
 
         val binding = binding ?: return
 
@@ -128,6 +132,10 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             }
         )
 
+        val imageAdapter = ImageAdapter { view, item ->
+
+        }
+
         val medicineAdapter = MedicineAdapter { view, item ->
 
             item.data?.let { viewModel.updateMedicine(it) }
@@ -138,7 +146,7 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             viewModel.switchLowOnMedication()
         }
 
-        adapter = MultiAdapter(textAdapter, inputAdapter, medicineAdapter, checkboxAdapter).apply {
+        adapter = MultiAdapter(textAdapter, inputAdapter, imageAdapter, medicineAdapter, checkboxAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null
@@ -151,11 +159,15 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
     private fun observeData() = with(viewModel) {
 
+        lockTransition(Tag.TITLE.name, Tag.BUTTON.name)
+
         title.observe(viewLifecycleOwner) {
 
             val binding = binding ?: return@observe
 
             binding.frameHeader.tvTitle.text = it
+
+            unlockTransition(Tag.TITLE.name)
         }
 
         buttonInfo.asFlow().launchCollect(viewLifecycleOwner) {
@@ -163,10 +175,9 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             val binding = binding ?: return@launchCollect
 
             binding.tvAction.text = it.title
+            binding.tvAction.delegate.setBackground(it.background)
 
-            it.background.backgroundColor?.let {
-                binding.tvAction.delegate.backgroundColor = it
-            }
+            unlockTransition(Tag.BUTTON.name)
         }
 
         viewItemList.asFlow().launchCollect(viewLifecycleOwner) {
@@ -185,6 +196,11 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
             viewModel.updateMedicine(it)
         }
+    }
+
+    private enum class Tag {
+
+        TITLE, BUTTON
     }
 }
 

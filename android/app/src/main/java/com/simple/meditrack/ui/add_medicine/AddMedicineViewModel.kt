@@ -23,6 +23,7 @@ import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
+import com.simple.meditrack.ui.add_alarm.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
@@ -62,7 +63,7 @@ class AddMedicineViewModel(
         val theme = theme.value ?: return@combineSources
         val translate = translate.value ?: return@combineSources
 
-        postDifferentValue(translate["title_add_medicine"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
+        postDifferentValue(translate["Thêm thuốc"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
     }
 
 
@@ -135,6 +136,15 @@ class AddMedicineViewModel(
 
         val list = arrayListOf<ViewItem>()
 
+        ImageViewItem(
+            id = Id.IMAGE,
+            image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_6.png"
+        ).let {
+
+            list.add(SpaceViewItem(height = DP.DP_8))
+            list.add(it)
+        }
+
         val name = medicine?.name ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString().orEmpty()
 
         InputViewItem(
@@ -143,8 +153,8 @@ class AddMedicineViewModel(
             text = name,
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 16
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -180,7 +190,7 @@ class AddMedicineViewModel(
             data = unit,
             text = translate[unit.name].orEmpty(),
             image = TextViewItem.Image(
-                end = R.drawable.ic_arrow_right_24dp
+                end = R.drawable.ic_arrow_down_24dp
             ),
             padding = Padding(
                 left = DP.DP_16,
@@ -190,8 +200,8 @@ class AddMedicineViewModel(
             ),
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 16
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
             ),
         ).let {
 
@@ -208,8 +218,8 @@ class AddMedicineViewModel(
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.DOSAGE }?.text?.toString() ?: medicineItem?.dosage?.toString().orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 16
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -226,8 +236,8 @@ class AddMedicineViewModel(
             text = medicine?.note ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 16
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -262,8 +272,8 @@ class AddMedicineViewModel(
             },
             background = Background(
                 strokeColor = theme.colorDivider,
-                strokeWidth = 1,
-                cornerRadius = 16
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -272,6 +282,8 @@ class AddMedicineViewModel(
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
+
+        list.add(SpaceViewItem(height = DP.DP_350))
 
         postDifferentValueIfActive(list)
     }
