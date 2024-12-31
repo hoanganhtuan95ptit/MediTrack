@@ -26,7 +26,7 @@ open class AlarmMedicineAdapter(
 
             item.text = it.toString()
 
-            onRemoveClick(holder.binding.ivRemove, item)
+            onRemoveClick(holder.binding.root, item)
         }
 
         return holder
@@ -34,6 +34,8 @@ open class AlarmMedicineAdapter(
 
     override fun bind(binding: ItemMedicineItemBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem) {
         super.bind(binding, viewType, position, item)
+
+        binding.root.transitionName = item.id
 
         binding.tvName.text = item.text
 

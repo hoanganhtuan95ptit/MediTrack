@@ -15,6 +15,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.simple.coreapp.ui.base.fragments.BaseViewModelFragment
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.meditrack.Param
+import com.simple.meditrack.ui.base.transition.TransitionGlobalViewModel
 import com.simple.state.ResultState
 import com.simple.state.isSuccess
 import kotlinx.coroutines.delay

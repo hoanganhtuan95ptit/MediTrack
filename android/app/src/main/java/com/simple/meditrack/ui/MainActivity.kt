@@ -3,15 +3,15 @@ package com.simple.meditrack.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.fragment.app.FragmentManager
 import com.simple.coreapp.ui.base.activities.BaseViewBindingActivity
-import com.simple.meditrack.R
 import com.simple.meditrack.databinding.ActivityMainBinding
 import com.simple.meditrack.ui.alarm_list.AlarmListFragment
+import com.simple.meditrack.ui.base.PageFragment
 import com.simple.meditrack.ui.base.adapters.PagerAdapter
 import com.simple.meditrack.utils.NavigationView
 import com.simple.meditrack.utils.NavigationViewImpl
 import com.simple.meditrack.utils.setupTheme
-import java.util.Calendar
 
 
 class MainActivity : BaseViewBindingActivity<ActivityMainBinding>(),
@@ -41,11 +41,12 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding>(),
             this
         }, {
 
-            if (this == "1") {
-                AlarmListFragment()
-            } else {
-                AlarmListFragment()
-            }
+            PageFragment(this)
         })
+    }
+
+    override fun getSupportFragmentManager(): FragmentManager {
+
+        return super.getSupportFragmentManager().fragments.filterIsInstance<PageFragment>().getOrNull(binding?.viewPager?.currentItem ?: 0)?.childFragmentManager ?: super.getSupportFragmentManager()
     }
 }

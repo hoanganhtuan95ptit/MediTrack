@@ -6,12 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.simple.adapter.MultiAdapter
+import com.simple.adapter.entities.ViewItem
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
@@ -35,8 +37,11 @@ import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
+import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
+import com.simple.state.doSuccess
+import kotlinx.coroutines.launch
 
 class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewModel>() {
 
@@ -75,6 +80,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
         binding.tvAction.setDebouncedClickListener {
 
+            viewModel.insertOrUpdateAlarm()
         }
 
         binding.frameHeader.ivBack.setDebouncedClickListener {
@@ -93,9 +99,11 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
         val textAdapter = TextAdapter { view, item ->
 
+            val transitionName = view.transitionName
+
             if (item.id == Id.ADD_MEDICINE) {
 
-                sendDeeplink(Deeplink.ADD_MEDICINE)
+                sendDeeplink(Deeplink.ADD_MEDICINE, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to view))
             }
         }
 
@@ -121,7 +129,9 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             },
             onItemClick = { view, item ->
 
-                sendDeeplink(Deeplink.ADD_MEDICINE, extras = bundleOf(Param.MEDICINE to item.data))
+                val transitionName = view.transitionName
+
+                sendDeeplink(Deeplink.ADD_MEDICINE, extras = bundleOf(Param.MEDICINE to item.data, Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to view))
             }
         )
 
@@ -138,7 +148,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
     private fun observeData() = with(viewModel) {
 
-        lockTransition(Tag.TITLE.name, Tag.BUTTON.name, Tag.VIEW_ITEM.name)
+        lockTransition(Tag.TITLE.name, Tag.BUTTON.name)
 
         title.observe(viewLifecycleOwner) {
 
@@ -160,18 +170,31 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             unlockTransition(Tag.BUTTON.name)
         }
 
-        viewItemList.asFlow().launchCollect(viewLifecycleOwner) {
+        viewItemListEvent.launchCollect(viewLifecycleOwner) { list, anim ->
 
             val binding = binding ?: return@launchCollect
 
-            awaitTransition()
+            if (anim) {
 
-            binding.recyclerView.submitListAwait(it)
+                viewModel.awaitTransition()
 
-            val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
-            binding.recyclerView.beginTransitionAwait(transition)
+                binding.recyclerView.submitListAwait(list)
 
-            unlockTransition(Tag.VIEW_ITEM.name)
+                val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
+                binding.recyclerView.beginTransitionAwait(transition)
+            } else {
+
+                binding.recyclerView.submitListAwait(list)
+
+                unlockTransition(Tag.VIEW_ITEM.name)
+            }
+        }
+
+        insertOrUpdateState.observe(viewLifecycleOwner) {
+
+            it.doSuccess {
+                parentFragmentManager.popBackStack()
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.simple.ai.english.ui.base.transition
+package com.simple.meditrack.ui.base.transition
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModels.BaseViewModel

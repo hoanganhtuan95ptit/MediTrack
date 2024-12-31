@@ -11,11 +11,23 @@ import com.simple.meditrack.databinding.ItemInputBinding
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.exts.setBackground
 
-open class InputAdapter(private val onInputChange: (View, InputViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<InputViewItem, ItemInputBinding>() {
+open class InputAdapter(
+    private val onInputFocus: (View, InputViewItem) -> Unit = { _, _ -> },
+    private val onInputChange: (View, InputViewItem) -> Unit = { _, _ -> }
+) : ViewItemAdapter<InputViewItem, ItemInputBinding>() {
 
     override fun createViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder<ItemInputBinding>? {
 
         val holder = super.createViewHolder(parent, viewType) ?: return null
+
+        holder.binding.edtName.setOnFocusChangeListener { v, hasFocus ->
+
+            if (!hasFocus) return@setOnFocusChangeListener
+
+            val item = getViewItem(holder.bindingAdapterPosition) ?: return@setOnFocusChangeListener
+
+            onInputFocus(holder.binding.edtName, item)
+        }
 
         holder.binding.edtName.doAfterTextChanged {
 
@@ -33,7 +45,10 @@ open class InputAdapter(private val onInputChange: (View, InputViewItem) -> Unit
     override fun bind(binding: ItemInputBinding, viewType: Int, position: Int, item: InputViewItem, payloads: MutableList<Any>) {
         super.bind(binding, viewType, position, item, payloads)
 
-        item.text = binding.edtName.text.toString()
+        if (payloads.contains(PAYLOAD_TEXT)) {
+
+            refreshText(binding, item)
+        }
     }
 
     override fun bind(binding: ItemInputBinding, viewType: Int, position: Int, item: InputViewItem) {
@@ -42,9 +57,15 @@ open class InputAdapter(private val onInputChange: (View, InputViewItem) -> Unit
         binding.edtName.hint = item.hint
 
         binding.edtName.setInputType(item.inputType)
-        binding.edtName.setText(item.text)
 
         binding.root.delegate.setBackground(item.background)
+
+        refreshText(binding, item)
+    }
+
+    private fun refreshText(binding: ItemInputBinding, item: InputViewItem) {
+
+        binding.edtName.setText(item.text)
     }
 }
 
@@ -64,5 +85,8 @@ class InputViewItem(
     )
 
     override fun getContentsCompare(): List<Pair<Any, String>> = listOf(
+        text to PAYLOAD_TEXT
     )
 }
+
+private const val PAYLOAD_TEXT = "PAYLOAD_TEXT"

@@ -36,6 +36,7 @@ import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.ui.base.adapters.TextViewItem
+import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.sendDeeplink
@@ -69,15 +70,18 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             val medicine = Alarm.MedicineItem(
                 id = viewModel.medicineItem.value?.id ?: UUID.randomUUID().toString(),
                 dosage = inputs.find { it.id == Id.DOSAGE }?.text?.toString().orEmpty().toDoubleOrNull() ?: 0.0,
+                medicineId = viewModel.medicine.value?.id ?: UUID.randomUUID().toString()
+            ).apply {
+
                 medicine = Medicine(
-                    id = viewModel.medicineItem.value?.medicine?.id ?: UUID.randomUUID().toString(),
+                    id = medicineId,
                     name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
                     image = "",
                     unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
                     note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
-                    quantity = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
+                    quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
                 )
-            )
+            }
 
             sendEvent(EventName.ADD_MEDICINE, medicine)
 
@@ -111,9 +115,22 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             }
         }
 
-        val inputAdapter = InputAdapter { view, inputViewItem ->
+        val inputAdapter = InputAdapter(
+            onInputFocus = { view, item ->
 
-            viewModel.refreshButtonInfo()
+                viewModel.updateSearchEnable(item.id == Id.NAME)
+            },
+            onInputChange = { view, item ->
+
+                if (item.id == Id.NAME) viewModel.updateSearch(item.text)
+
+                viewModel.refreshButtonInfo()
+            }
+        )
+
+        val medicineAdapter = MedicineAdapter { view, item ->
+
+            item.data?.let { viewModel.updateMedicine(it) }
         }
 
         val checkboxAdapter = CheckboxAdapter { view, item ->
@@ -121,7 +138,7 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             viewModel.switchLowOnMedication()
         }
 
-        adapter = MultiAdapter(textAdapter, inputAdapter, checkboxAdapter).apply {
+        adapter = MultiAdapter(textAdapter, inputAdapter, medicineAdapter, checkboxAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null

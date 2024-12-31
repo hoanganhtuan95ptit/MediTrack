@@ -5,7 +5,11 @@ import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.setVisible
 import com.simple.image.setImage
+import com.simple.meditrack.R
 import com.simple.meditrack.databinding.ItemMedicineBinding
+import com.simple.meditrack.entities.Medicine
+import com.simple.meditrack.ui.view.Background
+import com.simple.meditrack.utils.exts.setBackground
 
 open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<MedicineViewItem, ItemMedicineBinding>(onItemClick) {
 
@@ -20,7 +24,7 @@ open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, 
             refreshActionShow(binding, item)
         }
 
-        if (payloads.contains(PAYLOAD_BACKGROUND_COLOR)) {
+        if (payloads.contains(PAYLOAD_BACKGROUND)) {
             refreshBackground(binding, item)
         }
     }
@@ -50,20 +54,22 @@ open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, 
 
     private fun refreshBackground(binding: ItemMedicineBinding, item: MedicineViewItem) {
 
-        binding.root.delegate.strokeColor = item.backgroundColor
+        binding.root.delegate.setBackground(item.background)
     }
 }
 
 class MedicineViewItem(
     val id: String = "",
 
+    val data: Medicine? = null,
+
     var name: CharSequence = "",
     var desciption: CharSequence,
 
-    val actionRes: Int,
-    val actionShow: Boolean,
+    val actionRes: Int = R.drawable.ic_tick_24dp,
+    val actionShow: Boolean = false,
 
-    val backgroundColor: Int
+    val background: Background? = null
 ) : ViewItem {
 
     override fun areItemsTheSame(): List<Any> = listOf(
@@ -73,10 +79,10 @@ class MedicineViewItem(
     override fun getContentsCompare(): List<Pair<Any, String>> = listOf(
         actionRes to PAYLOAD_IMAGE_RES,
         actionShow to PAYLOAD_IMAGE_SHOW,
-        backgroundColor to PAYLOAD_BACKGROUND_COLOR
+        (background ?: Unit) to PAYLOAD_BACKGROUND
     )
 }
 
 private const val PAYLOAD_IMAGE_RES = "PAYLOAD_IMAGE_RES"
 private const val PAYLOAD_IMAGE_SHOW = "PAYLOAD_IMAGE_RES"
-private const val PAYLOAD_BACKGROUND_COLOR = "PAYLOAD_BACKGROUND_COLOR"
+private const val PAYLOAD_BACKGROUND = "PAYLOAD_BACKGROUND_COLOR"

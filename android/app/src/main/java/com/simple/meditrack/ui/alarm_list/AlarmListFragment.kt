@@ -9,9 +9,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.asFlow
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
@@ -26,9 +28,13 @@ import com.simple.coreapp.utils.extentions.doOnHeightStatusChange
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
+import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentAlarmListBinding
 import com.simple.meditrack.ui.AlarmReceiver
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
+import com.simple.meditrack.ui.notification.NotificationActivity
+import com.simple.meditrack.ui.notification.NotificationFragment
+import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
 import java.util.Calendar
@@ -137,12 +143,43 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
             val binding = binding ?: return@launchCollect
 
-            awaitTransition()
+//            awaitTransition()
 
             binding.recyclerView.submitListAwait(it)
 
+            Log.d("tuanha", "observeData: ")
             val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
             binding.recyclerView.beginTransitionAwait(transition)
         }
+    }
+}
+
+@com.tuanha.deeplink.annotation.Deeplink
+class NotificationViewDeeplink : DeeplinkHandler {
+
+    override fun getDeeplink(): String {
+        return Deeplink.ALARM_LIST
+    }
+
+    override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {
+
+        if (activity !is FragmentActivity) return false
+
+        val fragment = AlarmListFragment()
+        fragment.arguments = extras
+
+        val fragmentTransaction = activity.supportFragmentManager
+            .beginTransaction()
+
+        sharedElement?.forEach { (t, u) ->
+
+            fragmentTransaction.addSharedElement(u, t)
+        }
+
+        fragmentTransaction
+            .add(R.id.fragment_container, fragment, "")
+            .commit()
+
+        return true
     }
 }

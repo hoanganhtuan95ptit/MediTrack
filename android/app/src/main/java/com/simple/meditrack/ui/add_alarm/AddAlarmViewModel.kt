@@ -7,17 +7,25 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
 import com.simple.ai.english.ui.base.transition.TransitionViewModel
+import com.simple.core.utils.extentions.orZero
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.handler
+import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
+import com.simple.coreapp.utils.extentions.listenerSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
+import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
+import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
+import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
@@ -32,9 +40,17 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.with
+import com.simple.state.ResultState
+import com.simple.state.isStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.util.UUID
 
-class AddAlarmViewModel : TransitionViewModel() {
+class AddAlarmViewModel(
+    private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase,
+    private val insertOrUpdateAlarmUseCase: InsertOrUpdateAlarmUseCase
+) : TransitionViewModel() {
 
     @VisibleForTesting
     val theme: LiveData<AppTheme> = mediatorLiveData {
@@ -60,6 +76,16 @@ class AddAlarmViewModel : TransitionViewModel() {
         val translate = translate.value ?: return@combineSources
 
         postDifferentValue(translate["title_add_alarm"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
+    }
+
+    val alarmId: LiveData<String> = MediatorLiveData()
+
+    val alarm: LiveData<Alarm> = combineSources(alarmId) {
+
+        getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id = alarmId.value ?: return@combineSources)).collect {
+
+            postDifferentValue(it)
+        }
     }
 
     val hour: LiveData<Int> = MediatorLiveData(0)
@@ -115,7 +141,7 @@ class AddAlarmViewModel : TransitionViewModel() {
 
         InputViewItem(
             id = Id.NOTE,
-            hint = translate["Nhập ghí chú"].orEmpty(),
+            hint = translate["Nhập ghi chú"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             background = Background(
@@ -140,8 +166,8 @@ class AddAlarmViewModel : TransitionViewModel() {
             AlarmMedicineViewItem(
                 id = it.key,
                 data = it.value,
-                text = it.value.medicine.name,
-                description = it.value.dosage.toString() + " " + translate[it.value.medicine.unit.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine.note,
+                text = it.value.medicine?.name.orEmpty(),
+                description = it.value.dosage.toString() + " " + translate[it.value.medicine?.unit?.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
                 background = Background(
                     cornerRadius = 8
                 )
@@ -179,66 +205,58 @@ class AddAlarmViewModel : TransitionViewModel() {
         postDifferentValueIfActive(list)
     }
 
+    val viewItemListEvent: LiveData<Event<List<ViewItem>>> = viewItemList.toEvent()
+
 
     @VisibleForTesting
     val refreshButtonInfo: LiveData<Long> = MediatorLiveData(0)
 
-    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, viewItemList, refreshButtonInfo) {
+    val insertOrUpdateState: LiveData<ResultState<Alarm>> = MediatorLiveData()
 
-        val theme = theme.value ?: return@combineSources
+    val buttonInfo: LiveData<ButtonInfo> = listenerSources(theme, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
+
+        val theme = theme.value ?: return@listenerSources
+
         val translate = translate.getOrEmpty()
+        val medicineMap = medicineMap.getOrEmpty()
         val viewItemList = viewItemList.getOrEmpty()
 
-        val texts = viewItemList.filterIsInstance<TextViewItem>()
         val inputs = viewItemList.filterIsInstance<InputViewItem>()
 
         val name = inputs.find { it.id == Id.NAME }?.text
-//
-//
-//        val isNameBlank = name.isNullOrBlank()
-//        val isDosageBlank = dosage.isNullOrBlank()
-//        val isQuantityBlank = isLowOnMedication && quantity <= 0.0
-//
-//
-//        val isClicked = !isNameBlank && !isDosageBlank && !isQuantityBlank
-//        Log.d("tuanha", "quantity:$quantity isQuantityBlank:$isQuantityBlank isClicked:$isClicked")
-//
-//        val info = ButtonInfo(
-//            title = if (isNameBlank) {
-//                translate["Vui lòng nhập tên thuốc"].orEmpty()
-//            } else if (isDosageBlank) {
-//                translate["Vui lòng nhập liều lượng dùng"].orEmpty()
-//            } else if (isQuantityBlank) {
-//                translate["Vui lòng nhập số lượng thuốc"].orEmpty()
-//            } else {
-//                translate["Thêm thuốc"].orEmpty()
-//            },
-//            isClicked = isClicked,
-//            background = Background(
-//                backgroundColor = if (isClicked) {
-//                    theme.colorPrimary
-//                } else {
-//                    theme.colorBackgroundVariant
-//                }
-//            )
-//        )
-//
-//        postDifferentValueIfActive(info)
-    }
 
-    fun updateUnit(unit: Medicine.Unit) {
 
-//        this.unit.postDifferentValue(unit)
+        val isNameBlank = name.isNullOrBlank()
+        val isMedicineBlank = medicineMap.isEmpty()
+
+        val isLoading = insertOrUpdateState.value.isStart()
+        val isClicked = !isNameBlank && !isMedicineBlank && !isLoading
+
+        val info = ButtonInfo(
+            title = if (isNameBlank) {
+                translate["Vui lòng nhập tên thông báo"].orEmpty()
+            } else if (isMedicineBlank) {
+                translate["Vui lòng thêm thuốc"].orEmpty()
+            } else {
+                translate["Thêm thông báo"].orEmpty()
+            },
+            isClicked = isClicked,
+            isLoading = isLoading,
+            background = Background(
+                backgroundColor = if (isClicked) {
+                    theme.colorPrimary
+                } else {
+                    theme.colorBackgroundVariant
+                }
+            )
+        )
+
+        postDifferentValueIfActive(info)
     }
 
     fun refreshButtonInfo() {
 
         refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
-    }
-
-    fun switchLowOnMedication() {
-
-//        isLowOnMedication.postDifferentValue(!(isLowOnMedication.value ?: false))
     }
 
     fun updateTime(hour: Int, minute: Int) {
@@ -265,9 +283,39 @@ class AddAlarmViewModel : TransitionViewModel() {
         medicineMap.postDifferentValue(map)
     }
 
+    fun insertOrUpdateAlarm() = viewModelScope.launch(handler + Dispatchers.IO) {
+
+        val viewItemList = viewItemList.getOrEmpty()
+
+        val inputs = viewItemList.filterIsInstance<InputViewItem>()
+
+        val alarm = Alarm(
+            id = alarmId.value ?: UUID.randomUUID().toString(),
+            note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
+            name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
+            image = image.value.orEmpty(),
+            hour = hour.value.orZero(),
+            minute = minute.value.orZero(),
+            item = medicineMap.value?.values?.toList().orEmpty()
+        )
+
+        insertOrUpdateState.postDifferentValue(ResultState.Start)
+
+        runCatching {
+
+            insertOrUpdateAlarmUseCase.execute(InsertOrUpdateAlarmUseCase.Param(alarm))
+
+            insertOrUpdateState.postDifferentValue(ResultState.Success(alarm))
+        }.getOrElse {
+
+            insertOrUpdateState.postDifferentValue(ResultState.Failed(it))
+        }
+    }
+
     data class ButtonInfo(
         val title: String,
         val isClicked: Boolean,
+        val isLoading: Boolean,
         val background: Background,
     )
 }

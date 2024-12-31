@@ -12,9 +12,10 @@ import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.meditrack.R
-import com.simple.meditrack.domain.usecases.GetAlarmByIdAsyncUseCase
+import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
+import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.exts.with
@@ -74,7 +75,7 @@ class NotificationViewModel(
 
         state.toSuccess()?.data?.item.orEmpty().map {
 
-            it.medicine.id to MedicineState.NONE
+            it.medicine?.id.orEmpty() to MedicineState.NONE
         }.toMap().let {
 
             postDifferentValue(it)
@@ -115,17 +116,18 @@ class NotificationViewModel(
         data.item.map { item ->
 
             MedicineViewItem(
-                id = item.medicine.id,
+                id = item.id,
+                data = item.medicine,
 
-                name = item.medicine.name.with(ForegroundColorSpan(theme.colorOnBackground)),
-                desciption = if (item.medicine.note.isNotBlank()) {
-                    (item.dosage.toString() + " - " + item.medicine.note).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.medicine.note, ForegroundColorSpan(theme.colorOnBackgroundVariant))
+                name = item.medicine?.name.orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)),
+                desciption = if (item.medicine?.note.orEmpty().isNotBlank()) {
+                    (item.dosage.toString() + " - " + item.medicine?.note.orEmpty()).with(item.dosage, ForegroundColorSpan(theme.colorOnBackground)).with(item.medicine?.note.orEmpty(), ForegroundColorSpan(theme.colorOnBackgroundVariant))
                 } else {
                     item.dosage.toString().with(ForegroundColorSpan(theme.colorOnBackground))
 
                 },
 
-                actionRes = if (medicineSelectedMap[item.medicine.id] == MedicineState.FOCUS) {
+                actionRes = if (medicineSelectedMap[item.id] == MedicineState.FOCUS) {
                     R.drawable.ic_tick_circle_24dp
                 } else {
                     R.drawable.ic_tick_24dp
@@ -136,11 +138,13 @@ class NotificationViewModel(
                     false
                 },
 
-                backgroundColor = if (medicineSelectedMap[item.medicine.id] == MedicineState.FOCUS) {
-                    theme.colorAccent
-                } else {
-                    theme.colorDivider
-                }
+                background = Background(
+                    backgroundColor = if (medicineSelectedMap[item.id] == MedicineState.FOCUS) {
+                        theme.colorAccent
+                    } else {
+                        theme.colorDivider
+                    }
+                )
             )
         }.let {
 

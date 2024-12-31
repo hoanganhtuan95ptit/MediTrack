@@ -18,12 +18,18 @@ data class Alarm(
     val isActive: Boolean = true, // thông báo có đang được kích hoạt hay không
 
     val item: List<MedicineItem> = emptyList(),
+
+    val createTime: Long = System.currentTimeMillis()
 ) : Serializable {
 
     @Keep
     data class MedicineItem(
         val id: String = UUID.randomUUID().toString(),
         val dosage: Double,
-        val medicine: Medicine
-    ) : Serializable
+
+        val medicineId: String = "",
+    ) : Serializable{
+
+        var medicine: Medicine? = null
+    }
 }

@@ -30,6 +30,8 @@ open class TextAdapter(onItemClick: (View, TextViewItem) -> Unit = { _, _ -> }) 
     override fun bind(binding: ItemTitleBinding, viewType: Int, position: Int, item: TextViewItem) {
         super.bind(binding, viewType, position, item)
 
+        binding.root.transitionName = item.id
+
         item.size?.let {
 
             binding.root.updateLayoutParams {
