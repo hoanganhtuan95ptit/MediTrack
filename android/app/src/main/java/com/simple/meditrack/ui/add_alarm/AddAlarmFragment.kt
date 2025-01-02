@@ -29,7 +29,6 @@ import com.simple.meditrack.Id
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
-import com.simple.meditrack.databinding.FragmentNestscrollBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.MainActivity
 import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineAdapter
@@ -46,7 +45,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.set
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
 
-class AddAlarmFragment : TransitionFragment<FragmentNestscrollBinding, AddAlarmViewModel>() {
+class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
@@ -72,13 +71,13 @@ class AddAlarmFragment : TransitionFragment<FragmentNestscrollBinding, AddAlarmV
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
-//
-//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
-//
-//            binding.root.updatePadding(top = heightStatusBar)
-//            binding.frameAction.updatePadding(bottom = heightNavigationBar)
-//        }
+        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+
+            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+
+            binding.root.updatePadding(top = heightStatusBar)
+            binding.frameAction.updatePadding(bottom = heightNavigationBar)
+        }
 
         val binding = binding ?: return
 
@@ -140,6 +139,10 @@ class AddAlarmFragment : TransitionFragment<FragmentNestscrollBinding, AddAlarmV
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null
+
+            binding.recyclerView.setItemViewCacheSize(20)
+            binding.recyclerView.setDrawingCacheEnabled(true)
+            binding.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
 
             val layoutManager = FlexboxLayoutManager(context)
             layoutManager.justifyContent = JustifyContent.FLEX_START

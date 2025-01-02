@@ -1,6 +1,7 @@
 package com.simple.meditrack.ui.add_medicine
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
@@ -28,7 +29,6 @@ import com.simple.meditrack.Id
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
-import com.simple.meditrack.databinding.FragmentNestscrollBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.MainActivity
@@ -44,22 +44,25 @@ import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.util.UUID
 
-class AddMedicineFragment : TransitionFragment<FragmentNestscrollBinding, AddMedicineViewModel>() {
+
+class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
-//
-//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
-//
-//            binding.root.updatePadding(top = heightStatusBar)
-//            binding.frameAction.updatePadding(bottom = heightNavigationBar)
-//        }
+        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+
+            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+
+            binding.root.updatePadding(top = heightStatusBar)
+            binding.frameAction.updatePadding(bottom = heightNavigationBar)
+        }
 
         val binding = binding ?: return
 
@@ -155,6 +158,11 @@ class AddMedicineFragment : TransitionFragment<FragmentNestscrollBinding, AddMed
             layoutManager.justifyContent = JustifyContent.FLEX_START
             binding.recyclerView.layoutManager = layoutManager
         }
+
+        setEventListener(requireActivity(), viewLifecycleOwner, KeyboardVisibilityEventListener {
+
+            Log.d("tuanha", "setupRecyclerView: $it")
+        })
     }
 
     private fun observeData() = with(viewModel) {

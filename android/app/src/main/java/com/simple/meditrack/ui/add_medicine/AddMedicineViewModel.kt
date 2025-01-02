@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.ai.english.ui.base.transition.TransitionViewModel
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -283,7 +283,7 @@ class AddMedicineViewModel(
             list.add(it)
         }
 
-        list.add(SpaceViewItem(height = DP.DP_350))
+        list.add(SpaceViewItem(height = DP.DP_100))
 
         postDifferentValueIfActive(list)
     }

@@ -10,10 +10,6 @@ import com.simple.meditrack.entities.Alarm
 
 open class AlarmAdapter(onItemClick: (View, AlarmViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<AlarmViewItem, ItemAlarmBinding>(onItemClick) {
 
-    override fun bind(binding: ItemAlarmBinding, viewType: Int, position: Int, item: AlarmViewItem, payloads: MutableList<Any>) {
-        super.bind(binding, viewType, position, item, payloads)
-    }
-
     override fun bind(binding: ItemAlarmBinding, viewType: Int, position: Int, item: AlarmViewItem) {
         super.bind(binding, viewType, position, item)
 

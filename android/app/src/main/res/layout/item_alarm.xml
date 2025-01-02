@@ -4,15 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     android:orientation="vertical"
-    android:padding="16dp"
-    app:rv_cornerRadius="16dp"
-    app:rv_strokeColor="?attr/colorPrimary"
-    app:rv_strokeDashGap="4dp"
-    app:rv_strokeDashWidth="4dp"
-    app:rv_strokeWidth="1dp">
+    android:padding="16dp">
 
     <com.simple.coreapp.ui.view.round.RoundLinearLayout
         android:layout_width="match_parent"
@@ -42,10 +36,9 @@
 
         <TextView
             android:id="@+id/tv_description"
-            style="?attr/textBody2"
+            style="?attr/textCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="Uống thuốc buổi sáng" />
 

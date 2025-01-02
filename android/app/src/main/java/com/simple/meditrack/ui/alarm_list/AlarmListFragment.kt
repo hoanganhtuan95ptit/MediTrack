@@ -58,13 +58,13 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
-//
-//            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
-//
-//            binding.root.updatePadding(top = heightStatusBar)
-//            binding.frameAdd.updateMargin(bottom = DP.DP_16 + heightNavigationBar)
-//        }
+        doOnHeightStatusAndHeightNavigationChange { heightStatusBar, heightNavigationBar ->
+
+            val binding = binding ?: return@doOnHeightStatusAndHeightNavigationChange
+
+            binding.root.updatePadding(top = heightStatusBar)
+            binding.frameAdd.updateMargin(bottom = DP.DP_16 + heightNavigationBar)
+        }
 
         val binding = binding ?: return
 

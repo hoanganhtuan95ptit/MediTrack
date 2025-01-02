@@ -1,6 +1,5 @@
-package com.simple.ai.english.ui.base.transition
+package com.simple.meditrack.ui.base.transition
 
-import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModels.BaseViewModel
 import androidx.lifecycle.asFlow

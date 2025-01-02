@@ -25,8 +25,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_header"
         app:rv_backgroundColor="?attr/colorSurface"
-        app:rv_cornerRadius_TL="24dp"
-        app:rv_cornerRadius_TR="24dp" />
+        app:rv_cornerRadius_TL="40dp"
+        app:rv_cornerRadius_TR="40dp" />
 
     <com.simple.coreapp.ui.view.round.RoundLinearLayout
         android:id="@+id/frame_add"
@@ -34,7 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
-        android:elevation="6dp"
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:transitionName="add"
@@ -56,8 +55,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:minHeight="56dp"
-            android:text="Thêm thông báo"
-            android:textStyle="bold" />
+            android:text="Thêm thông báo" />
     </com.simple.coreapp.ui.view.round.RoundLinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
