@@ -7,6 +7,8 @@ import java.util.UUID
 @Keep
 data class Alarm(
     val id: String = UUID.randomUUID().toString(),
+    val idInt: Int = (System.currentTimeMillis() / 1000).toInt(),
+
     val note: String,
     val name: String,
     val image: String,
@@ -28,7 +30,7 @@ data class Alarm(
         val dosage: Double,
 
         val medicineId: String = "",
-    ) : Serializable{
+    ) : Serializable {
 
         var medicine: Medicine? = null
     }

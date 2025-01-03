@@ -283,7 +283,7 @@ class AddMedicineViewModel(
             list.add(it)
         }
 
-        list.add(SpaceViewItem(height = DP.DP_100))
+        list.add(SpaceViewItem(height = DP.DP_350))
 
         postDifferentValueIfActive(list)
     }

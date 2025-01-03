@@ -20,18 +20,26 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/frame_action"
+        app:layout_constraintBottom_toTopOf="@id/v_1"
         app:layout_constraintTop_toBottomOf="@id/frame_header"
         app:rv_backgroundColor="?attr/colorSurface"
         app:rv_cornerRadius_TL="24dp"
         app:rv_cornerRadius_TR="24dp" />
 
+    <View
+        android:id="@+id/v_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:background="?attr/colorSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/frame_action" />
+
+
     <FrameLayout
         android:id="@+id/frame_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.simple.coreapp.ui.view.round.RoundTextView

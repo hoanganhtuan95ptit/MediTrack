@@ -53,6 +53,7 @@ class AlarmRepositoryImpl : AlarmRepository {
 val alarmFake = listOf(
 
     Alarm(
+        id = "1",
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi sáng",
         image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_5.png",
@@ -71,7 +72,7 @@ val alarmFake = listOf(
         )
     ),
     Alarm(
-
+        id = "2",
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi trưa",
         image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_7.png",
@@ -92,7 +93,28 @@ val alarmFake = listOf(
         )
     ),
     Alarm(
+        id = "2.1",
+        note = "Cố gắng để khỏi bệnh",
+        name = "Uống thuốc buổi chiều",
+        image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_7.png",
 
+        hour = 13,
+        minute = 0,
+        step = 1,
+
+        item = listOf(
+            Alarm.MedicineItem(
+                dosage = 0.5,
+                medicineId = "2"
+            ),
+            Alarm.MedicineItem(
+                dosage = 1.0,
+                medicineId = "3"
+            )
+        )
+    ),
+    Alarm(
+        id = "3",
         note = "Cố gắng để khỏi bệnh",
         name = "Uống thuốc buổi tối",
         image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",

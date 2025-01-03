@@ -5,15 +5,16 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
+import com.simple.coreapp.utils.extentions.postValue
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
@@ -75,7 +76,7 @@ class NotificationViewModel(
 
         state.toSuccess()?.data?.item.orEmpty().map {
 
-            it.medicine?.id.orEmpty() to MedicineState.NONE
+            it.id to MedicineState.NONE
         }.toMap().let {
 
             postDifferentValue(it)
@@ -219,7 +220,7 @@ class NotificationViewModel(
 
         map[id] = MedicineState.FOCUS
 
-        medicineSelected.postDifferentValue(map)
+        medicineSelected.postValue(map)
     }
 
     data class TitleInfo(

@@ -2,6 +2,7 @@ package com.simple.meditrack.ui.notification
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,10 +24,6 @@ class NotificationActivity : BaseViewBindingActivity<ActivityNotificationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-//        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//        window.statusBarColor = Color.TRANSPARENT
-//        window.navigationBarColor = Color.TRANSPARENT
-
         super.onCreate(savedInstanceState)
 
         setupTheme(this)
@@ -36,6 +33,17 @@ class NotificationActivity : BaseViewBindingActivity<ActivityNotificationBinding
         extras.putAll(intent.extras ?: bundleOf())
 
         sendDeeplink(Deeplink.NOTIFICATION_VIEW, extras = extras)
+
+
+        // Hiển thị Activity trên màn hình khóa
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        }
     }
 }
 

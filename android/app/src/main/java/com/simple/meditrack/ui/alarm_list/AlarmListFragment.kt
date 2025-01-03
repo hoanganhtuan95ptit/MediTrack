@@ -15,6 +15,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
@@ -37,10 +38,12 @@ import com.simple.meditrack.ui.AlarmReceiver
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
 import com.simple.meditrack.ui.notification.NotificationActivity
 import com.simple.meditrack.ui.notification.NotificationFragment
+import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmListViewModel>() {
@@ -103,6 +106,8 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
                 transitionName to view
             )
 
+//            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
+//
             sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
         }
 
@@ -123,35 +128,9 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
                 return@observe
             }
 
-            val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
-
             state.data.map {
 
-                // Intent và PendingIntent
-                val intent = Intent(requireActivity(), AlarmReceiver::class.java)
-                intent.putExtra(Param.ID, it.id)
-                val pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-                // Thiết lập thời gian
-                val calendar: Calendar = Calendar.getInstance()
-                calendar.setTimeInMillis(System.currentTimeMillis())
-                calendar.set(Calendar.HOUR_OF_DAY, it.hour)
-                calendar.set(Calendar.MINUTE, it.minute)
-                calendar.set(Calendar.SECOND, 0)
-
-                // Đặt lịch lặp lại hàng ngày
-                alarmManager.setRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    it.step * AlarmManager.INTERVAL_DAY,  // Thời gian lặp lại mỗi ngày
-                    pendingIntent
-                )
-
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    pendingIntent
-                )
+                AlarmUtils.setAlarm(requireActivity(), it)
             }
         }
 
@@ -175,6 +154,11 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
                 unlockTransition(Tag.VIEW_ITEM.name)
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            AlarmUtils.setDailyAlarm(requireActivity())
         }
     }
 
