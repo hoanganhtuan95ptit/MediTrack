@@ -32,16 +32,28 @@ open class AlarmMedicineAdapter(
         return holder
     }
 
+    override fun bind(binding: ItemMedicineItemBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem, payloads: MutableList<Any>) {
+        super.bind(binding, viewType, position, item, payloads)
+
+        if (payloads.contains(TEXT)) {
+            refreshText(binding, item)
+        }
+    }
+
     override fun bind(binding: ItemMedicineItemBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem) {
         super.bind(binding, viewType, position, item)
 
         binding.root.transitionName = item.id
 
-        binding.tvName.text = item.text
-
         binding.tvDescription.text = item.description
 
         binding.frameContent.delegate.setBackground(item.background)
+
+        refreshText(binding, item)
+    }
+
+    private fun refreshText(binding: ItemMedicineItemBinding, item: AlarmMedicineViewItem) {
+        binding.tvName.text = item.text
     }
 }
 
@@ -60,5 +72,8 @@ class AlarmMedicineViewItem(
     )
 
     override fun getContentsCompare(): List<Pair<Any, String>> = listOf(
+        text to TEXT
     )
 }
+
+private const val TEXT = "TEXT"

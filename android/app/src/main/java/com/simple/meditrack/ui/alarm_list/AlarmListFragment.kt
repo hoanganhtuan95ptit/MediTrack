@@ -1,20 +1,15 @@
 package com.simple.meditrack.ui.alarm_list
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
@@ -23,28 +18,22 @@ import com.simple.adapter.MultiAdapter
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
-import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
 import com.simple.coreapp.utils.ext.updateMargin
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
-import com.simple.coreapp.utils.extentions.doOnHeightStatusChange
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentAlarmListBinding
-import com.simple.meditrack.ui.AlarmReceiver
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
-import com.simple.meditrack.ui.notification.NotificationActivity
-import com.simple.meditrack.ui.notification.NotificationFragment
 import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmListViewModel>() {
 

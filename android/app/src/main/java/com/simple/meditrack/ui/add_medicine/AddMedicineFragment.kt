@@ -1,7 +1,7 @@
 package com.simple.meditrack.ui.add_medicine
 
+import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
@@ -16,9 +16,11 @@ import com.simple.adapter.MultiAdapter
 import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
+import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.getSerializableOrNull
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
+import com.simple.coreapp.utils.ext.top
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -44,6 +46,8 @@ import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.channelFlow
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.util.UUID
@@ -159,10 +163,51 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             binding.recyclerView.layoutManager = layoutManager
         }
 
-        setEventListener(requireActivity(), viewLifecycleOwner, KeyboardVisibilityEventListener {
+        channelFlow {
 
-            Log.d("tuanha", "setupRecyclerView: $it")
-        })
+            var viewFocus: View? = null
+            var showKeyboard = false
+
+            binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+
+                if (showKeyboard && viewFocus != null) {
+
+                    trySend(viewFocus!!)
+                }
+            }
+
+            binding.root.viewTreeObserver.addOnGlobalFocusChangeListener { oldFocus, newFocus ->
+
+                viewFocus = newFocus
+
+                if (showKeyboard && viewFocus != null) {
+
+                    trySend(viewFocus!!)
+                }
+            }
+
+            setEventListener(requireActivity(), viewLifecycleOwner, KeyboardVisibilityEventListener {
+
+                showKeyboard = it
+
+                if (showKeyboard && viewFocus != null) {
+
+                    trySend(viewFocus!!)
+                }
+            })
+
+            awaitClose {
+
+            }
+        }.launchCollect(viewLifecycleOwner) {
+
+            val rect = Rect()
+            requireActivity().window.decorView.getWindowVisibleDisplayFrame(rect)
+
+            val y = it.top(binding.recyclerView.id) - (rect.height() - binding.recyclerView.top(binding.rootList.id)) + DP.DP_16
+
+            binding.recyclerView.smoothScrollBy(0, y)
+        }
     }
 
     private fun observeData() = with(viewModel) {

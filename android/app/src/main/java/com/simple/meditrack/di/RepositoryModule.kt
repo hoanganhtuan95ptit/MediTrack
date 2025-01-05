@@ -10,10 +10,10 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<MedicineRepository> {
-        MedicineRepositoryImpl()
+        MedicineRepositoryImpl(get())
     }
 
     single<AlarmRepository> {
-        AlarmRepositoryImpl()
+        AlarmRepositoryImpl(get())
     }
 }

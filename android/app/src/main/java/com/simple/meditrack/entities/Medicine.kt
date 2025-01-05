@@ -12,7 +12,6 @@ data class Medicine(
 
     val note: String = "",
 
-    val current: Double = 0.0,
     val quantity: Double = UNLIMITED,
 
     val unit: Int = Unit.TABLET.value // loại thuốc

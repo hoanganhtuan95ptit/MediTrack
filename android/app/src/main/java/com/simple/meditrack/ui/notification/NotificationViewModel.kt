@@ -44,7 +44,7 @@ class NotificationViewModel(
 
         getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id.get())).collect {
 
-            postDifferentValue(ResultState.Success(it))
+            postDifferentValue(ResultState.Success(it!!))
         }
     }
 

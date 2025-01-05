@@ -6,10 +6,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.os.bundleOf
 import com.simple.meditrack.Param
+import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetListAlarmAsyncUseCase
 import com.simple.meditrack.ui.notification.NotificationActivity
 import com.simple.meditrack.utils.AlarmUtils
@@ -25,13 +25,25 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     private val getListAlarmAsyncUseCase: GetListAlarmAsyncUseCase by inject()
 
+    private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase by inject()
+
     override fun onReceive(context: Context?, intent: Intent?) {
 
         context ?: return
 
-        if (intent?.extras?.containsKey(Param.ID) == true) {
+        val id = intent?.extras?.getString(Param.ID)
 
-            Log.d("tuanha", "onReceive: ${intent.extras?.getString(Param.ID)}")
+        if (!id.isNullOrBlank()) GlobalScope.launch(Dispatchers.IO) {
+
+            val alarm = getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id)).first()
+
+            if (alarm == null) {
+
+                AlarmUtils.cancelAlarm(context = context, intent)
+                return@launch
+            }
+
+            showNotification(context, "AlarmReceiverNotification", SimpleDateFormat("hh:mm:ss").format(System.currentTimeMillis()))
 
             val notificationIntent = Intent(context, NotificationActivity::class.java)
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)

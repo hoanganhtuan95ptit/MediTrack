@@ -16,7 +16,7 @@ object AlarmUtils {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(context, AlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_IMMUTABLE)
 
         // Tính thời gian 0h hàng ngày
         val calendar = Calendar.getInstance().apply {
@@ -46,7 +46,8 @@ object AlarmUtils {
         // Intent và PendingIntent
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra(Param.ID, alarm.id)
-        val pendingIntent = PendingIntent.getBroadcast(context, alarm.hour * 60 + alarm.minute, intent, PendingIntent.FLAG_IMMUTABLE)
+        intent.putExtra(Param.ID_INT, alarm.idInt)
+        val pendingIntent = PendingIntent.getBroadcast(context, alarm.idInt, intent, PendingIntent.FLAG_IMMUTABLE)
 
         // Thiết lập thời gian
         val calendar: Calendar = Calendar.getInstance()
@@ -55,11 +56,26 @@ object AlarmUtils {
         calendar.set(Calendar.MINUTE, alarm.minute)
         calendar.set(Calendar.SECOND, 0)
 
+        if (System.currentTimeMillis() > calendar.timeInMillis) {
+            return
+        }
+
         // Đặt báo thức chính xác
-        if (System.currentTimeMillis() < calendar.timeInMillis) alarmManager.setExactAndAllowWhileIdle(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             pendingIntent
         )
+    }
+
+    fun cancelAlarm(context: Context, idInt: Intent?) {
+
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, idInt?.extras?.getInt(Param.ID_INT) ?: 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // hủy báo thức
+        alarmManager.cancel(pendingIntent)
     }
 }

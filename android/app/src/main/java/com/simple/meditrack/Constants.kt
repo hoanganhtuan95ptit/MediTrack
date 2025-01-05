@@ -21,6 +21,7 @@ object Tag {
 object Param {
 
     const val ID = "ID"
+    const val ID_INT = "ID_INT"
     const val HOUR = "HOUR"
     const val NAME = "NAME"
     const val TOTAL = "TOTAL"
@@ -48,6 +49,7 @@ object EventName {
     const val TIME = "TIME"
     const val RETRY = "RETRY"
     const val CHANGE_UNIT = "CHANGE_UNIT"
+    const val CHANGE_IMAGE = "CHANGE_IMAGE"
     const val ADD_MEDICINE = "ADD_MEDICINE"
 }
 
@@ -57,6 +59,7 @@ object Deeplink {
     const val PICK_TIME = "app://pick_time"
     const val ALARM_LIST = "app://alarm_list"
     const val CHOOSE_UNIT = "app://choose_unit"
+    const val CHOOSE_IMAGE = "app://choose_image"
     const val ADD_MEDICINE = "app://add_medicine"
     const val NOTIFICATION = "app://notification"
     const val NOTIFICATION_VIEW = "app://notification_view"

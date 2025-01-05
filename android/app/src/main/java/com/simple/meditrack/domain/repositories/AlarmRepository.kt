@@ -7,7 +7,7 @@ interface AlarmRepository {
 
     fun getAllAsync(): Flow<List<Alarm>>
 
-    fun getByAsync(id: String): Flow<Alarm>
+    fun getByAsync(id: String): Flow<Alarm?>
 
     fun insertOrUpdate(alarm: Alarm)
 }

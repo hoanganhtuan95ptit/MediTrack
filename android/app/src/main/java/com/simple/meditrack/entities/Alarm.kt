@@ -9,9 +9,9 @@ data class Alarm(
     val id: String = UUID.randomUUID().toString(),
     val idInt: Int = (System.currentTimeMillis() / 1000).toInt(),
 
-    val note: String,
-    val name: String,
-    val image: String,
+    val note: String = "",
+    val name: String = "",
+    val image: String = "",
 
     val step: Long = 1, // khoảng thời gian giữa các lần thông báo
     val hour: Int = 0, // giờ thông báo
@@ -27,7 +27,7 @@ data class Alarm(
     @Keep
     data class MedicineItem(
         val id: String = UUID.randomUUID().toString(),
-        val dosage: Double,
+        val dosage: Double = 0.0,
 
         val medicineId: String = "",
     ) : Serializable {

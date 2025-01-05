@@ -2,6 +2,7 @@ package com.simple.meditrack
 
 import android.app.Application
 import android.content.Context
+import com.simple.meditrack.di.daoModule
 import com.simple.meditrack.di.repositoryModule
 import com.simple.meditrack.di.usecaseModule
 import com.simple.meditrack.di.viewModelModule
@@ -30,7 +31,7 @@ class App : Application() {
 //
 //                apiModule,
 //
-//                daoModule,
+                daoModule,
 //
 //                cacheModule,
 //

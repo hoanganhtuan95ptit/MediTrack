@@ -11,9 +11,9 @@ class GetAlarmByIdAsyncUseCase(
     private val medicineRepository: MedicineRepository
 ) {
 
-    suspend fun execute(param: Param): Flow<Alarm> = alarmRepository.getByAsync(param.id).map {
+    suspend fun execute(param: Param): Flow<Alarm?> = alarmRepository.getByAsync(param.id).map {
 
-        it.item.map {
+        it?.item?.map {
 
             it.medicine = medicineRepository.getBy(it.medicineId)
         }

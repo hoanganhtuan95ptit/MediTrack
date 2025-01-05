@@ -22,7 +22,6 @@ import com.simple.coreapp.utils.extentions.listenerSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
-import com.simple.coreapp.utils.extentions.postValue
 import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
@@ -86,48 +85,45 @@ class AddAlarmViewModel(
 
         getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id = alarmId.value ?: return@combineSources)).collect {
 
-            postDifferentValue(it)
+            val alarm = it ?: Alarm(
+                hour = 0,
+                minute = 0,
+
+                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+
+                item = emptyList()
+            )
+
+            postDifferentValue(alarm)
         }
     }
 
-    val hour: LiveData<Int> = combineSources<Int>(alarm) {
+    val hour: LiveData<Int> = combineSources(alarm) {
 
         val alarm = alarm.value ?: return@combineSources
 
         postDifferentValue(alarm.hour)
-    }.apply {
-
-        postValue(0)
     }
 
-    val minute: LiveData<Int> = combineSources<Int>(alarm) {
+    val minute: LiveData<Int> = combineSources(alarm) {
 
         val alarm = alarm.value ?: return@combineSources
 
         postDifferentValue(alarm.minute)
-    }.apply {
-
-        postValue(0)
     }
 
-    val image: LiveData<String> = combineSources<String>(alarm) {
+    val image: LiveData<String> = combineSources(alarm) {
 
         val alarm = alarm.value ?: return@combineSources
 
         postDifferentValue(alarm.image)
-    }.apply {
-
-        postValue("https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png")
     }
 
-    val medicineMap: LiveData<Map<String, Alarm.MedicineItem>> = combineSources<Map<String, Alarm.MedicineItem>>(alarm) {
+    val medicineMap: LiveData<Map<String, Alarm.MedicineItem>> = combineSources(alarm) {
 
         val alarm = alarm.value ?: return@combineSources
 
         postDifferentValue(alarm.item.associateBy { it.id })
-    }.apply {
-
-        postValue(hashMapOf())
     }
 
     @VisibleForTesting
@@ -188,7 +184,7 @@ class AddAlarmViewModel(
         InputViewItem(
             id = Id.NAME,
             hint = translate["Nhập tên thông báo"].orEmpty(),
-            text = alarm.value?.name ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString() ?: alarm.value?.name.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
@@ -206,7 +202,7 @@ class AddAlarmViewModel(
             id = Id.NOTE,
             hint = translate["Nhập ghi chú"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT,
-            text = alarm.value?.note ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: alarm.value?.note.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
@@ -319,11 +315,6 @@ class AddAlarmViewModel(
         postDifferentValueIfActive(info)
     }
 
-    fun refreshButtonInfo() {
-
-        refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
-    }
-
     fun updateId(it: String) {
 
         alarmId.postDifferentValue(it)
@@ -332,7 +323,13 @@ class AddAlarmViewModel(
     fun updateTime(hour: Int, minute: Int) {
 
         this.hour.postDifferentValue(hour)
+
         this.minute.postDifferentValue(minute)
+    }
+
+    fun updateImage(path: String) {
+
+        image.postDifferentValue(path)
     }
 
     fun updateMedicine(medicine: Alarm.MedicineItem) {
@@ -353,6 +350,11 @@ class AddAlarmViewModel(
         medicineMap.postDifferentValue(map)
     }
 
+    fun refreshButtonInfo() {
+
+        refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
+    }
+
     fun insertOrUpdateAlarm() = viewModelScope.launch(handler + Dispatchers.IO) {
 
         val viewItemList = viewItemList.getOrEmpty()
@@ -360,12 +362,17 @@ class AddAlarmViewModel(
         val inputs = viewItemList.filterIsInstance<InputViewItem>()
 
         val alarm = Alarm(
-            id = alarmId.value ?: UUID.randomUUID().toString(),
+            id = alarm.value?.id?.takeIf { it.isNotBlank() } ?: UUID.randomUUID().toString(),
+            idInt = alarm.value?.idInt ?: (System.currentTimeMillis() / 1000).toInt(),
+
             note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
+
             image = image.value.orEmpty(),
+
             hour = hour.value.orZero(),
             minute = minute.value.orZero(),
+
             item = medicineMap.value?.values?.toList().orEmpty()
         )
 
