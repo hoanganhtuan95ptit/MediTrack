@@ -158,7 +158,7 @@ class AddMedicineViewModel(
             )
         ).let {
 
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -206,7 +206,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -224,7 +224,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -278,7 +278,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }

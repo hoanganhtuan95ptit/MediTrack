@@ -3,6 +3,7 @@ package com.simple.meditrack.ui.add_alarm.image
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
 import androidx.transition.ChangeBounds
@@ -16,14 +17,18 @@ import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightNavigationChange
+import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.EventName
+import com.simple.meditrack.Id
 import com.simple.meditrack.Param
 import com.simple.meditrack.databinding.DialogListBinding
 import com.simple.meditrack.ui.MainActivity
 import com.simple.meditrack.ui.base.adapters.ImageAdapter
+import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
+import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
 
 class ImagePickerFragment : BaseViewModelSheetFragment<DialogListBinding, ImagePickerViewModel>() {
@@ -49,13 +54,17 @@ class ImagePickerFragment : BaseViewModelSheetFragment<DialogListBinding, ImageP
 
         val binding = binding ?: return
 
+        val textAdapter = TextAdapter { view, item ->
+
+        }
+
         val imageAdapter = ImageAdapter { view, item ->
 
             sendEvent(EventName.CHANGE_IMAGE, item.id)
             dismiss()
         }
 
-        adapter = MultiAdapter(imageAdapter).apply {
+        adapter = MultiAdapter(textAdapter, imageAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null

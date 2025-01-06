@@ -50,6 +50,7 @@
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="24dp"
+            android:elevation="4dp"
             android:gravity="center"
             android:textColor="?attr/colorOnPrimary"
             app:rv_backgroundColor="?attr/colorPrimary"

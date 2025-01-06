@@ -28,6 +28,7 @@ import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentAlarmListBinding
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
+import com.simple.meditrack.ui.base.adapters.EmptyAdapter
 import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
@@ -100,7 +101,7 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
             sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
         }
 
-        adapter = MultiAdapter(alarmAdapter).apply {
+        adapter = MultiAdapter(alarmAdapter, EmptyAdapter()).apply {
 
             setRecyclerView(binding.recyclerView)
         }

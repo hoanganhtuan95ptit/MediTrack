@@ -1,32 +1,30 @@
 package com.simple.meditrack.ui.alarm_list
 
-import android.text.style.ForegroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.toEvent
+import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.GetListAlarmAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmViewItem
+import com.simple.meditrack.ui.base.adapters.EmptyViewItem
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
-import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import java.text.DecimalFormat
 
 class AlarmListViewModel(
     private val getListAlarmAsyncUseCase: GetListAlarmAsyncUseCase
 ) : TransitionViewModel() {
-
-    private val loading = listOf<ViewItem>()
 
     @VisibleForTesting
     val theme: LiveData<AppTheme> = mediatorLiveData {
@@ -63,7 +61,6 @@ class AlarmListViewModel(
 
         if (state is ResultState.Start) {
 
-//            postDifferentValue(loading)
             return@combineSources
         }
 
@@ -86,10 +83,21 @@ class AlarmListViewModel(
                 description = it.note,
                 time = "$hour:${DecimalFormat("00").format(it.minute)}"
             )
-        }.let {
+        }.takeIf {
+
+            it.isNotEmpty()
+        }?.let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
             list.addAll(it)
+        }
+
+        if (list.isEmpty()) EmptyViewItem(
+
+            imageRes = R.raw.anim_empty
+        ).let {
+
+            list.add(it)
         }
 
         postDifferentValue(list)

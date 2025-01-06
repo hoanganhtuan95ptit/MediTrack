@@ -1,9 +1,13 @@
 package com.simple.meditrack.ui.add_alarm.image
 
+import android.graphics.Typeface
+import android.view.Gravity
+import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModels.BaseViewModel
+import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
@@ -11,11 +15,14 @@ import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
+import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.view.Size
+import com.simple.meditrack.ui.view.TextStyle
 import com.simple.meditrack.utils.AppSize
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appSize
 import com.simple.meditrack.utils.appTheme
+import com.simple.meditrack.utils.appTranslate
 
 class ImagePickerViewModel : BaseViewModel() {
 
@@ -32,6 +39,15 @@ class ImagePickerViewModel : BaseViewModel() {
     val theme: LiveData<AppTheme> = mediatorLiveData {
 
         appTheme.collect {
+
+            postDifferentValue(it)
+        }
+    }
+
+    @VisibleForTesting
+    val translate: LiveData<Map<String, String>> = mediatorLiveData {
+
+        appTranslate.collect {
 
             postDifferentValue(it)
         }
@@ -56,13 +72,29 @@ class ImagePickerViewModel : BaseViewModel() {
     @VisibleForTesting
     val imageSelected: LiveData<String> = MediatorLiveData("")
 
-    val viewItemList: LiveData<List<ViewItem>> = combineSources(size, images, imageSelected) {
+    val viewItemList: LiveData<List<ViewItem>> = combineSources(size, images, translate, imageSelected) {
 
         val size = size.value ?: return@combineSources
+        val translate = translate.value ?: return@combineSources
 
         val width = (size.width - DP.DP_12 * 2) / 3
 
         val list = arrayListOf<ViewItem>()
+
+        TextViewItem(
+            id = "TITLE",
+            text = translate["Image Picker"].orEmpty(),
+            textStyle = TextStyle(
+                textSize = 20.0f,
+                typeface = Typeface.BOLD,
+                textGravity = Gravity.CENTER,
+
+                )
+        ).let {
+
+            list.add(it)
+            list.add(SpaceViewItem(height = DP.DP_16))
+        }
 
         images.getOrEmpty().map {
 

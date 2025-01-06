@@ -11,7 +11,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.core.utils.extentions.orZero
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.handler
@@ -33,6 +32,7 @@ import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineViewItem
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Margin
 import com.simple.meditrack.ui.view.Padding
@@ -72,14 +72,6 @@ class AddAlarmViewModel(
         }
     }
 
-    val title: LiveData<CharSequence> = combineSources(theme, translate) {
-
-        val theme = theme.value ?: return@combineSources
-        val translate = translate.value ?: return@combineSources
-
-        postDifferentValue(translate["Thêm thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
-    }
-
 
     val alarmId: LiveData<String> = MediatorLiveData()
 
@@ -99,6 +91,24 @@ class AddAlarmViewModel(
             postDifferentValue(alarm)
         }
     }
+
+    val title: LiveData<CharSequence> = combineSources(theme, alarm, translate) {
+
+        val theme = theme.value ?: return@combineSources
+        val alarm = alarm.value ?: return@combineSources
+        val translate = translate.value ?: return@combineSources
+
+        val text = if (alarm.id.isBlank()) {
+
+            translate["Thêm thông báo"].orEmpty()
+        } else {
+
+            translate["Thông báo"].orEmpty()
+        }
+
+        postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
+    }
+
 
     val hour: LiveData<Int> = combineSources(alarm) {
 
@@ -178,7 +188,7 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["Giờ (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["Giờ (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -195,7 +205,7 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thông báo (*)"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thông báo (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -219,7 +229,7 @@ class AddAlarmViewModel(
         }
 
         list.add(SpaceViewItem(height = DP.DP_16))
-        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["Thuốc (*)"].orEmpty()))
+        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["Thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
 
         medicineMap.map {
 
@@ -283,9 +293,10 @@ class AddAlarmViewModel(
 
     val insertOrUpdateState: LiveData<ResultState<Alarm>> = MediatorLiveData()
 
-    val buttonInfo: LiveData<ButtonInfo> = listenerSources(theme, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
+    val buttonInfo: LiveData<ButtonInfo> = listenerSources(theme, alarm, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
 
         val theme = theme.value ?: return@listenerSources
+        val alarm = alarm.value ?: return@listenerSources
 
         val translate = translate.getOrEmpty()
         val medicineMap = medicineMap.getOrEmpty()
@@ -294,21 +305,27 @@ class AddAlarmViewModel(
         val inputs = viewItemList.filterIsInstance<InputViewItem>()
 
         val name = inputs.find { it.id == Id.NAME }?.text
-
+        val note = inputs.find { it.id == Id.NOTE }?.text
+        val image = viewItemList.filterIsInstance<ImageViewItem>().map { it.image }
+        val medicines = viewItemList.filterIsInstance<AlarmMedicineViewItem>().map { it.data }
 
         val isNameBlank = name.isNullOrBlank()
         val isMedicineBlank = medicineMap.isEmpty()
 
+        val isChange = name != alarm.name || note != alarm.note || image != listOf(alarm.image) || alarm.item != medicines
+
         val isLoading = insertOrUpdateState.value.isStart()
-        val isClicked = !isNameBlank && !isMedicineBlank && !isLoading
+        val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange
 
         val info = ButtonInfo(
             title = if (isNameBlank) {
                 translate["Vui lòng nhập tên thông báo"].orEmpty()
             } else if (isMedicineBlank) {
                 translate["Vui lòng thêm thuốc"].orEmpty()
-            } else {
+            } else if (alarm.id.isBlank()) {
                 translate["Thêm thông báo"].orEmpty()
+            } else {
+                translate["Cập nhật thông báo"].orEmpty()
             },
             isClicked = isClicked,
             isLoading = isLoading,

@@ -40,6 +40,10 @@ open class AlarmMedicineAdapter(
         if (payloads.contains(TEXT)) {
             refreshText(binding, item)
         }
+
+        if (payloads.contains(DESCRIPTION)) {
+            refreshDescription(binding, item)
+        }
     }
 
     override fun bind(binding: ItemAlarmMedicineBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem) {
@@ -51,15 +55,18 @@ open class AlarmMedicineAdapter(
             binding.frameContent.updateMargin(left = it.left, top = it.top, right = it.right, bottom = it.bottom)
         }
 
-        binding.tvDescription.text = item.description
-
         binding.frameContent.delegate.setBackground(item.background)
 
         refreshText(binding, item)
+        refreshDescription(binding, item)
     }
 
     private fun refreshText(binding: ItemAlarmMedicineBinding, item: AlarmMedicineViewItem) {
         binding.tvName.text = item.text
+    }
+
+    private fun refreshDescription(binding: ItemAlarmMedicineBinding, item: AlarmMedicineViewItem) {
+        binding.tvDescription.text = item.description
     }
 }
 
@@ -79,8 +86,10 @@ class AlarmMedicineViewItem(
     )
 
     override fun getContentsCompare(): List<Pair<Any, String>> = listOf(
-        text to TEXT
+        text to TEXT,
+        description to DESCRIPTION
     )
 }
 
 private const val TEXT = "TEXT"
+private const val DESCRIPTION = "DESCRIPTION"
