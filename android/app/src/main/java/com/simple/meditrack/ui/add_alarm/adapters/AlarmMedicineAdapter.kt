@@ -6,17 +6,19 @@ import com.simple.adapter.BaseBindingViewHolder
 import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
-import com.simple.meditrack.databinding.ItemMedicineItemBinding
+import com.simple.coreapp.utils.ext.updateMargin
+import com.simple.meditrack.databinding.ItemAlarmMedicineBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.view.Background
+import com.simple.meditrack.ui.view.Margin
 import com.simple.meditrack.utils.exts.setBackground
 
 open class AlarmMedicineAdapter(
     private val onItemClick: (View, AlarmMedicineViewItem) -> Unit,
     private val onRemoveClick: (View, AlarmMedicineViewItem) -> Unit = { _, _ -> }
-) : ViewItemAdapter<AlarmMedicineViewItem, ItemMedicineItemBinding>(onItemClick) {
+) : ViewItemAdapter<AlarmMedicineViewItem, ItemAlarmMedicineBinding>(onItemClick) {
 
-    override fun createViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder<ItemMedicineItemBinding>? {
+    override fun createViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder<ItemAlarmMedicineBinding>? {
 
         val holder = super.createViewHolder(parent, viewType) ?: return null
 
@@ -32,7 +34,7 @@ open class AlarmMedicineAdapter(
         return holder
     }
 
-    override fun bind(binding: ItemMedicineItemBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem, payloads: MutableList<Any>) {
+    override fun bind(binding: ItemAlarmMedicineBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem, payloads: MutableList<Any>) {
         super.bind(binding, viewType, position, item, payloads)
 
         if (payloads.contains(TEXT)) {
@@ -40,10 +42,14 @@ open class AlarmMedicineAdapter(
         }
     }
 
-    override fun bind(binding: ItemMedicineItemBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem) {
+    override fun bind(binding: ItemAlarmMedicineBinding, viewType: Int, position: Int, item: AlarmMedicineViewItem) {
         super.bind(binding, viewType, position, item)
 
         binding.root.transitionName = item.id
+
+        item.margin?.let {
+            binding.frameContent.updateMargin(left = it.left, top = it.top, right = it.right, bottom = it.bottom)
+        }
 
         binding.tvDescription.text = item.description
 
@@ -52,7 +58,7 @@ open class AlarmMedicineAdapter(
         refreshText(binding, item)
     }
 
-    private fun refreshText(binding: ItemMedicineItemBinding, item: AlarmMedicineViewItem) {
+    private fun refreshText(binding: ItemAlarmMedicineBinding, item: AlarmMedicineViewItem) {
         binding.tvName.text = item.text
     }
 }
@@ -64,6 +70,7 @@ class AlarmMedicineViewItem(
     var text: CharSequence = "",
     val description: CharSequence = "",
 
+    var margin: Margin? = null,
     var background: Background? = null,
 ) : ViewItem {
 

@@ -3,7 +3,6 @@ package com.simple.meditrack.ui.add_alarm
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
@@ -35,7 +34,7 @@ import com.simple.meditrack.databinding.FragmentListBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.MainActivity
 import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineAdapter
-import com.simple.meditrack.ui.add_alarm.adapters.ImageAdapter
+import com.simple.meditrack.ui.base.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.utils.DeeplinkHandler

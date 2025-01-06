@@ -21,6 +21,7 @@ import com.simple.meditrack.ui.base.adapters.PagerAdapter
 import com.simple.meditrack.utils.NavigationView
 import com.simple.meditrack.utils.NavigationViewImpl
 import com.simple.meditrack.utils.appTheme
+import com.simple.meditrack.utils.setupSize
 import com.simple.meditrack.utils.setupTheme
 
 
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity(),
 
         setContentView(binding!!.root)
 
+        setupSize(this)
         setupTheme(this)
         setupNavigation(this)
 

@@ -83,9 +83,8 @@ data class TextViewItem(
     val margin: Margin? = null,
     val padding: Padding? = null,
     var textStyle: TextStyle? = null,
-    var background: Background? = null,
-
-    ) : ViewItem {
+    var background: Background? = null
+) : ViewItem {
 
     override fun areItemsTheSame(): List<Any> = listOf(
         id

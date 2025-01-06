@@ -22,7 +22,7 @@ import com.simple.meditrack.EventName
 import com.simple.meditrack.Param
 import com.simple.meditrack.databinding.DialogListBinding
 import com.simple.meditrack.ui.MainActivity
-import com.simple.meditrack.ui.add_alarm.image.adapters.ImageAdapter
+import com.simple.meditrack.ui.base.adapters.ImageAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.sendEvent
 
@@ -51,7 +51,7 @@ class ImagePickerFragment : BaseViewModelSheetFragment<DialogListBinding, ImageP
 
         val imageAdapter = ImageAdapter { view, item ->
 
-            sendEvent(EventName.CHANGE_IMAGE, item.data ?: return@ImageAdapter)
+            sendEvent(EventName.CHANGE_IMAGE, item.id)
             dismiss()
         }
 

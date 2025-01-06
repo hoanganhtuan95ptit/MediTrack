@@ -5,12 +5,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModels.BaseViewModel
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
+import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
-import com.simple.meditrack.ui.add_alarm.image.adapters.ImageViewItem
+import com.simple.meditrack.ui.base.adapters.ImageViewItem
+import com.simple.meditrack.ui.view.Size
+import com.simple.meditrack.utils.AppSize
+import com.simple.meditrack.utils.AppTheme
+import com.simple.meditrack.utils.appSize
+import com.simple.meditrack.utils.appTheme
 
 class ImagePickerViewModel : BaseViewModel() {
+
+    @VisibleForTesting
+    val size: LiveData<AppSize> = mediatorLiveData {
+
+        appSize.collect {
+
+            postDifferentValue(it)
+        }
+    }
+
+    @VisibleForTesting
+    val theme: LiveData<AppTheme> = mediatorLiveData {
+
+        appTheme.collect {
+
+            postDifferentValue(it)
+        }
+    }
 
     @VisibleForTesting
     val images: LiveData<List<String>> = MediatorLiveData<List<String>>().apply {
@@ -31,8 +56,11 @@ class ImagePickerViewModel : BaseViewModel() {
     @VisibleForTesting
     val imageSelected: LiveData<String> = MediatorLiveData("")
 
+    val viewItemList: LiveData<List<ViewItem>> = combineSources(size, images, imageSelected) {
 
-    val viewItemList: LiveData<List<ViewItem>> = combineSources(images, imageSelected) {
+        val size = size.value ?: return@combineSources
+
+        val width = (size.width - DP.DP_12 * 2) / 3
 
         val list = arrayListOf<ViewItem>()
 
@@ -40,9 +68,13 @@ class ImagePickerViewModel : BaseViewModel() {
 
             ImageViewItem(
                 id = it,
-                data = it,
 
-                image = it
+                image = it,
+
+                size = Size(
+                    width = width,
+                    height = width
+                )
             )
         }.let {
 

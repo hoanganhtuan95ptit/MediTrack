@@ -23,7 +23,7 @@ import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.add_alarm.adapters.ImageViewItem
+import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem

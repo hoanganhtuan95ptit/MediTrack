@@ -1,11 +1,13 @@
-package com.simple.meditrack.ui.add_alarm.adapters
+package com.simple.meditrack.ui.base.adapters
 
 import android.view.View
+import androidx.core.view.updateLayoutParams
 import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
 import com.simple.image.setImage
 import com.simple.meditrack.databinding.ItemImageBinding
 import com.simple.meditrack.ui.view.Background
+import com.simple.meditrack.ui.view.Size
 import com.simple.meditrack.utils.exts.setBackground
 
 open class ImageAdapter(
@@ -22,6 +24,15 @@ open class ImageAdapter(
 
     override fun bind(binding: ItemImageBinding, viewType: Int, position: Int, item: ImageViewItem) {
         super.bind(binding, viewType, position, item)
+
+        item.size?.let {
+
+            binding.root.updateLayoutParams {
+                width = it.width
+                height = it.height
+            }
+        }
+
 
         binding.ivImage.setImage(item.image)
 
@@ -41,6 +52,7 @@ class ImageViewItem(
 
     var image: String = "",
 
+    val size: Size? = null,
     var background: Background? = null,
 ) : ViewItem {
 

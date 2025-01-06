@@ -30,10 +30,11 @@ import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
 import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineViewItem
-import com.simple.meditrack.ui.add_alarm.adapters.ImageViewItem
+import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.view.Background
+import com.simple.meditrack.ui.view.Margin
 import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.ui.view.Size
 import com.simple.meditrack.ui.view.TextStyle
@@ -78,6 +79,7 @@ class AddAlarmViewModel(
 
         postDifferentValue(translate["Thêm thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
     }
+
 
     val alarmId: LiveData<String> = MediatorLiveData()
 
@@ -218,7 +220,6 @@ class AddAlarmViewModel(
 
         list.add(SpaceViewItem(height = DP.DP_16))
         list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["Thuốc (*)"].orEmpty()))
-        list.add(SpaceViewItem(height = DP.DP_8))
 
         medicineMap.map {
 
@@ -227,6 +228,11 @@ class AddAlarmViewModel(
                 data = it.value,
                 text = it.value.medicine?.name.orEmpty(),
                 description = it.value.dosage.toString() + " " + translate[it.value.medicine?.unit?.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
+
+                margin = Margin(
+                    top = DP.DP_16,
+                    right = DP.DP_16
+                ),
                 background = Background(
                     cornerRadius = DP.DP_8
                 )
@@ -245,6 +251,9 @@ class AddAlarmViewModel(
             size = Size(
                 width = ViewGroup.LayoutParams.WRAP_CONTENT,
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
+            ),
+            margin = Margin(
+                top = DP.DP_16,
             ),
             padding = Padding(
                 top = DP.DP_8,
