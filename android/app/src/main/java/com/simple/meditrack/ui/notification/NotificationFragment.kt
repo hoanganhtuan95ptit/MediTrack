@@ -25,8 +25,8 @@ import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentNotificationBinding
-import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
 import com.simple.meditrack.ui.base.adapters.TextAdapter
+import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first

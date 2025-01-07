@@ -32,6 +32,11 @@ class AlarmRepositoryImpl(
         awaitClose()
     }
 
+    override fun delete(id: String) {
+
+        alarmDao.delete(id = id)
+    }
+
     override fun insertOrUpdate(alarm: Alarm) {
 
         alarmDao.insertOrUpdate(alarm)

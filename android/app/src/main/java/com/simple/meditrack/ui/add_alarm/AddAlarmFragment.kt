@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
@@ -20,6 +21,7 @@ import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.getStringOrEmpty
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
+import com.simple.coreapp.utils.ext.setVisible
 import com.simple.coreapp.utils.ext.top
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
@@ -45,6 +47,7 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.doSuccess
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
@@ -90,11 +93,39 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             binding.frameAction.updatePadding(bottom = heightNavigationBar)
         }
 
+        childFragmentManager.setFragmentResultListener("DELETE", viewLifecycleOwner) { keyRequest, a ->
+
+            viewModel.deleteAlarm()
+            parentFragmentManager.popBackStack()
+        }
+
         val binding = binding ?: return
 
         binding.tvAction.setDebouncedClickListener {
 
             viewModel.insertOrUpdateAlarm()
+        }
+
+        binding.tvAction1.setDebouncedClickListener {
+
+            val translate = viewModel.translate.value ?: return@setDebouncedClickListener
+
+            viewLifecycleOwner.lifecycleScope.launch {
+
+                awaitConfirm(
+                    fragmentManager = childFragmentManager,
+
+                    isCancel = true,
+
+                    positive = translate["Xóa"].orEmpty(),
+                    negative = translate["Đóng"].orEmpty(),
+
+                    keyRequestPositive = "DELETE",
+
+                    title = translate["Xóa thông báo"].orEmpty(),
+                    message = translate["Bạn có chắc chắn muốn xóa thông báo không"].orEmpty(),
+                )
+            }
         }
 
         binding.frameHeader.ivBack.setDebouncedClickListener {
@@ -210,7 +241,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
     private fun observeData() = with(viewModel) {
 
-        lockTransition(Tag.TITLE.name, Tag.BUTTON.name)
+        lockTransition(Tag.TITLE.name, Tag.BUTTON.name, Tag.ACTION_1.name)
 
         title.observe(viewLifecycleOwner) {
 
@@ -221,15 +252,26 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             unlockTransition(Tag.TITLE.name)
         }
 
-        buttonInfo.asFlow().launchCollect(viewLifecycleOwner) {
+        actionInfo.asFlow().launchCollect(viewLifecycleOwner) {
 
             val binding = binding ?: return@launchCollect
 
             binding.tvAction.text = it.title
-
+            binding.tvAction.isClickable = it.isClicked
             binding.tvAction.delegate.setBackground(it.background)
 
             unlockTransition(Tag.BUTTON.name)
+        }
+
+        action1Info.asFlow().launchCollect(viewLifecycleOwner) {
+
+            val binding = binding ?: return@launchCollect
+
+            binding.tvAction1.text = it.title
+            binding.tvAction1.setVisible(it.isShow)
+            binding.tvAction1.delegate.setBackground(it.background)
+
+            unlockTransition(Tag.ACTION_1.name)
         }
 
         viewItemListEvent.launchCollect(viewLifecycleOwner) { list, anim ->
@@ -269,7 +311,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
     private enum class Tag {
 
-        TITLE, BUTTON, VIEW_ITEM
+        TITLE, BUTTON, ACTION_1, VIEW_ITEM
     }
 }
 

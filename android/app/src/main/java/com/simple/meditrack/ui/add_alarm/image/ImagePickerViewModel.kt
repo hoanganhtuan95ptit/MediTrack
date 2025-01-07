@@ -2,7 +2,6 @@ package com.simple.meditrack.ui.add_alarm.image
 
 import android.graphics.Typeface
 import android.view.Gravity
-import android.widget.TextView
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

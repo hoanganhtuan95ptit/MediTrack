@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -23,10 +22,11 @@ import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
+import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Padding
@@ -58,14 +58,6 @@ class AddMedicineViewModel(
         }
     }
 
-    val title: LiveData<CharSequence> = combineSources(theme, translate) {
-
-        val theme = theme.value ?: return@combineSources
-        val translate = translate.value ?: return@combineSources
-
-        postDifferentValue(translate["Thêm thuốc"].orEmpty().with(ForegroundColorSpan(theme.colorOnBackground)))
-    }
-
 
     val medicineItem: LiveData<Alarm.MedicineItem> = MediatorLiveData()
 
@@ -76,41 +68,56 @@ class AddMedicineViewModel(
         postDifferentValue(medicineItem.medicineId)
     }
 
+
+    val title: LiveData<CharSequence> = combineSources(theme, translate, medicineId) {
+
+        val theme = theme.value ?: return@combineSources
+        val translate = translate.value ?: return@combineSources
+
+        val text = if (medicineId.value.isNullOrBlank()) {
+
+            translate["Thêm thuốc"].orEmpty()
+        } else {
+
+            translate["Thuốc"].orEmpty()
+        }
+
+        postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
+    }
+
+
     val medicine: LiveData<Medicine> = combineSources(medicineId) {
 
         getMedicineByIdAsyncUseCase.execute(GetMedicineByIdAsyncUseCase.Param(medicineId.value ?: return@combineSources)).collect {
 
-            postValue(it)
+            val medicine = it ?: Medicine(
+                id = "",
+                name = "",
+                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+            )
+
+            postValue(medicine)
         }
     }
 
     val name: LiveData<String> = combineSources(medicine) {
 
         postDifferentValue(medicine.value?.name.orEmpty())
-    }.apply {
-
-        postValue("")
     }
 
-    val unit: LiveData<Medicine.Unit> = combineSources<Medicine.Unit>(medicine) {
+    val unit: LiveData<Medicine.Unit> = combineSources(medicine) {
 
         val medicine = medicine.value ?: return@combineSources
 
         postValue(medicine.unit.toUnit())
-    }.apply {
-
-        postValue(Medicine.Unit.TABLET)
     }
 
     @VisibleForTesting
-    val isLowOnMedication: LiveData<Boolean> = combineSources<Boolean>(medicine) {
+    val isLowOnMedication: LiveData<Boolean> = combineSources(medicine) {
 
         val medicine = medicine.value ?: return@combineSources
 
         postValue(medicine.quantity != Medicine.UNLIMITED)
-    }.apply {
-
-        postValue(false)
     }
 
     val medicineSearch: LiveData<List<Medicine>> = combineSources(name) {
@@ -158,7 +165,7 @@ class AddMedicineViewModel(
             )
         ).let {
 
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -206,7 +213,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -224,7 +231,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -278,7 +285,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (*)"].orEmpty().with("(*)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -292,7 +299,7 @@ class AddMedicineViewModel(
     @VisibleForTesting
     val refreshButtonInfo: LiveData<Long> = MediatorLiveData(0)
 
-    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, viewItemList, refreshButtonInfo) {
+    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, medicineId, viewItemList, refreshButtonInfo) {
 
         val theme = theme.value ?: return@combineSources
         val translate = translate.getOrEmpty()
@@ -321,8 +328,10 @@ class AddMedicineViewModel(
                 translate["Vui lòng nhập liều lượng dùng"].orEmpty()
             } else if (isQuantityBlank) {
                 translate["Vui lòng nhập số lượng thuốc"].orEmpty()
-            } else {
+            } else if (medicineId.value.isNullOrBlank()) {
                 translate["Thêm thuốc"].orEmpty()
+            } else {
+                translate["Cập nhật thuốc"].orEmpty()
             },
             isClicked = isClicked,
             background = Background(

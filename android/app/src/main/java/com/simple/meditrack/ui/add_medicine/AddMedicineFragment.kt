@@ -34,8 +34,8 @@ import com.simple.meditrack.databinding.FragmentListBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.MainActivity
-import com.simple.meditrack.ui.base.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.CheckboxAdapter
+import com.simple.meditrack.ui.base.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextAdapter
@@ -48,6 +48,7 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.debounce
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.util.UUID
@@ -163,7 +164,7 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             binding.recyclerView.layoutManager = layoutManager
         }
 
-        channelFlow {
+        channelFlow<View> {
 
             var viewFocus: View? = null
             var showKeyboard = false
@@ -245,9 +246,9 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             binding.recyclerView.beginTransitionAwait(transition)
         }
 
-        arguments?.getSerializableOrNull<Alarm.MedicineItem>(Param.MEDICINE)?.let {
+        arguments?.getSerializableOrNull<Alarm.MedicineItem>(Param.MEDICINE).let {
 
-            viewModel.updateMedicine(it)
+            viewModel.updateMedicine(it ?: Alarm.MedicineItem())
         }
     }
 

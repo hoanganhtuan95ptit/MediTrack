@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.simple.core.utils.extentions.toJson
 import com.simple.core.utils.extentions.toListOrEmpty
-import com.simple.core.utils.extentions.toObject
 import com.simple.meditrack.data.dao.RoomAlarm.Companion.toEntity
 import com.simple.meditrack.data.dao.RoomAlarm.Companion.toRoom
 import com.simple.meditrack.entities.Alarm
@@ -43,6 +42,9 @@ interface AlarmDao {
     @Query("SELECT * FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
     fun getRoomListByIdAsync(id: String): Flow<List<RoomAlarm>>
 
+
+    @Query("DELETE FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
+    fun delete(id: String)
 
     @Query("DELETE FROM $TABLE_NAME")
     fun deleteAll()

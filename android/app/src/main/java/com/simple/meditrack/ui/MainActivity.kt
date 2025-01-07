@@ -7,20 +7,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowInsetsController
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentManager
-import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.meditrack.databinding.ActivityMainBinding
 import com.simple.meditrack.ui.base.PageFragment
 import com.simple.meditrack.ui.base.adapters.PagerAdapter
 import com.simple.meditrack.utils.NavigationView
 import com.simple.meditrack.utils.NavigationViewImpl
-import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.setupSize
 import com.simple.meditrack.utils.setupTheme
 

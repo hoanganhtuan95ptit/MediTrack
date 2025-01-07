@@ -39,8 +39,9 @@
             style="?attr/textCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="106dp"
             android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="Uống thuốc buổi sáng" />
+            tools:text="Đứng bao giờ bỏ cuộc, hay cố gắng để hết bệnh nhé, cố gắng lên nha" />
 
         <TextView
             android:id="@+id/tv_time"

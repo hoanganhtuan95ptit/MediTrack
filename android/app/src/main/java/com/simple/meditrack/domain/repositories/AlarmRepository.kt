@@ -9,5 +9,7 @@ interface AlarmRepository {
 
     fun getByAsync(id: String): Flow<Alarm?>
 
+    fun delete(id: String)
+
     fun insertOrUpdate(alarm: Alarm)
 }

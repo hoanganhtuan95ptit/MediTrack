@@ -24,6 +24,7 @@ import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
 import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
+import com.simple.meditrack.domain.usecases.alarm.DeleteAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
 import com.simple.meditrack.entities.Alarm
@@ -45,11 +46,13 @@ import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.isStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.util.UUID
 
 class AddAlarmViewModel(
+    private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase,
     private val insertOrUpdateAlarmUseCase: InsertOrUpdateAlarmUseCase
 ) : TransitionViewModel() {
@@ -63,7 +66,6 @@ class AddAlarmViewModel(
         }
     }
 
-    @VisibleForTesting
     val translate: LiveData<Map<String, String>> = mediatorLiveData {
 
         appTranslate.collect {
@@ -80,6 +82,7 @@ class AddAlarmViewModel(
         getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id = alarmId.value ?: return@combineSources)).collect {
 
             val alarm = it ?: Alarm(
+                id = "",
                 hour = 0,
                 minute = 0,
 
@@ -291,9 +294,11 @@ class AddAlarmViewModel(
     @VisibleForTesting
     val refreshButtonInfo: LiveData<Long> = MediatorLiveData(0)
 
+    val deleteAlarmState: LiveData<ResultState<Alarm>> = MediatorLiveData()
+
     val insertOrUpdateState: LiveData<ResultState<Alarm>> = MediatorLiveData()
 
-    val buttonInfo: LiveData<ButtonInfo> = listenerSources(theme, alarm, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
+    val actionInfo: LiveData<ActionInfo> = listenerSources(theme, alarm, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
 
         val theme = theme.value ?: return@listenerSources
         val alarm = alarm.value ?: return@listenerSources
@@ -317,7 +322,7 @@ class AddAlarmViewModel(
         val isLoading = insertOrUpdateState.value.isStart()
         val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange
 
-        val info = ButtonInfo(
+        val info = ActionInfo(
             title = if (isNameBlank) {
                 translate["Vui lòng nhập tên thông báo"].orEmpty()
             } else if (isMedicineBlank) {
@@ -336,6 +341,26 @@ class AddAlarmViewModel(
                     theme.colorBackgroundVariant
                 }
             )
+        )
+
+        postDifferentValueIfActive(info)
+    }
+
+    val action1Info: LiveData<Action1Info> = listenerSources(theme, alarm, deleteAlarmState) {
+
+        val theme = theme.value ?: return@listenerSources
+        val alarm = alarm.value ?: return@listenerSources
+        val translate = translate.value ?: return@listenerSources
+
+        val isShow = alarm.id.isNotBlank()
+
+        val info = Action1Info(
+            title = if (isShow) {
+                translate["Xóa thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorError))
+            } else {
+                translate[""].orEmpty()
+            },
+            isShow = isShow
         )
 
         postDifferentValueIfActive(info)
@@ -381,6 +406,23 @@ class AddAlarmViewModel(
         refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
     }
 
+    fun deleteAlarm() = GlobalScope.launch(handler + Dispatchers.IO) {
+
+        val alarm = alarm.value ?: return@launch
+
+        deleteAlarmState.postDifferentValue(ResultState.Start)
+
+        runCatching {
+
+            deleteAlarmUseCase.execute(DeleteAlarmUseCase.Param(alarm.id))
+
+            deleteAlarmState.postDifferentValue(ResultState.Success(alarm))
+        }.getOrElse {
+
+            deleteAlarmState.postDifferentValue(ResultState.Failed(it))
+        }
+    }
+
     fun insertOrUpdateAlarm() = viewModelScope.launch(handler + Dispatchers.IO) {
 
         val viewItemList = viewItemList.getOrEmpty()
@@ -415,10 +457,18 @@ class AddAlarmViewModel(
         }
     }
 
-    data class ButtonInfo(
+    data class ActionInfo(
         val title: String,
         val isClicked: Boolean,
         val isLoading: Boolean,
         val background: Background,
+    )
+
+    data class Action1Info(
+        val title: CharSequence,
+
+        val isShow: Boolean,
+
+        val background: Background? = null,
     )
 }

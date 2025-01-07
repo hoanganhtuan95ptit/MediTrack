@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.MediTrack" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
@@ -27,5 +27,7 @@
         <item name="colorAccent">#1ED760</item>
         <item name="colorLoading">#F8F8F9</item>
         <item name="colorDivider">#ECEEFA</item>
+
+        <item name="android:focusable">false</item>
     </style>
 </resources>

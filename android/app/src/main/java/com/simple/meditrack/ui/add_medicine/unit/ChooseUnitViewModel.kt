@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
@@ -14,6 +13,7 @@ import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.meditrack.Id
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.base.adapters.TextViewItem
+import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Margin
 import com.simple.meditrack.ui.view.Padding

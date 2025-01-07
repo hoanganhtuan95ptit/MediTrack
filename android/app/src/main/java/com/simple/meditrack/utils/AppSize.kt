@@ -1,8 +1,6 @@
 package com.simple.meditrack.utils
 
 import android.app.Activity
-import com.google.android.material.R
-import com.simple.coreapp.utils.extentions.getColorFromAttr
 import com.simple.coreapp.utils.extentions.getScreenHeight
 import com.simple.coreapp.utils.extentions.getScreenWidth
 import kotlinx.coroutines.channels.BufferOverflow

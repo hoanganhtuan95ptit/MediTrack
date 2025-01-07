@@ -37,10 +37,11 @@
         app:layout_constraintTop_toTopOf="@id/frame_action" />
 
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/frame_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.simple.coreapp.ui.view.round.RoundTextView
@@ -49,12 +50,29 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="8dp"
             android:elevation="4dp"
             android:gravity="center"
             android:textColor="?attr/colorOnPrimary"
             app:rv_backgroundColor="?attr/colorPrimary"
             app:rv_cornerRadius="150dp"
             tools:text="Update" />
-    </FrameLayout>
+
+        <com.simple.coreapp.ui.view.round.RoundTextView
+            android:id="@+id/tv_action_1"
+            style="?attr/textBody1"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:textColor="?attr/colorError"
+            android:visibility="gone"
+            tools:text="Delete" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

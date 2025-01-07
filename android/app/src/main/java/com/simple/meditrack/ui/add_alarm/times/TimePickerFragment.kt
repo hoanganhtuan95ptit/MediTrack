@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TimePicker
 import androidx.activity.ComponentActivity

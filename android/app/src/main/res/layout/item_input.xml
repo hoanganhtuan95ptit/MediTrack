@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@android:color/transparent"
+        android:focusable="true"
         android:paddingHorizontal="16dp"
         tools:hint="Nhập nhãn thông báo" />
 </com.simple.coreapp.ui.view.round.RoundLinearLayout>

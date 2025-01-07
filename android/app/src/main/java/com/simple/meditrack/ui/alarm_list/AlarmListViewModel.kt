@@ -90,6 +90,7 @@ class AlarmListViewModel(
 
             list.add(SpaceViewItem(height = DP.DP_16))
             list.addAll(it)
+            list.add(SpaceViewItem(height = DP.DP_100))
         }
 
         if (list.isEmpty()) EmptyViewItem(
