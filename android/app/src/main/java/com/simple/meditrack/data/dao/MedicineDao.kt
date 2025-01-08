@@ -19,6 +19,17 @@ private const val TABLE_NAME = "medicine"
 @Dao
 interface MedicineDao {
 
+    fun getListAllAsync(): Flow<List<Medicine>> = getRoomListAllAsync().map {
+
+        it.map {
+            it.toEntity()
+        }
+    }
+
+    @Query("SELECT * FROM $TABLE_NAME WHERE 1=1")
+    fun getRoomListAllAsync(): Flow<List<RoomMedicine>>
+
+
     fun getListByAsync(limit: Int): Flow<List<Medicine>> = getRoomListByAsync(limit = limit).map {
 
         it.map {

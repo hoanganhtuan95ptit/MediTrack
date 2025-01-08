@@ -24,8 +24,8 @@
         app:layout_constraintBottom_toTopOf="@id/v_1"
         app:layout_constraintTop_toBottomOf="@id/frame_header"
         app:rv_backgroundColor="?attr/colorSurface"
-        app:rv_cornerRadius_TL="24dp"
-        app:rv_cornerRadius_TR="24dp" />
+        app:rv_cornerRadius_TL="16dp"
+        app:rv_cornerRadius_TR="16dp" />
 
     <View
         android:id="@+id/v_1"

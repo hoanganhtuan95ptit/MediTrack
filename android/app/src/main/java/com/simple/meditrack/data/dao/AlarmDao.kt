@@ -21,7 +21,7 @@ private const val TABLE_NAME = "alarm"
 @Dao
 interface AlarmDao {
 
-    fun getListByAsync(): Flow<List<Alarm>> = getRoomListByAsync().map {
+    fun getListAllAsync(): Flow<List<Alarm>> = getRoomListAllAsync().map {
 
         it.map {
             it.toEntity()
@@ -29,7 +29,7 @@ interface AlarmDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE 1=1")
-    fun getRoomListByAsync(): Flow<List<RoomAlarm>>
+    fun getRoomListAllAsync(): Flow<List<RoomAlarm>>
 
 
     fun getListByIdAsync(id: String): Flow<List<Alarm>> = getRoomListByIdAsync(id = id).map {

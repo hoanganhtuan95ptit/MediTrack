@@ -140,7 +140,7 @@ class NotificationViewModel(
                 },
 
                 background = Background(
-                    backgroundColor = if (medicineSelectedMap[item.id] == MedicineState.FOCUS) {
+                    strokeColor = if (medicineSelectedMap[item.id] == MedicineState.FOCUS) {
                         theme.colorAccent
                     } else {
                         theme.colorDivider

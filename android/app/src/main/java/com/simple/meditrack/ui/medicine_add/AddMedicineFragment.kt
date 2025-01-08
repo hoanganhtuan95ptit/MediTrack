@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_medicine
+package com.simple.meditrack.ui.medicine_add
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -13,10 +13,11 @@ import androidx.transition.TransitionSet
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.simple.adapter.MultiAdapter
-import com.simple.ai.english.ui.base.transition.TransitionFragment
+import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.bottom
 import com.simple.coreapp.utils.ext.getSerializableOrNull
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
@@ -48,7 +49,6 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.meditrack.utils.sendEvent
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.debounce
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.util.UUID
@@ -205,7 +205,7 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             val rect = Rect()
             requireActivity().window.decorView.getWindowVisibleDisplayFrame(rect)
 
-            val y = it.top(binding.recyclerView.id) - (rect.height() - binding.recyclerView.top(binding.rootList.id)) + DP.DP_16
+            val y = it.bottom(binding.recyclerView.id) - (rect.height() - binding.recyclerView.top(binding.rootList.id)) + DP.DP_16
 
             binding.recyclerView.smoothScrollBy(0, y)
         }

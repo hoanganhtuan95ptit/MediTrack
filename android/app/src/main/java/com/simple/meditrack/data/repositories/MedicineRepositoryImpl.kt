@@ -14,6 +14,11 @@ class MedicineRepositoryImpl(
     private val medicineDao: MedicineDao
 ) : MedicineRepository {
 
+    override suspend fun getAllAsync(): Flow<List<Medicine>> {
+
+        return medicineDao.getListAllAsync()
+    }
+
     override suspend fun search(query: String): Flow<List<Medicine>> = channelFlow {
 
         val limit = 10

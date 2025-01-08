@@ -4,6 +4,7 @@ import com.simple.meditrack.domain.usecases.alarm.DeleteAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetListAlarmAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
+import com.simple.meditrack.domain.usecases.medicine.GetListMedicineAsyncUseCase
 import com.simple.meditrack.domain.usecases.medicine.GetMedicineByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
 import org.koin.dsl.module
@@ -19,6 +20,8 @@ val usecaseModule = module {
 
     single { InsertOrUpdateAlarmUseCase(get(), get()) }
 
+
+    single { GetListMedicineAsyncUseCase(get()) }
 
     single { SearchMedicineUseCase(get()) }
 

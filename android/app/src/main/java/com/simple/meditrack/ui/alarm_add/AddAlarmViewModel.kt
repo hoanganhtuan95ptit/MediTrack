@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_alarm
+package com.simple.meditrack.ui.alarm_add
 
 import android.graphics.Typeface
 import android.text.InputType
@@ -29,7 +29,7 @@ import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.InsertOrUpdateAlarmUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineViewItem
+import com.simple.meditrack.ui.alarm_add.adapters.AlarmMedicineViewItem
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
@@ -164,6 +164,7 @@ class AddAlarmViewModel(
 
         TextViewItem(
             id = Id.TIME,
+            data = listOf(hour, minute),
             text = "${DecimalFormat("00").format(hour)}:${DecimalFormat("00").format(minute)}".with(ForegroundColorSpan(theme.colorOnSurface)),
             image = TextViewItem.Image(
                 end = R.drawable.ic_arrow_down_24dp
@@ -186,7 +187,7 @@ class AddAlarmViewModel(
             background = Background(
                 strokeWidth = DP.DP_2,
                 strokeColor = theme.colorDivider,
-                cornerRadius = DP.DP_8
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -203,7 +204,7 @@ class AddAlarmViewModel(
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
-                cornerRadius = DP.DP_8
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -216,12 +217,12 @@ class AddAlarmViewModel(
         InputViewItem(
             id = Id.NOTE,
             hint = translate["Nhập ghi chú"].orEmpty(),
-            inputType = InputType.TYPE_CLASS_TEXT,
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: alarm.value?.note.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
-                cornerRadius = DP.DP_8
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -247,7 +248,7 @@ class AddAlarmViewModel(
                     right = DP.DP_16
                 ),
                 background = Background(
-                    cornerRadius = DP.DP_8
+                    cornerRadius = DP.DP_16
                 )
             )
         }.apply {
@@ -276,7 +277,7 @@ class AddAlarmViewModel(
             ),
             background = Background(
                 backgroundColor = theme.colorPrimaryVariant,
-                cornerRadius = DP.DP_8
+                cornerRadius = DP.DP_16
             )
         ).let {
 
@@ -307,17 +308,20 @@ class AddAlarmViewModel(
         val medicineMap = medicineMap.getOrEmpty()
         val viewItemList = viewItemList.getOrEmpty()
 
-        val inputs = viewItemList.filterIsInstance<InputViewItem>()
-
-        val name = inputs.find { it.id == Id.NAME }?.text
-        val note = inputs.find { it.id == Id.NOTE }?.text
+        val time = viewItemList.filterIsInstance<TextViewItem>().find { it.id == Id.TIME }?.data
+        val name = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NAME }?.text
+        val note = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NOTE }?.text
         val image = viewItemList.filterIsInstance<ImageViewItem>().map { it.image }
         val medicines = viewItemList.filterIsInstance<AlarmMedicineViewItem>().map { it.data }
 
         val isNameBlank = name.isNullOrBlank()
         val isMedicineBlank = medicineMap.isEmpty()
 
-        val isChange = name != alarm.name || note != alarm.note || image != listOf(alarm.image) || alarm.item != medicines
+        val isChange = time != listOf(alarm.hour, alarm.minute)
+                || name != alarm.name
+                || note != alarm.note
+                || image != listOf(alarm.image)
+                || alarm.item != medicines
 
         val isLoading = insertOrUpdateState.value.isStart()
         val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange

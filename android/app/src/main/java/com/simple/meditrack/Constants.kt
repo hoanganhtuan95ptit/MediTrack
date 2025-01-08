@@ -62,6 +62,7 @@ object Deeplink {
     const val CHOOSE_IMAGE = "app://choose_image"
     const val ADD_MEDICINE = "app://add_medicine"
     const val NOTIFICATION = "app://notification"
+    const val MEDICINE_LIST = "app://medicine_list"
     const val NOTIFICATION_VIEW = "app://notification_view"
 
     const val RESULT = "app://result"

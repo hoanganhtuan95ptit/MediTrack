@@ -1,4 +1,4 @@
-package com.simple.ai.english.ui.base.transition
+package com.simple.meditrack.ui.base.transition
 
 import android.graphics.Color
 import android.os.Bundle
@@ -8,15 +8,13 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.Transition
+import androidx.transition.Slide
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.simple.coreapp.ui.base.fragments.BaseViewModelFragment
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.meditrack.Param
-import com.simple.meditrack.ui.base.transition.TransitionGlobalViewModel
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.state.ResultState
 import com.simple.state.isSuccess
 import kotlinx.coroutines.delay
@@ -116,29 +114,23 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
 
         val arguments = arguments
 
-        val isFistScreen = arguments != null && arguments.containsKey(Param.TRANSITION_DURATION) && arguments.getLong(Param.TRANSITION_DURATION) == 0L
+        val isAnim = arguments != null && arguments.containsKey(Param.ROOT_TRANSITION_NAME)
         val transitionDuration = 350L
-
-        enterTransition = Hold().apply {
-
-            duration = if (isFistScreen) 0 else transitionDuration
-        }.addListener(getTransitionListener("enterTransition"))
 
         exitTransition = Hold().apply {
 
             duration = transitionDuration
-        }.addListener(getTransitionListener("exitTransition"))
+        }
 
         returnTransition = Hold().apply {
 
             duration = transitionDuration
-        }.addListener(getTransitionListener("returnTransition"))
+        }
 
         reenterTransition = Hold().apply {
 
             duration = transitionDuration
-        }.addListener(getTransitionListener("reenterTransition"))
-
+        }
 
         sharedElementReturnTransition = MaterialContainerTransform(requireContext(), true).apply {
 
@@ -150,11 +142,11 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
 
             interpolator = FastOutSlowInInterpolator()
             scrimColor = Color.TRANSPARENT
-        }.addListener(getTransitionListener("sharedElementReturnTransition"))
+        }
 
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
+        if (isAnim) sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
 
-            duration = if (isFistScreen) 0 else transitionDuration
+            duration = transitionDuration
 
             fadeMode = MaterialContainerTransform.FADE_MODE_THROUGH
 
@@ -162,52 +154,6 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
 
             interpolator = FastOutSlowInInterpolator()
             scrimColor = Color.TRANSPARENT
-        }.addListener(getTransitionListener("sharedElementEnterTransition"))
-    }
-
-    private fun getTransitionListener(name: String) = object : Transition.TransitionListener {
-
-//        private var timeoutJob: Job? = null
-
-        init {
-
-//            updateState(name, ResultState.Start)
-//
-//            timeoutJob = lifecycleScope.launch {
-//
-//                delay(100)
-//
-//                Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name timeout")
-//                updateState(name, ResultState.Success(""))
-//            }
-        }
-
-        override fun onTransitionStart(transition: Transition) {
-
-//            Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name onTransitionStart")
-//            timeoutJob?.cancel()
-        }
-
-        override fun onTransitionEnd(transition: Transition) {
-
-//            Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name onTransitionEnd")
-//            updateState(name, ResultState.Success(""))
-        }
-
-        override fun onTransitionCancel(transition: Transition) {
-
-//            Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name onTransitionCancel")
-//            updateState(name, ResultState.Success(""))
-        }
-
-        override fun onTransitionPause(transition: Transition) {
-
-//            Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name onTransitionPause")
-        }
-
-        override fun onTransitionResume(transition: Transition) {
-
-//            Log.d("tuanha", "getTransitionListener:${this@TransitionFragment.javaClass.simpleName} $name onTransitionResume")
         }
     }
 

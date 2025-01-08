@@ -1,18 +1,24 @@
 package com.simple.meditrack.di
 
-import com.simple.meditrack.ui.add_alarm.AddAlarmViewModel
-import com.simple.meditrack.ui.add_alarm.image.ImagePickerViewModel
-import com.simple.meditrack.ui.add_medicine.AddMedicineViewModel
-import com.simple.meditrack.ui.add_medicine.unit.ChooseUnitViewModel
+import com.simple.meditrack.ui.MainViewModel
+import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
+import com.simple.meditrack.ui.alarm_add.image.ImagePickerViewModel
+import com.simple.meditrack.ui.medicine_add.AddMedicineViewModel
+import com.simple.meditrack.ui.medicine_add.unit.ChooseUnitViewModel
 import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
 import com.simple.meditrack.ui.base.PageViewModel
 import com.simple.meditrack.ui.base.transition.TransitionGlobalViewModel
+import com.simple.meditrack.ui.medicine_list.MedicineListViewModel
 import com.simple.meditrack.ui.notification.NotificationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 @JvmField
 val viewModelModule = module {
+
+    viewModel {
+        MainViewModel()
+    }
 
     viewModel {
         NotificationViewModel(get())
@@ -27,11 +33,15 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AddMedicineViewModel(get(), get())
+        AddAlarmViewModel(get(), get(), get())
     }
 
     viewModel {
-        AddAlarmViewModel(get(), get(), get())
+        MedicineListViewModel(get())
+    }
+
+    viewModel {
+        AddMedicineViewModel(get(), get())
     }
 
     viewModel {

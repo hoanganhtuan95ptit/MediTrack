@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_alarm
+package com.simple.meditrack.ui.alarm_add
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -14,10 +14,10 @@ import androidx.transition.TransitionSet
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.simple.adapter.MultiAdapter
-import com.simple.ai.english.ui.base.transition.TransitionFragment
 import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.bottom
 import com.simple.coreapp.utils.ext.getStringOrEmpty
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
@@ -35,10 +35,11 @@ import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentListBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.MainActivity
-import com.simple.meditrack.ui.add_alarm.adapters.AlarmMedicineAdapter
+import com.simple.meditrack.ui.alarm_add.adapters.AlarmMedicineAdapter
 import com.simple.meditrack.ui.base.adapters.ImageAdapter
 import com.simple.meditrack.ui.base.adapters.InputAdapter
 import com.simple.meditrack.ui.base.adapters.TextAdapter
+import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.launchCollect
@@ -116,6 +117,8 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
                     fragmentManager = childFragmentManager,
 
                     isCancel = true,
+
+                    image = R.drawable.img_delete,
 
                     positive = translate["Xóa"].orEmpty(),
                     negative = translate["Đóng"].orEmpty(),
@@ -233,7 +236,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
             val rect = Rect()
             requireActivity().window.decorView.getWindowVisibleDisplayFrame(rect)
 
-            val y = it.top(binding.recyclerView.id) - (rect.height() - binding.recyclerView.top(binding.rootList.id)) + DP.DP_16
+            val y = it.bottom(binding.recyclerView.id) - (rect.height() - binding.recyclerView.top(binding.rootList.id)) + DP.DP_16
 
             binding.recyclerView.smoothScrollBy(0, y)
         }

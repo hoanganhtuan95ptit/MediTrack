@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_alarm.adapters
+package com.simple.meditrack.ui.alarm_add.adapters
 
 import android.view.View
 import android.view.ViewGroup

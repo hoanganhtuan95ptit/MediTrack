@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface MedicineRepository {
 
+    suspend fun getAllAsync(): Flow<List<Medicine>>
+
     suspend fun search(query: String): Flow<List<Medicine>>
 
     suspend fun getBy(id: String): Medicine?

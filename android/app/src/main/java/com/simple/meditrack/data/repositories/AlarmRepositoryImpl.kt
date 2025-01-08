@@ -14,7 +14,7 @@ class AlarmRepositoryImpl(
 
     override fun getAllAsync(): Flow<List<Alarm>> = channelFlow {
 
-        alarmDao.getListByAsync().launchCollect(this) {
+        alarmDao.getListAllAsync().launchCollect(this) {
 
             trySend(it.sortedBy { it.minute }.sortedBy { it.hour })
         }

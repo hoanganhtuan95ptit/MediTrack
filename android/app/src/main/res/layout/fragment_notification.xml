@@ -58,7 +58,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginHorizontal="24dp"
             android:clipToPadding="false"
             android:paddingBottom="24dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

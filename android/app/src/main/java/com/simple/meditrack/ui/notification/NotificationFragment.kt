@@ -14,7 +14,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.ncorti.slidetoact.SlideToActView
 import com.simple.adapter.MultiAdapter
-import com.simple.ai.english.ui.base.transition.TransitionFragment
+import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.extentions.beginTransitionAwait

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="4dp"
-    android:layout_marginVertical="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:elevation="6dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -13,7 +13,6 @@
     android:paddingStart="8dp"
     android:paddingEnd="16dp"
     app:rv_cornerRadius="16dp"
-    app:rv_strokeColor="#5b5b5b"
     app:rv_strokeDashGap="4dp"
     app:rv_strokeDashWidth="4dp"
     app:rv_strokeWidth="1dp">

@@ -1,12 +1,8 @@
-package com.simple.meditrack.ui.alarm_list
+package com.simple.meditrack.ui.medicine_list
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
@@ -36,17 +32,9 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
 import kotlinx.coroutines.launch
 
-class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmListViewModel>() {
+class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, MedicineListViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
-
-    private val overlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (Settings.canDrawOverlays(requireContext())) {
-            // Quyền được cấp
-        } else {
-            // Quyền bị từ chối
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,12 +54,6 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
             val transitionName = binding.frameAdd.transitionName
 
             sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.frameAdd))
-        }
-
-        if (!Settings.canDrawOverlays(requireContext())) {
-
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${requireContext().packageName}"))
-            overlayPermissionLauncher.launch(intent)
         }
 
         setupRecyclerView()
@@ -110,7 +92,7 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
         lockTransition(Tag.VIEW_ITEM.name)
 
-        alarmState.observe(viewLifecycleOwner) { state ->
+        medicineState.observe(viewLifecycleOwner) { state ->
 
             if (state !is ResultState.Success) {
 
@@ -119,11 +101,11 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
             state.data.map {
 
-                AlarmUtils.setAlarm(requireActivity(), it)
+//                AlarmUtils.setAlarm(requireActivity(), it)
             }
         }
 
-        alarmViewItemEvent.launchCollect(viewLifecycleOwner) { it, anim ->
+        medicineViewItemEvent.launchCollect(viewLifecycleOwner) { it, anim ->
 
             val binding = binding ?: return@launchCollect
 
@@ -158,17 +140,17 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 }
 
 @com.tuanha.deeplink.annotation.Deeplink
-class AlarmViewDeeplink : DeeplinkHandler {
+class MedicineViewDeeplink : DeeplinkHandler {
 
     override fun getDeeplink(): String {
-        return Deeplink.ALARM_LIST
+        return Deeplink.MEDICINE_LIST
     }
 
     override suspend fun navigation(activity: ComponentActivity, deepLink: String, extras: Bundle?, sharedElement: Map<String, View>?): Boolean {
 
         if (activity !is FragmentActivity) return false
 
-        val fragment = AlarmListFragment()
+        val fragment = MedicineListFragment()
         fragment.arguments = extras
 
         val fragmentTransaction = activity.supportFragmentManager

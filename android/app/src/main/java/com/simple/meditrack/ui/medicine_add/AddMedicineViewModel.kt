@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_medicine
+package com.simple.meditrack.ui.medicine_add
 
 import android.text.InputType
 import android.text.style.ForegroundColorSpan

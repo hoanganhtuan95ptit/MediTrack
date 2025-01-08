@@ -59,6 +59,8 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
                 AlarmUtils.setAlarm(context, it)
             }
+
+            AlarmUtils.setDailyAlarm(context)
         }
     }
 

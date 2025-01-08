@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.add_alarm.times
+package com.simple.meditrack.ui.alarm_add.times
 
 import android.app.Dialog
 import android.app.TimePickerDialog
