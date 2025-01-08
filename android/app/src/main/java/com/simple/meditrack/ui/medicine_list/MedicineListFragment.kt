@@ -11,7 +11,6 @@ import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
 import com.simple.adapter.MultiAdapter
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
@@ -22,17 +21,17 @@ import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
-import com.simple.meditrack.databinding.FragmentAlarmListBinding
-import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
+import com.simple.meditrack.databinding.FragmentMedicineListBinding
 import com.simple.meditrack.ui.base.adapters.EmptyAdapter
+import com.simple.meditrack.ui.base.transition.TransitionFragment
+import com.simple.meditrack.ui.medicine_list.adapters.MedicineAdapter
 import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.sendDeeplink
-import com.simple.state.ResultState
 import kotlinx.coroutines.launch
 
-class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, MedicineListViewModel>() {
+class MedicineListFragment : TransitionFragment<FragmentMedicineListBinding, MedicineListViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
@@ -53,7 +52,12 @@ class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, Medici
 
             val transitionName = binding.frameAdd.transitionName
 
-            sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.frameAdd))
+            val extras = bundleOf(
+                Param.ID to "",
+                Param.ROOT_TRANSITION_NAME to transitionName
+            )
+
+            sendDeeplink(Deeplink.ADD_MEDICINE, extras = extras, sharedElement = mapOf(transitionName to binding.frameAdd))
         }
 
         setupRecyclerView()
@@ -65,12 +69,12 @@ class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, Medici
 
         val binding = binding ?: return
 
-        val alarmAdapter = AlarmAdapter { view, item ->
+        val medicineAdapter = MedicineAdapter { view, item ->
 
             val transitionName = view.transitionName
 
             val extras = bundleOf(
-                Param.ID to item.data.id,
+                Param.ID to item.id,
                 Param.ROOT_TRANSITION_NAME to transitionName
             )
 
@@ -78,11 +82,10 @@ class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, Medici
                 transitionName to view
             )
 
-//            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
-            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
+            sendDeeplink(Deeplink.ADD_MEDICINE, extras = extras, sharedElement = sharedElement)
         }
 
-        adapter = MultiAdapter(alarmAdapter, EmptyAdapter()).apply {
+        adapter = MultiAdapter(medicineAdapter, EmptyAdapter()).apply {
 
             setRecyclerView(binding.recyclerView)
         }
@@ -91,19 +94,6 @@ class MedicineListFragment : TransitionFragment<FragmentAlarmListBinding, Medici
     private fun observeData() = with(viewModel) {
 
         lockTransition(Tag.VIEW_ITEM.name)
-
-        medicineState.observe(viewLifecycleOwner) { state ->
-
-            if (state !is ResultState.Success) {
-
-                return@observe
-            }
-
-            state.data.map {
-
-//                AlarmUtils.setAlarm(requireActivity(), it)
-            }
-        }
 
         medicineViewItemEvent.launchCollect(viewLifecycleOwner) { it, anim ->
 

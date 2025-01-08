@@ -74,7 +74,12 @@ class MainActivity : AppCompatActivity(),
                 val binding = binding ?: return@launchCollect
 
                 binding.frameBottomBar.animate().cancel()
+                binding.frameBottomBarDivider.animate().cancel()
+
                 binding.frameBottomBar.animate().translationY(if (it.isShow) 0f else binding.frameBottomBar.height * 1f)
+                    .setDuration(350)
+                    .start()
+                binding.frameBottomBarDivider.animate().translationY(if (it.isShow) 0f else binding.frameBottomBar.height * 1f)
                     .setDuration(350)
                     .start()
             }

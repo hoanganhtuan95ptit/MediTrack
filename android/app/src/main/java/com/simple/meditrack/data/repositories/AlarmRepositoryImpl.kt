@@ -12,7 +12,7 @@ class AlarmRepositoryImpl(
     private val alarmDao: AlarmDao
 ) : AlarmRepository {
 
-    override fun getAllAsync(): Flow<List<Alarm>> = channelFlow {
+    override suspend fun getAllAsync(): Flow<List<Alarm>> = channelFlow {
 
         alarmDao.getListAllAsync().launchCollect(this) {
 
@@ -22,7 +22,7 @@ class AlarmRepositoryImpl(
         awaitClose()
     }
 
-    override fun getByAsync(id: String): Flow<Alarm?> = channelFlow {
+    override suspend fun getByAsync(id: String): Flow<Alarm?> = channelFlow {
 
         alarmDao.getListByIdAsync(id = id).launchCollect(this) {
 
@@ -32,12 +32,12 @@ class AlarmRepositoryImpl(
         awaitClose()
     }
 
-    override fun delete(id: String) {
+    override suspend fun delete(id: String) {
 
         alarmDao.delete(id = id)
     }
 
-    override fun insertOrUpdate(alarm: Alarm) {
+    override suspend fun insertOrUpdate(alarm: Alarm) {
 
         alarmDao.insertOrUpdate(alarm)
     }

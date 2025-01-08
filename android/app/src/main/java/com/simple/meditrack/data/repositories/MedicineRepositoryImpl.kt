@@ -50,6 +50,11 @@ class MedicineRepositoryImpl(
         }
     }
 
+    override suspend fun delete(id: String) {
+
+        medicineDao.delete(id = id)
+    }
+
     override suspend fun insertOrUpdate(medicine: Medicine) {
 
         medicineDao.insertOrUpdate(medicine)

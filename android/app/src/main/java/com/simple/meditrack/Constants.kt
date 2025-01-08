@@ -60,10 +60,11 @@ object Deeplink {
     const val ALARM_LIST = "app://alarm_list"
     const val CHOOSE_UNIT = "app://choose_unit"
     const val CHOOSE_IMAGE = "app://choose_image"
-    const val ADD_MEDICINE = "app://add_medicine"
     const val NOTIFICATION = "app://notification"
+    const val ADD_MEDICINE = "app://add_medicine"
     const val MEDICINE_LIST = "app://medicine_list"
     const val NOTIFICATION_VIEW = "app://notification_view"
+    const val ADD_ALARM_MEDICINE = "app://add_alarm_medicine"
 
     const val RESULT = "app://result"
     const val CONFIRM = "app://confirm"

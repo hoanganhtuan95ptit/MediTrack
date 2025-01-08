@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
 
-    fun getAllAsync(): Flow<List<Alarm>>
+    suspend fun getAllAsync(): Flow<List<Alarm>>
 
-    fun getByAsync(id: String): Flow<Alarm?>
+    suspend fun getByAsync(id: String): Flow<Alarm?>
 
-    fun delete(id: String)
+    suspend fun delete(id: String)
 
-    fun insertOrUpdate(alarm: Alarm)
+    suspend fun insertOrUpdate(alarm: Alarm)
 }

@@ -16,6 +16,7 @@ import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmViewItem
 import com.simple.meditrack.ui.base.adapters.EmptyViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
+import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
@@ -71,27 +72,22 @@ class MedicineListViewModel(
 
         val list = arrayListOf<ViewItem>()
 
-//        state.data.map {
-//
-//            val hour = DecimalFormat("00").format(it.hour)
-//
-//            AlarmViewItem(
-//                id = it.id,
-//                data = it,
-//                name = it.name,
-//                image = it.image,
-//                description = it.note,
-//                time = "$hour:${DecimalFormat("00").format(it.minute)}"
-//            )
-//        }.takeIf {
-//
-//            it.isNotEmpty()
-//        }?.let {
-//
-//            list.add(SpaceViewItem(height = DP.DP_16))
-//            list.addAll(it)
-//            list.add(SpaceViewItem(height = DP.DP_100))
-//        }
+        state.data.map {
+
+            MedicineViewItem(
+                id = it.id,
+                name = it.name,
+                description = it.note,
+            )
+        }.takeIf {
+
+            it.isNotEmpty()
+        }?.let {
+
+            list.add(SpaceViewItem(height = DP.DP_16))
+            list.addAll(it)
+            list.add(SpaceViewItem(height = DP.DP_100))
+        }
 
         if (list.isEmpty()) EmptyViewItem(
 

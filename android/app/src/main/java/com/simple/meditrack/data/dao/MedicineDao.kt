@@ -63,6 +63,9 @@ interface MedicineDao {
     fun getRoomListByIdAsync(id: String): Flow<List<RoomMedicine>>
 
 
+    @Query("DELETE FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
+    fun delete(id: String)
+
     @Query("DELETE FROM $TABLE_NAME")
     fun deleteAll()
 

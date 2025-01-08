@@ -1,16 +1,13 @@
-package com.simple.meditrack.ui.medicine_add
+package com.simple.meditrack.ui.alarm_medicine_add
 
 import android.text.InputType
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
-import com.simple.core.utils.extentions.asObject
 import com.simple.coreapp.utils.ext.DP
-import com.simple.coreapp.utils.ext.handler
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.listenerSources
@@ -20,14 +17,11 @@ import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
 import com.simple.coreapp.utils.extentions.postValue
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
-import com.simple.meditrack.domain.usecases.medicine.DeleteMedicineUseCase
 import com.simple.meditrack.domain.usecases.medicine.GetMedicineByIdAsyncUseCase
-import com.simple.meditrack.domain.usecases.medicine.InsertOrUpdateMedicineUseCase
 import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
@@ -40,16 +34,10 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.with
-import com.simple.state.ResultState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.util.UUID
 
-class AddMedicineViewModel(
-    private val deleteMedicineUseCase: DeleteMedicineUseCase,
-    private val getMedicineByIdAsyncUseCase: GetMedicineByIdAsyncUseCase,
-    private val insertOrUpdateMedicineUseCase: InsertOrUpdateMedicineUseCase
+class AddAlarmMedicineViewModel(
+    private val searchMedicineUseCase: SearchMedicineUseCase,
+    private val getMedicineByIdAsyncUseCase: GetMedicineByIdAsyncUseCase
 ) : TransitionViewModel() {
 
     @VisibleForTesting
@@ -70,21 +58,16 @@ class AddMedicineViewModel(
         }
     }
 
-    val medicineId: LiveData<String> = MediatorLiveData()
 
-    val medicine: LiveData<Medicine> = combineSources(medicineId) {
+    val medicineItem: LiveData<Alarm.MedicineItem> = MediatorLiveData()
 
-        getMedicineByIdAsyncUseCase.execute(GetMedicineByIdAsyncUseCase.Param(medicineId.value ?: return@combineSources)).collect {
+    val medicineId: LiveData<String> = combineSources(medicineItem) {
 
-            val medicine = it ?: Medicine(
-                id = "",
-                name = "",
-                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
-            )
+        val medicineItem = medicineItem.value ?: return@combineSources
 
-            postValue(medicine)
-        }
+        postDifferentValue(medicineItem.medicineId)
     }
+
 
     val title: LiveData<CharSequence> = combineSources(theme, translate, medicineId) {
 
@@ -102,6 +85,20 @@ class AddMedicineViewModel(
         postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
     }
 
+
+    val medicine: LiveData<Medicine> = combineSources(medicineId) {
+
+        getMedicineByIdAsyncUseCase.execute(GetMedicineByIdAsyncUseCase.Param(medicineId.value ?: return@combineSources)).collect {
+
+            val medicine = it ?: Medicine(
+                id = "",
+                name = "",
+                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+            )
+
+            postValue(medicine)
+        }
+    }
 
     val name: LiveData<String> = combineSources(medicine) {
 
@@ -123,13 +120,25 @@ class AddMedicineViewModel(
         postValue(medicine.quantity != Medicine.UNLIMITED)
     }
 
-    val viewItemList: LiveData<List<ViewItem>> = listenerSources(unit, theme, translate, isLowOnMedication) {
+    val medicineSearch: LiveData<List<Medicine>> = combineSources(name) {
+
+        searchMedicineUseCase.execute(SearchMedicineUseCase.Param(name.value ?: return@combineSources)).collect {
+
+            postValue(it)
+        }
+    }
+
+    val isMedicineSearchEnable: LiveData<Boolean> = MediatorLiveData(false)
+
+
+    val viewItemList: LiveData<List<ViewItem>> = listenerSources(unit, theme, translate, medicineItem, isLowOnMedication, medicineSearch, isMedicineSearchEnable) {
 
         val unit = unit.value ?: return@listenerSources
         val theme = theme.value ?: return@listenerSources
         val translate = translate.value ?: return@listenerSources
         val isLowOnMedication = isLowOnMedication.value ?: return@listenerSources
 
+        val medicineItem = medicineItem.value
         val medicine = medicine.value
 
         val list = arrayListOf<ViewItem>()
@@ -161,6 +170,28 @@ class AddMedicineViewModel(
             list.add(it)
         }
 
+        if (isMedicineSearchEnable.value == true) medicineSearch.value?.map {
+
+            MedicineViewItem(
+                id = it.id,
+                data = it,
+
+                name = it.name,
+                desciption = it.note,
+
+                background = Background(
+                    strokeColor = if (it.name.trim().lowercase() == name.trim().lowercase()) {
+                        theme.colorAccent
+                    } else {
+                        theme.colorDivider
+                    }
+                )
+            )
+        }?.let {
+
+            list.addAll(it)
+        }
+
         TextViewItem(
             id = Id.UNIT,
             data = unit,
@@ -183,6 +214,24 @@ class AddMedicineViewModel(
 
             list.add(SpaceViewItem(height = DP.DP_16))
             list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(SpaceViewItem(height = DP.DP_8))
+            list.add(it)
+        }
+
+        InputViewItem(
+            id = Id.DOSAGE,
+            hint = translate["Nhập liều lượng dùng"].orEmpty(),
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.DOSAGE }?.text?.toString() ?: medicineItem?.dosage?.toString().orEmpty(),
+            background = Background(
+                strokeColor = theme.colorDivider,
+                strokeWidth = DP.DP_2,
+                cornerRadius = DP.DP_16
+            )
+        ).let {
+
+            list.add(SpaceViewItem(height = DP.DP_16))
+            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -250,10 +299,6 @@ class AddMedicineViewModel(
     @VisibleForTesting
     val refreshButtonInfo: LiveData<Long> = MediatorLiveData(0)
 
-    val deleteAlarmState: LiveData<ResultState<Medicine>> = MediatorLiveData()
-
-    val insertOrUpdateState: LiveData<ResultState<Medicine>> = MediatorLiveData()
-
     val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, medicineId, viewItemList, refreshButtonInfo) {
 
         val theme = theme.value ?: return@combineSources
@@ -265,18 +310,22 @@ class AddMedicineViewModel(
         val inputs = viewItemList.filterIsInstance<InputViewItem>()
 
         val name = inputs.find { it.id == Id.NAME }?.text
+        val dosage = inputs.find { it.id == Id.DOSAGE }?.text
         val quantity = inputs.find { it.id == Id.QUANTITY }?.text.toString().toDoubleOrNull() ?: Medicine.UNLIMITED
 
 
         val isNameBlank = name.isNullOrBlank()
+        val isDosageBlank = dosage.isNullOrBlank()
         val isQuantityBlank = isLowOnMedication && quantity <= 0.0
 
 
-        val isClicked = !isNameBlank && !isQuantityBlank
+        val isClicked = !isNameBlank && !isDosageBlank && !isQuantityBlank
 
         val info = ButtonInfo(
             title = if (isNameBlank) {
                 translate["Vui lòng nhập tên thuốc"].orEmpty()
+            } else if (isDosageBlank) {
+                translate["Vui lòng nhập liều lượng dùng"].orEmpty()
             } else if (isQuantityBlank) {
                 translate["Vui lòng nhập số lượng thuốc"].orEmpty()
             } else if (medicineId.value.isNullOrBlank()) {
@@ -297,26 +346,6 @@ class AddMedicineViewModel(
         postDifferentValueIfActive(info)
     }
 
-    val action1Info: LiveData<AddAlarmViewModel.Action1Info> = listenerSources(theme, medicine, deleteAlarmState) {
-
-        val theme = theme.value ?: return@listenerSources
-        val medicine = medicine.value ?: return@listenerSources
-        val translate = translate.value ?: return@listenerSources
-
-        val isShow = medicine.id.isNotBlank()
-
-        val info = AddAlarmViewModel.Action1Info(
-            title = if (isShow) {
-                translate["Xóa thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorError))
-            } else {
-                translate[""].orEmpty()
-            },
-            isShow = isShow
-        )
-
-        postDifferentValueIfActive(info)
-    }
-
     fun updateUnit(unit: Medicine.Unit) {
 
         this.unit.postDifferentValue(unit)
@@ -330,9 +359,14 @@ class AddMedicineViewModel(
         }
     }
 
-    fun updateMedicineId(it: String) {
+    fun updateMedicine(it: Alarm.MedicineItem) {
 
-        this.medicineId.postDifferentValue(it)
+        this.medicineItem.postDifferentValue(it)
+    }
+
+    fun updateMedicine(it: Medicine) {
+
+        this.medicine.postDifferentValue(it)
     }
 
     fun refreshButtonInfo() {
@@ -340,56 +374,14 @@ class AddMedicineViewModel(
         refreshButtonInfo.postDifferentValue(System.currentTimeMillis())
     }
 
+    fun updateSearchEnable(b: Boolean) {
+
+        isMedicineSearchEnable.postDifferentValue(b)
+    }
+
     fun switchLowOnMedication() {
 
         isLowOnMedication.postDifferentValue(!(isLowOnMedication.value ?: false))
-    }
-
-    fun deleteAlarm() = GlobalScope.launch(handler + Dispatchers.IO) {
-
-        val medicine = medicine.value ?: return@launch
-
-        deleteAlarmState.postDifferentValue(ResultState.Start)
-
-        runCatching {
-
-            deleteMedicineUseCase.execute(DeleteMedicineUseCase.Param(medicine.id))
-
-            deleteAlarmState.postDifferentValue(ResultState.Success(medicine))
-        }.getOrElse {
-
-            deleteAlarmState.postDifferentValue(ResultState.Failed(it))
-        }
-    }
-
-    fun insertOrUpdateMedicine() = viewModelScope.launch(handler + Dispatchers.IO) {
-
-
-        val viewItemList = viewItemList.getOrEmpty()
-
-        val texts = viewItemList.filterIsInstance<TextViewItem>()
-        val inputs = viewItemList.filterIsInstance<InputViewItem>()
-
-        val medicine = Medicine(
-            id = medicine.value?.id?.takeIf { it.isNotBlank() } ?: UUID.randomUUID().toString(),
-            name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
-            image = "",
-            unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
-            note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
-            quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
-        )
-
-        insertOrUpdateState.postDifferentValue(ResultState.Start)
-
-        runCatching {
-
-            insertOrUpdateMedicineUseCase.execute(InsertOrUpdateMedicineUseCase.Param(medicine))
-
-            insertOrUpdateState.postDifferentValue(ResultState.Success(medicine))
-        }.getOrElse {
-
-            insertOrUpdateState.postDifferentValue(ResultState.Failed(it))
-        }
     }
 
     data class ButtonInfo(

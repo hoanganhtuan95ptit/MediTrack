@@ -8,7 +8,6 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.Slide
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
@@ -17,7 +16,6 @@ import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.meditrack.Param
 import com.simple.state.ResultState
 import com.simple.state.isSuccess
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -67,7 +65,6 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
 
         viewLifecycleOwner.lifecycleScope.launch {
 
-            delay(100)
             unlockTransition(STATE)
         }
     }

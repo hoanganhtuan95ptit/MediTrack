@@ -13,5 +13,7 @@ interface MedicineRepository {
 
     suspend fun getByAsync(id: String): Flow<Medicine?>
 
+    suspend fun delete(id: String)
+
     suspend fun insertOrUpdate(medicine: Medicine)
 }

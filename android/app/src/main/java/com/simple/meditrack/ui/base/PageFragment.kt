@@ -8,11 +8,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.ext.getViewModel
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.databinding.FragmentPageBinding
 import com.simple.meditrack.ui.MainViewModel
+import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.utils.sendDeeplink
 import kotlinx.coroutines.channels.awaitClose
