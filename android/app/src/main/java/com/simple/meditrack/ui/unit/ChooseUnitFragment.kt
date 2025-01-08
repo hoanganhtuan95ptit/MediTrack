@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.base.unit
+package com.simple.meditrack.ui.unit
 
 import android.os.Bundle
 import android.view.View

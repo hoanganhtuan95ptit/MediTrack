@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.base.unit
+package com.simple.meditrack.ui.unit
 
 import android.view.Gravity
 import android.view.ViewGroup
