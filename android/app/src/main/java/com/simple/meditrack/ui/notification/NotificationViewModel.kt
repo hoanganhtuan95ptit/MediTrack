@@ -15,7 +15,7 @@ import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
-import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
+import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
@@ -116,7 +116,7 @@ class NotificationViewModel(
 
         data.item.map { item ->
 
-            MedicineViewItem(
+            NotificationMedicineViewItem(
                 id = item.id,
                 data = item.medicine,
 

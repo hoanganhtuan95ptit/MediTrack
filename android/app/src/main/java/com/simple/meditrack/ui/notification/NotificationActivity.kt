@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.simple.meditrack.ui.notification
 
 import android.content.Intent
@@ -6,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import com.simple.coreapp.ui.base.activities.BaseViewBindingActivity
 import com.simple.meditrack.Deeplink
@@ -24,9 +27,6 @@ class NotificationActivity : BaseViewBindingActivity<ActivityNotificationBinding
 
         super.onCreate(savedInstanceState)
 
-        setupTheme(this)
-        setupNavigation(this)
-
         val extras = bundleOf(Param.TRANSITION_DURATION to 0L)
         extras.putAll(intent.extras ?: bundleOf())
 
@@ -42,7 +42,18 @@ class NotificationActivity : BaseViewBindingActivity<ActivityNotificationBinding
 
             window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
         }
+
+        setupTheme(this)
+        setupNavigation(this)
+
+        setupBackPress()
     }
+
+    private fun setupBackPress() = onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+
+        override fun handleOnBackPressed() {
+        }
+    })
 }
 
 @com.tuanha.deeplink.annotation.Deeplink

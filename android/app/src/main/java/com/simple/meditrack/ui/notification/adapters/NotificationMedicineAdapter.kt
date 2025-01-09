@@ -6,14 +6,14 @@ import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.setVisible
 import com.simple.image.setImage
 import com.simple.meditrack.R
-import com.simple.meditrack.databinding.ItemMedicineBinding
+import com.simple.meditrack.databinding.ItemNotificationMedicineBinding
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.exts.setBackground
 
-open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<MedicineViewItem, ItemMedicineBinding>(onItemClick) {
+open class NotificationMedicineAdapter(onItemClick: (View, NotificationMedicineViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<NotificationMedicineViewItem, ItemNotificationMedicineBinding>(onItemClick) {
 
-    override fun bind(binding: ItemMedicineBinding, viewType: Int, position: Int, item: MedicineViewItem, payloads: MutableList<Any>) {
+    override fun bind(binding: ItemNotificationMedicineBinding, viewType: Int, position: Int, item: NotificationMedicineViewItem, payloads: MutableList<Any>) {
         super.bind(binding, viewType, position, item, payloads)
 
         if (payloads.contains(PAYLOAD_IMAGE_RES)) {
@@ -29,7 +29,7 @@ open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, 
         }
     }
 
-    override fun bind(binding: ItemMedicineBinding, viewType: Int, position: Int, item: MedicineViewItem) {
+    override fun bind(binding: ItemNotificationMedicineBinding, viewType: Int, position: Int, item: NotificationMedicineViewItem) {
         super.bind(binding, viewType, position, item)
 
         binding.tvName.text = item.name
@@ -42,23 +42,23 @@ open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, 
         refreshBackground(binding, item)
     }
 
-    private fun refreshActionRes(binding: ItemMedicineBinding, item: MedicineViewItem) {
+    private fun refreshActionRes(binding: ItemNotificationMedicineBinding, item: NotificationMedicineViewItem) {
 
         binding.ivImage.setImage(item.actionRes)
     }
 
-    private fun refreshActionShow(binding: ItemMedicineBinding, item: MedicineViewItem) {
+    private fun refreshActionShow(binding: ItemNotificationMedicineBinding, item: NotificationMedicineViewItem) {
 
         binding.ivImage.setVisible(item.actionShow)
     }
 
-    private fun refreshBackground(binding: ItemMedicineBinding, item: MedicineViewItem) {
+    private fun refreshBackground(binding: ItemNotificationMedicineBinding, item: NotificationMedicineViewItem) {
 
         binding.root.delegate.setBackground(item.background)
     }
 }
 
-class MedicineViewItem(
+class NotificationMedicineViewItem(
     val id: String = "",
 
     val data: Medicine? = null,

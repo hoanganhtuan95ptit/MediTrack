@@ -27,7 +27,7 @@ import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
-import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
+import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.utils.AppTheme
@@ -112,6 +112,13 @@ class AddAlarmMedicineViewModel(
         postValue(medicine.unit.toUnit())
     }
 
+    val image: LiveData<String> = combineSources(medicine) {
+
+        val medicine = medicine.value ?: return@combineSources
+
+        postValue(medicine.image)
+    }
+
     @VisibleForTesting
     val isLowOnMedication: LiveData<Boolean> = combineSources(medicine) {
 
@@ -131,7 +138,7 @@ class AddAlarmMedicineViewModel(
     val isMedicineSearchEnable: LiveData<Boolean> = MediatorLiveData(false)
 
 
-    val viewItemList: LiveData<List<ViewItem>> = listenerSources(unit, theme, translate, medicineItem, isLowOnMedication, medicineSearch, isMedicineSearchEnable) {
+    val viewItemList: LiveData<List<ViewItem>> = listenerSources(theme, translate, unit, image, medicineItem, isLowOnMedication, medicineSearch, isMedicineSearchEnable) {
 
         val unit = unit.value ?: return@listenerSources
         val theme = theme.value ?: return@listenerSources
@@ -145,7 +152,7 @@ class AddAlarmMedicineViewModel(
 
         ImageViewItem(
             id = Id.IMAGE,
-            image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_6.png"
+            image = image.getOrEmpty()
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_8))
@@ -172,7 +179,7 @@ class AddAlarmMedicineViewModel(
 
         if (isMedicineSearchEnable.value == true) medicineSearch.value?.map {
 
-            MedicineViewItem(
+            NotificationMedicineViewItem(
                 id = it.id,
                 data = it,
 

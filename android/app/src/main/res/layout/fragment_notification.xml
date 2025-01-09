@@ -64,7 +64,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="5"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_medicine"
+            tools:listitem="@layout/item_notification_medicine"
             tools:orientation="vertical" />
 
         <com.ncorti.slidetoact.SlideToActView

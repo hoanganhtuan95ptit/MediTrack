@@ -41,7 +41,7 @@ import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.base.transition.TransitionFragment
-import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
+import com.simple.meditrack.ui.notification.adapters.NotificationMedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.setBackground
@@ -81,7 +81,7 @@ class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlar
             val medicine = Medicine(
                 id = viewModel.medicine.value?.id ?: UUID.randomUUID().toString(),
                 name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
-                image = "",
+                image = viewModel.medicine.value?.image.orEmpty(),
                 unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
                 note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
                 quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
@@ -144,7 +144,7 @@ class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlar
 
         }
 
-        val medicineAdapter = MedicineAdapter { view, item ->
+        val notificationMedicineAdapter = NotificationMedicineAdapter { view, item ->
 
             item.data?.let { viewModel.updateMedicine(it) }
         }
@@ -154,7 +154,7 @@ class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlar
             viewModel.switchLowOnMedication()
         }
 
-        adapter = MultiAdapter(textAdapter, inputAdapter, imageAdapter, medicineAdapter, checkboxAdapter).apply {
+        adapter = MultiAdapter(textAdapter, inputAdapter, imageAdapter, notificationMedicineAdapter, checkboxAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null

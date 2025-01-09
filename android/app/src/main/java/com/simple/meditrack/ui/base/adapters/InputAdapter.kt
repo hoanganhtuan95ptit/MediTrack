@@ -27,6 +27,8 @@ open class InputAdapter(
             val item = getViewItem(holder.bindingAdapterPosition) ?: return@setOnFocusChangeListener
 
             onInputFocus(holder.binding.edtName, item)
+
+            holder.binding.edtName.selectAll()
         }
 
         holder.binding.edtName.doAfterTextChanged {
@@ -73,7 +75,7 @@ class InputViewItem(
     val id: String = "",
 
     val hint: CharSequence = "",
-    val inputType: Int = InputType.TYPE_CLASS_TEXT,
+    val inputType: Int = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
 
     var text: CharSequence = "",
 

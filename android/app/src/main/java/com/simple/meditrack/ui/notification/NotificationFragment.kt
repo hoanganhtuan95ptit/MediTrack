@@ -26,7 +26,7 @@ import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentNotificationBinding
 import com.simple.meditrack.ui.base.adapters.TextAdapter
-import com.simple.meditrack.ui.notification.adapters.MedicineAdapter
+import com.simple.meditrack.ui.notification.adapters.NotificationMedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -57,12 +57,12 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
 
         val binding = binding ?: return
 
-        val medicineAdapter = MedicineAdapter { view, item ->
+        val notificationMedicineAdapter = NotificationMedicineAdapter { view, item ->
 
             viewModel.updateSelected(item.id)
         }
 
-        adapter = MultiAdapter(TextAdapter(), medicineAdapter).apply {
+        adapter = MultiAdapter(TextAdapter(), notificationMedicineAdapter).apply {
 
             binding.recyclerView.adapter = this
             binding.recyclerView.itemAnimator = null

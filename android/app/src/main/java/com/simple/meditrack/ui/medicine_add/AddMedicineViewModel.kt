@@ -17,23 +17,18 @@ import com.simple.coreapp.utils.extentions.listenerSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
-import com.simple.coreapp.utils.extentions.postValue
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.DeleteMedicineUseCase
 import com.simple.meditrack.domain.usecases.medicine.GetMedicineByIdAsyncUseCase
 import com.simple.meditrack.domain.usecases.medicine.InsertOrUpdateMedicineUseCase
-import com.simple.meditrack.domain.usecases.medicine.SearchMedicineUseCase
-import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.InputViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
-import com.simple.meditrack.ui.notification.adapters.MedicineViewItem
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.utils.AppTheme
@@ -61,7 +56,6 @@ class AddMedicineViewModel(
         }
     }
 
-    @VisibleForTesting
     val translate: LiveData<Map<String, String>> = mediatorLiveData {
 
         appTranslate.collect {
@@ -70,6 +64,7 @@ class AddMedicineViewModel(
         }
     }
 
+    @VisibleForTesting
     val medicineId: LiveData<String> = MediatorLiveData()
 
     val medicine: LiveData<Medicine> = combineSources(medicineId) {
@@ -86,12 +81,14 @@ class AddMedicineViewModel(
         }
     }
 
-    val title: LiveData<CharSequence> = combineSources(theme, translate, medicineId) {
+    val title: LiveData<CharSequence> = combineSources(theme, translate, medicine) {
 
         val theme = theme.value ?: return@combineSources
         val translate = translate.value ?: return@combineSources
 
-        val text = if (medicineId.value.isNullOrBlank()) {
+        val medicine = medicine.value ?: return@combineSources
+
+        val text = if (medicine.id.isBlank()) {
 
             translate["Thêm thuốc"].orEmpty()
         } else {
@@ -115,6 +112,13 @@ class AddMedicineViewModel(
         postValue(medicine.unit.toUnit())
     }
 
+    val image: LiveData<String> = combineSources(medicine) {
+
+        val medicine = medicine.value ?: return@combineSources
+
+        postValue(medicine.image)
+    }
+
     @VisibleForTesting
     val isLowOnMedication: LiveData<Boolean> = combineSources(medicine) {
 
@@ -123,7 +127,7 @@ class AddMedicineViewModel(
         postValue(medicine.quantity != Medicine.UNLIMITED)
     }
 
-    val viewItemList: LiveData<List<ViewItem>> = listenerSources(unit, theme, translate, isLowOnMedication) {
+    val viewItemList: LiveData<List<ViewItem>> = listenerSources(theme, translate, unit, image, isLowOnMedication) {
 
         val unit = unit.value ?: return@listenerSources
         val theme = theme.value ?: return@listenerSources
@@ -136,14 +140,14 @@ class AddMedicineViewModel(
 
         ImageViewItem(
             id = Id.IMAGE,
-            image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_6.png"
+            image = image.getOrEmpty()
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
-        val name = medicine?.name ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString().orEmpty()
+        val name = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString() ?: medicine?.name.orEmpty()
 
         InputViewItem(
             id = Id.NAME,
@@ -190,8 +194,8 @@ class AddMedicineViewModel(
         InputViewItem(
             id = Id.NOTE,
             hint = translate["Nhập ghi chú"].orEmpty(),
-            inputType = InputType.TYPE_CLASS_TEXT,
-            text = medicine?.note ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: medicine?.note.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
@@ -223,11 +227,7 @@ class AddMedicineViewModel(
             id = Id.QUANTITY,
             hint = translate["Nhập số lượng thuốc"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
-            text = if (medicine != null && medicine.quantity == Medicine.UNLIMITED) {
-                value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
-            } else {
-                medicine?.quantity?.toString() ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
-            },
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString() ?: medicine?.quantity?.takeIf { it > 0 }?.toString() ?: "0",
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
@@ -254,28 +254,34 @@ class AddMedicineViewModel(
 
     val insertOrUpdateState: LiveData<ResultState<Medicine>> = MediatorLiveData()
 
-    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, medicineId, viewItemList, refreshButtonInfo) {
+    val buttonInfo: LiveData<ButtonInfo> = listenerSources(theme, translate, medicine, viewItemList, refreshButtonInfo) {
 
-        val theme = theme.value ?: return@combineSources
+        val theme = theme.value ?: return@listenerSources
         val translate = translate.getOrEmpty()
+
+        val medicine = medicine.value ?: return@listenerSources
+
         val viewItemList = viewItemList.getOrEmpty()
         val isLowOnMedication = isLowOnMedication.value ?: false
 
-        val texts = viewItemList.filterIsInstance<TextViewItem>()
-        val inputs = viewItemList.filterIsInstance<InputViewItem>()
-
-        val name = inputs.find { it.id == Id.NAME }?.text
-        val quantity = inputs.find { it.id == Id.QUANTITY }?.text.toString().toDoubleOrNull() ?: Medicine.UNLIMITED
+        val name = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NAME }?.text
+        val note = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NOTE }?.text
+        val image = viewItemList.filterIsInstance<ImageViewItem>().find { it.id == Id.IMAGE }?.image
+        val quantity = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.QUANTITY }?.text.toString().toDoubleOrNull() ?: Medicine.UNLIMITED
 
 
         val isNameBlank = name.isNullOrBlank()
         val isQuantityBlank = isLowOnMedication && quantity <= 0.0
 
+        val isChange = name != medicine.name
+                || note != medicine.note
+                || image != medicine.image
+                || quantity != medicine.quantity
 
-        val isClicked = !isNameBlank && !isQuantityBlank
+        val isClicked = !isNameBlank && !isQuantityBlank && isChange
 
-        val info = ButtonInfo(
-            title = if (isNameBlank) {
+        val action0 = ActionInfo(
+            text = if (isNameBlank) {
                 translate["Vui lòng nhập tên thuốc"].orEmpty()
             } else if (isQuantityBlank) {
                 translate["Vui lòng nhập số lượng thuốc"].orEmpty()
@@ -284,7 +290,10 @@ class AddMedicineViewModel(
             } else {
                 translate["Cập nhật thuốc"].orEmpty()
             },
+
+            isShow = true,
             isClicked = isClicked,
+
             background = Background(
                 backgroundColor = if (isClicked) {
                     theme.colorPrimary
@@ -294,24 +303,19 @@ class AddMedicineViewModel(
             )
         )
 
-        postDifferentValueIfActive(info)
-    }
-
-    val action1Info: LiveData<AddAlarmViewModel.Action1Info> = listenerSources(theme, medicine, deleteAlarmState) {
-
-        val theme = theme.value ?: return@listenerSources
-        val medicine = medicine.value ?: return@listenerSources
-        val translate = translate.value ?: return@listenerSources
-
-        val isShow = medicine.id.isNotBlank()
-
-        val info = AddAlarmViewModel.Action1Info(
-            title = if (isShow) {
-                translate["Xóa thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorError))
+        val action1 = ActionInfo(
+            text = if (medicine.id.isNotBlank()) {
+                translate["Xóa thuốc"].orEmpty().with(ForegroundColorSpan(theme.colorError))
             } else {
                 translate[""].orEmpty()
             },
-            isShow = isShow
+            isShow = medicine.id.isNotBlank(),
+            isClicked = true
+        )
+
+        val info = ButtonInfo(
+            action0 = action0,
+            action1 = action1
         )
 
         postDifferentValueIfActive(info)
@@ -322,12 +326,9 @@ class AddMedicineViewModel(
         this.unit.postDifferentValue(unit)
     }
 
-    fun updateSearch(text: CharSequence) {
+    fun updateImage(imagePath: String) {
 
-        if (name.postDifferentValue(text.toString())) {
-
-            medicine.postValue(null)
-        }
+        image.postDifferentValue(imagePath)
     }
 
     fun updateMedicineId(it: String) {
@@ -373,7 +374,7 @@ class AddMedicineViewModel(
         val medicine = Medicine(
             id = medicine.value?.id?.takeIf { it.isNotBlank() } ?: UUID.randomUUID().toString(),
             name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
-            image = "",
+            image = image.getOrEmpty(),
             unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
             note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
@@ -393,8 +394,16 @@ class AddMedicineViewModel(
     }
 
     data class ButtonInfo(
-        val title: String,
+        val action0: ActionInfo,
+        val action1: ActionInfo
+    )
+
+    data class ActionInfo(
+        val text: CharSequence,
+
+        val isShow: Boolean,
         val isClicked: Boolean,
-        val background: Background,
+
+        val background: Background? = null
     )
 }

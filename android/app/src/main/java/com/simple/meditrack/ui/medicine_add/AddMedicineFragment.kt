@@ -21,6 +21,7 @@ import com.simple.coreapp.utils.ext.bottom
 import com.simple.coreapp.utils.ext.getStringOrEmpty
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
+import com.simple.coreapp.utils.ext.setVisible
 import com.simple.coreapp.utils.ext.top
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
 import com.simple.coreapp.utils.extentions.doOnHeightStatusAndHeightNavigationChange
@@ -42,6 +43,7 @@ import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
+import com.simple.state.doSuccess
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
@@ -52,6 +54,17 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        doListenerEvent(lifecycle, EventName.CHANGE_IMAGE) {
+
+            val imagePath = it.asObject<String>()
+
+            viewModel.updateImage(imagePath)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -133,14 +146,13 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
             },
             onInputChange = { view, item ->
 
-                if (item.id == Id.NAME) viewModel.updateSearch(item.text)
-
                 viewModel.refreshButtonInfo()
             }
         )
 
         val imageAdapter = ImageAdapter { view, item ->
 
+            sendDeeplink(Deeplink.CHOOSE_IMAGE)
         }
 
         val checkboxAdapter = CheckboxAdapter { view, item ->
@@ -222,8 +234,15 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
             val binding = binding ?: return@launchCollect
 
-            binding.tvAction.text = it.title
-            binding.tvAction.delegate.setBackground(it.background)
+            binding.tvAction.text = it.action0.text
+            binding.tvAction.isClickable = it.action0.isClicked
+            binding.tvAction.setVisible(it.action0.isShow)
+            binding.tvAction.delegate.setBackground(it.action0.background)
+
+            binding.tvAction1.text = it.action1.text
+            binding.tvAction1.isClickable = it.action1.isClicked
+            binding.tvAction1.setVisible(it.action1.isShow)
+            binding.tvAction1.delegate.setBackground(it.action1.background)
 
             unlockTransition(Tag.BUTTON.name)
         }
@@ -238,6 +257,13 @@ class AddMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineV
 
             val transition = TransitionSet().addTransition(ChangeBounds().setDuration(350)).addTransition(Fade().setDuration(350))
             binding.recyclerView.beginTransitionAwait(transition)
+        }
+
+        insertOrUpdateState.observe(viewLifecycleOwner) {
+
+            it.doSuccess {
+                parentFragmentManager.popBackStack()
+            }
         }
 
         arguments.getStringOrEmpty(Param.ID).let {

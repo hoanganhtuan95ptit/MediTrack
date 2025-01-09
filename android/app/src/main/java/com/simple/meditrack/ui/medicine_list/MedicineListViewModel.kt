@@ -13,7 +13,6 @@ import com.simple.coreapp.utils.extentions.toEvent
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.GetListMedicineAsyncUseCase
 import com.simple.meditrack.entities.Medicine
-import com.simple.meditrack.ui.alarm_list.adapters.AlarmViewItem
 import com.simple.meditrack.ui.base.adapters.EmptyViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
@@ -21,7 +20,6 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.state.ResultState
-import java.text.DecimalFormat
 
 class MedicineListViewModel(
     private val getListMedicineAsyncUseCase: GetListMedicineAsyncUseCase
@@ -76,6 +74,9 @@ class MedicineListViewModel(
 
             MedicineViewItem(
                 id = it.id,
+
+                image = it.image,
+
                 name = it.name,
                 description = it.note,
             )
@@ -86,7 +87,7 @@ class MedicineListViewModel(
 
             list.add(SpaceViewItem(height = DP.DP_16))
             list.addAll(it)
-            list.add(SpaceViewItem(height = DP.DP_100))
+            list.add(SpaceViewItem(height = DP.DP_350))
         }
 
         if (list.isEmpty()) EmptyViewItem(
