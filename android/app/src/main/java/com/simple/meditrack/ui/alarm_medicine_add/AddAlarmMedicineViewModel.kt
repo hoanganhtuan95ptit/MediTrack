@@ -33,6 +33,7 @@ import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.with
 
 class AddAlarmMedicineViewModel(
@@ -229,7 +230,7 @@ class AddAlarmMedicineViewModel(
             id = Id.DOSAGE,
             hint = translate["Nhập liều lượng dùng"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
-            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.DOSAGE }?.text?.toString() ?: medicineItem?.dosage?.toString().orEmpty(),
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.DOSAGE }?.text?.toString() ?: medicineItem?.dosage?.formatQuality().orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,
@@ -282,7 +283,7 @@ class AddAlarmMedicineViewModel(
             text = if (medicine != null && medicine.quantity == Medicine.UNLIMITED) {
                 value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
             } else {
-                medicine?.quantity?.toString() ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
+                medicine?.quantity?.formatQuality() ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
             },
             background = Background(
                 strokeColor = theme.colorDivider,

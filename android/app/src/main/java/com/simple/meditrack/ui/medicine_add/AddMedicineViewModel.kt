@@ -34,6 +34,7 @@ import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -227,7 +228,7 @@ class AddMedicineViewModel(
             id = Id.QUANTITY,
             hint = translate["Nhập số lượng thuốc"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
-            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString() ?: medicine?.quantity?.takeIf { it > 0 }?.toString() ?: "0",
+            text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString() ?: medicine?.quantity?.takeIf { it > 0 }?.formatQuality() ?: "0",
             background = Background(
                 strokeColor = theme.colorDivider,
                 strokeWidth = DP.DP_2,

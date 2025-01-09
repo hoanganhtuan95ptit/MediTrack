@@ -1,5 +1,6 @@
 package com.simple.meditrack.utils
 
+import com.simple.meditrack.entities.Medicine
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -10,7 +11,8 @@ val appTranslate by lazy {
 
         val map = KeyTranslateMap()
 
-        map[""]
+        map[Medicine.Unit.LIQUID.name] = "ml"
+        map[Medicine.Unit.TABLET.name] = "Viên"
 
         tryEmit(map)
     }

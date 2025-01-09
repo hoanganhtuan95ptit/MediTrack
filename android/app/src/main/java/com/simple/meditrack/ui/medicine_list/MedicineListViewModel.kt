@@ -22,8 +22,10 @@ import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
+import java.text.DecimalFormat
 
 class MedicineListViewModel(
     private val getListMedicineAsyncUseCase: GetListMedicineAsyncUseCase
@@ -93,20 +95,18 @@ class MedicineListViewModel(
                 Pair(translate["Thuốc này chỉ đủ dùng trong hôm nay"].orEmpty(), theme.colorError)
             } else if (expiresInDays <= 3) {
                 Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorError)
-            } else if (expiresInDays <= 6) {
-                Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
             } else {
-                Pair("", theme.colorPrimary)
+                Pair(translate["Thuốc này đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
             }
 
             val note = if (it.note.isBlank() && it.quantity == Medicine.UNLIMITED) {
                 translate["Không giới hạn"] + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
             } else if (it.note.isBlank() && it.quantity != Medicine.UNLIMITED) {
-                translate["Còn"] + " " + it.quantity.toString() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
+                translate["Còn"] + " " + it.quantity.formatQuality() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
             } else if (it.note.isNotBlank() && it.quantity == Medicine.UNLIMITED) {
                 it.note + " - " + translate["Không giới hạn"] + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
             } else if (it.note.isNotBlank() && it.quantity != Medicine.UNLIMITED) {
-                it.note + " - " + translate["Còn"] + " " + it.quantity.toString() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
+                it.note + " - " + translate["Còn"] + " " + it.quantity.formatQuality() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
             } else {
                 ""
             }

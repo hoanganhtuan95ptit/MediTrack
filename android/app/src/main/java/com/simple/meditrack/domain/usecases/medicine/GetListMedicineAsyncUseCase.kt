@@ -5,7 +5,9 @@ import com.simple.meditrack.domain.repositories.MedicineRepository
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 class GetListMedicineAsyncUseCase(
@@ -15,23 +17,26 @@ class GetListMedicineAsyncUseCase(
 
     suspend fun execute(): Flow<List<Medicine>> {
 
-        val alarms = alarmRepository.getAllAsync().firstOrNull().orEmpty()
+        return alarmRepository.getAllAsync().flatMapLatest {
 
-        return medicineRepository.getAllAsync().map { medicines ->
+            val alarms = it
 
-            medicines.map { medicine ->
+            medicineRepository.getAllAsync().map { medicines ->
 
-                medicine.countForNextDays = (0..100).toList().associateWith {
+                medicines.map { medicine ->
 
-                    if (medicine.quantity != Medicine.UNLIMITED) getCountForNextDay(medicine, alarms, it)
-                    else Medicine.UNLIMITED
-                }.filter {
+                    medicine.countForNextDays = (0..100).toList().associateWith {
 
-                    it.value == Medicine.UNLIMITED || it.value < medicine.quantity
+                        if (medicine.quantity != Medicine.UNLIMITED) getCountForNextDay(medicine, alarms, it)
+                        else Medicine.UNLIMITED
+                    }.filter {
+
+                        it.value == Medicine.UNLIMITED || it.value < medicine.quantity
+                    }
                 }
-            }
 
-            medicines
+                medicines
+            }
         }
     }
 
