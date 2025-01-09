@@ -26,7 +26,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        NotificationViewModel(get())
+        NotificationViewModel(get(), get())
     }
 
     viewModel {

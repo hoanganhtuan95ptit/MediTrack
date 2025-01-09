@@ -12,10 +12,14 @@ data class Medicine(
 
     val note: String = "",
 
-    val quantity: Double = UNLIMITED,
+    var quantity: Double = UNLIMITED,
 
-    val unit: Int = Unit.TABLET.value // loại thuốc
+    var unit: Int = Unit.TABLET.value, // loại thuốc
+
+    var createTime: Long = System.currentTimeMillis()
 ) : Serializable {
+
+    var countForNextDays: Map<Int, Double> = hashMapOf()
 
     enum class Unit(val value: Int) {
         TABLET(0), // dạng viên

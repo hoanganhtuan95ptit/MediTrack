@@ -12,4 +12,7 @@ interface AlarmRepository {
     suspend fun delete(id: String)
 
     suspend fun insertOrUpdate(alarm: Alarm)
+
+    suspend fun getCountAlarmInDate(alarm: Alarm, date: Int): Int
+
 }

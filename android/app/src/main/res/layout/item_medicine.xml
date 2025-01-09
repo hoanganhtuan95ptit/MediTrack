@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="6dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
     android:paddingVertical="8dp"
     app:rv_cornerRadius="16dp"
     app:rv_strokeDashGap="4dp"
@@ -16,8 +16,7 @@
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp" />
+        android:layout_height="70dp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -40,6 +39,7 @@
             style="?attr/textBody2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
             android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="1.5 viên, nhai nuốt" />
     </LinearLayout>
@@ -47,5 +47,5 @@
     <ImageView
         android:layout_width="12dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_right_24dp"/>
+        android:src="@drawable/ic_arrow_right_24dp" />
 </com.simple.coreapp.ui.view.round.RoundLinearLayout>

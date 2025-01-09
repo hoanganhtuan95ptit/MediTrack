@@ -3,15 +3,18 @@ package com.simple.meditrack.ui.notification
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.handler
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postValue
 import com.simple.meditrack.R
+import com.simple.meditrack.domain.usecases.alarm.CloseAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
@@ -22,8 +25,12 @@ import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.toSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class NotificationViewModel(
+    private val closeAlarmUseCase: CloseAlarmUseCase,
     private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase
 ) : TransitionViewModel() {
 
@@ -195,7 +202,7 @@ class NotificationViewModel(
         this.id.postDifferentValue(id)
     }
 
-    fun nextAction() {
+    fun nextAction() = GlobalScope.launch(handler + Dispatchers.IO) {
 
         val currentAction = actionState.value ?: ActionState.NOT_VIEW
 
@@ -206,6 +213,10 @@ class NotificationViewModel(
         }
 
         actionState.postDifferentValue(nextAction)
+
+        if (nextAction == ActionState.DONE) {
+            closeAlarmUseCase.execute(CloseAlarmUseCase.Param(id.value ?: return@launch))
+        }
     }
 
     fun updateSelected(id: String) {

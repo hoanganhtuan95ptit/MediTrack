@@ -80,10 +80,13 @@ class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlar
 
             val medicine = Medicine(
                 id = viewModel.medicine.value?.id ?: UUID.randomUUID().toString(),
-                name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
                 image = viewModel.medicine.value?.image.orEmpty(),
-                unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
+
+                name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
                 note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
+
+                unit = texts.find { it.id == Id.UNIT }?.data.asObject<Medicine.Unit>().value,
+
                 quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty().toDoubleOrNull() ?: Medicine.UNLIMITED
             )
 

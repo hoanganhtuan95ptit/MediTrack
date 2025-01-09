@@ -103,7 +103,9 @@ open class RoomMedicine(
 
     val quantity: Double = Medicine.UNLIMITED,
 
-    val unit: Int = Medicine.Unit.TABLET.value // loại thuốc
+    val unit: Int = Medicine.Unit.TABLET.value, // loại thuốc
+
+    val createTime: Long = System.currentTimeMillis()
 ) {
     companion object {
 
@@ -117,7 +119,8 @@ open class RoomMedicine(
 
             quantity = quantity,
 
-            unit = unit
+            unit = unit,
+            createTime = createTime
         )
 
         fun RoomMedicine.toEntity() = Medicine(
@@ -130,7 +133,8 @@ open class RoomMedicine(
 
             quantity = quantity,
 
-            unit = unit
+            unit = unit,
+            createTime = createTime
         )
     }
 }
