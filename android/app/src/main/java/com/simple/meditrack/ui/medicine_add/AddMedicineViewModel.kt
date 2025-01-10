@@ -2,6 +2,7 @@ package com.simple.meditrack.ui.medicine_add
 
 import android.text.InputType
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -35,6 +36,7 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatQuality
+import com.simple.meditrack.utils.exts.parseQuality
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -268,7 +270,7 @@ class AddMedicineViewModel(
         val name = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NAME }?.text
         val note = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.NOTE }?.text
         val image = viewItemList.filterIsInstance<ImageViewItem>().find { it.id == Id.IMAGE }?.image
-        val quantity = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.QUANTITY }?.text.toString().toDoubleOrNull() ?: Medicine.UNLIMITED
+        val quantity = viewItemList.filterIsInstance<InputViewItem>().find { it.id == Id.QUANTITY }?.text?.toString()?.parseQuality() ?: Medicine.UNLIMITED
 
 
         val isNameBlank = name.isNullOrBlank()

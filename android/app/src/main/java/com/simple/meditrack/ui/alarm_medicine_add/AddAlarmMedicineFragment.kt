@@ -2,6 +2,7 @@ package com.simple.meditrack.ui.alarm_medicine_add
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
@@ -80,7 +81,7 @@ class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlar
 
             val medicine = Medicine(
                 id = viewModel.medicine.value?.id ?: UUID.randomUUID().toString(),
-                image = viewModel.medicine.value?.image.orEmpty(),
+                image = viewModel.image.value.orEmpty(),
 
                 name = inputs.find { it.id == Id.NAME }?.text?.toString().orEmpty(),
                 note = inputs.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),

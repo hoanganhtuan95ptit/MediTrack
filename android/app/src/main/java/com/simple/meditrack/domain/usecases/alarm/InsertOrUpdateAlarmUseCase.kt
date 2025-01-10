@@ -1,5 +1,6 @@
 package com.simple.meditrack.domain.usecases.alarm
 
+import android.util.Log
 import com.simple.meditrack.domain.repositories.AlarmRepository
 import com.simple.meditrack.domain.repositories.MedicineRepository
 import com.simple.meditrack.entities.Alarm
@@ -13,6 +14,7 @@ class InsertOrUpdateAlarmUseCase(
 
         param.alarm.item.mapNotNull {
 
+            Log.d("tuanha", "execute: ${it.medicine}")
             it.medicine
         }.map {
 

@@ -34,6 +34,7 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatQuality
+import com.simple.meditrack.utils.exts.parseQuality
 import com.simple.meditrack.utils.exts.with
 
 class AddAlarmMedicineViewModel(
@@ -319,7 +320,7 @@ class AddAlarmMedicineViewModel(
 
         val name = inputs.find { it.id == Id.NAME }?.text
         val dosage = inputs.find { it.id == Id.DOSAGE }?.text
-        val quantity = inputs.find { it.id == Id.QUANTITY }?.text.toString().toDoubleOrNull() ?: Medicine.UNLIMITED
+        val quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString()?.parseQuality() ?: Medicine.UNLIMITED
 
 
         val isNameBlank = name.isNullOrBlank()

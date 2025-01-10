@@ -86,50 +86,9 @@ class MedicineListViewModel(
         }.sortedBy {
 
             it.countForNextDays.keys.lastOrNull()
-        }.map {
+        }.map { medicine ->
 
-
-            val expiresInDays = it.countForNextDays.keys.lastOrNull() ?: 0
-
-            val warning = if (expiresInDays <= 0) {
-                Pair(translate["Thuốc này chỉ đủ dùng trong hôm nay"].orEmpty(), theme.colorError)
-            } else if (expiresInDays <= 3) {
-                Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorError)
-            } else {
-                Pair(translate["Thuốc này đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
-            }
-
-            val note = if (it.note.isBlank() && it.quantity == Medicine.UNLIMITED) {
-                translate["Không giới hạn"] + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
-            } else if (it.note.isBlank() && it.quantity != Medicine.UNLIMITED) {
-                translate["Còn"] + " " + it.quantity.formatQuality() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
-            } else if (it.note.isNotBlank() && it.quantity == Medicine.UNLIMITED) {
-                it.note + " - " + translate["Không giới hạn"] + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
-            } else if (it.note.isNotBlank() && it.quantity != Medicine.UNLIMITED) {
-                it.note + " - " + translate["Còn"] + " " + it.quantity.formatQuality() + " " + translate[it.unit.toUnit()?.name.orEmpty()].orEmpty()
-            } else {
-                ""
-            }
-
-            val description = if (note.isBlank() && warning.first.isBlank()) {
-                ""
-            } else if (note.isBlank() && warning.first.isNotBlank()) {
-                warning.first.with(ForegroundColorSpan(warning.second))
-            } else if (warning.first.isBlank()) {
-                note
-            } else {
-                (note + " - " + warning.first).with(warning.first, ForegroundColorSpan(warning.second))
-            }
-
-
-            MedicineViewItem(
-                id = it.id,
-
-                image = it.image,
-
-                name = it.name,
-                description = description,
-            )
+            medicine.toViewItem(theme, translate)
         }.takeIf {
 
             it.isNotEmpty()
@@ -152,4 +111,64 @@ class MedicineListViewModel(
     }
 
     val medicineViewItemEvent: LiveData<Event<List<ViewItem>>> = medicineViewItem.toEvent()
+
+
+    private fun Medicine.toViewItem(theme: AppTheme, translate: Map<String, String>): ViewItem {
+
+        val descriptionList = arrayListOf<Pair<String, Int>>()
+
+        note.ifBlank {
+            null
+        }?.let {
+            descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
+        }
+
+
+        if (quantity == Medicine.UNLIMITED) {
+            translate["Không giới hạn"] + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
+        } else {
+            translate["Còn"] + " " + quantity.formatQuality() + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
+        }.let {
+            descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
+        }
+
+
+        val expiresInDays = countForNextDays.keys.lastOrNull() ?: 0
+
+        if (quantity <= 0) {
+            Pair(translate["Thuốc này đã hết"].orEmpty(), theme.colorError)
+        } else if (expiresInDays <= 0) {
+            Pair(translate["Thuốc này chỉ đủ dùng trong hôm nay"].orEmpty(), theme.colorError)
+        } else if (expiresInDays <= 3) {
+            Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorError)
+        } else {
+            Pair(translate["Thuốc này đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
+        }.let {
+            descriptionList.add(it)
+        }
+
+        val description = descriptionList.let { pairs ->
+
+            val text = pairs.joinToString(separator = " - ") {
+                it.first
+            }
+
+            var charSequence: CharSequence = text
+
+            pairs.forEach {
+                charSequence = charSequence.with(it.first, ForegroundColorSpan(it.second))
+            }
+
+            charSequence
+        }
+
+        return MedicineViewItem(
+            id = id,
+
+            image = image,
+
+            name = name,
+            description = description,
+        )
+    }
 }
