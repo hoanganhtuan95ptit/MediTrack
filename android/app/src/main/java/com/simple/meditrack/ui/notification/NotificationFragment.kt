@@ -28,6 +28,9 @@ import com.simple.meditrack.databinding.FragmentNotificationBinding
 import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.ui.notification.adapters.NotificationMedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
+import com.simple.meditrack.utils.NotificationUtils
+import com.simple.state.doSuccess
+import com.simple.state.toSuccess
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 
@@ -101,6 +104,7 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
 
     private fun observeData() = with(viewModel) {
 
+
         titleInfo.observe(viewLifecycleOwner) {
 
             val binding = binding ?: return@observe
@@ -111,7 +115,21 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
             binding.ivPhoto.setImage(it.image)
         }
 
+        alarmState.observe(viewLifecycleOwner) { state ->
+
+            state.doSuccess {
+                NotificationUtils.sendNotification(requireContext(), it)
+            }
+        }
+
         actionState.observe(viewLifecycleOwner) {
+
+            val alarm = alarmState.value?.toSuccess()?.data
+
+            if (alarm != null && it == NotificationViewModel.ActionState.VIEWED) {
+
+                NotificationUtils.cancelNotification(alarm.idInt)
+            }
 
             if (it == NotificationViewModel.ActionState.DONE) {
 

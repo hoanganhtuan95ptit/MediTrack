@@ -3,7 +3,6 @@ package com.simple.meditrack.ui.notification
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.DP
@@ -44,8 +43,7 @@ class NotificationViewModel(
         }
     }
 
-    @VisibleForTesting
-    val notificationState: LiveData<ResultState<Alarm>> = combineSources(id) {
+    val alarmState: LiveData<ResultState<Alarm>> = combineSources(id) {
 
         postValue(ResultState.Start)
 
@@ -56,9 +54,9 @@ class NotificationViewModel(
     }
 
 
-    val titleInfo: LiveData<TitleInfo> = combineSources(notificationState) {
+    val titleInfo: LiveData<TitleInfo> = combineSources(alarmState) {
 
-        notificationState.value?.toSuccess()?.data?.let {
+        alarmState.value?.toSuccess()?.data?.let {
 
             TitleInfo(
                 note = it.note,
@@ -72,9 +70,9 @@ class NotificationViewModel(
     }
 
     @VisibleForTesting
-    val medicineSelected: LiveData<Map<String, MedicineState>> = combineSources(notificationState) {
+    val medicineSelected: LiveData<Map<String, MedicineState>> = combineSources(alarmState) {
 
-        val state = notificationState.get()
+        val state = alarmState.get()
 
         if (state !is ResultState.Success) {
 
@@ -103,10 +101,10 @@ class NotificationViewModel(
         }
     }
 
-    val viewItemList: LiveData<List<ViewItem>> = combineSources(theme, actionState, medicineSelected, notificationState) {
+    val viewItemList: LiveData<List<ViewItem>> = combineSources(theme, actionState, medicineSelected, alarmState) {
 
         val theme = theme.get()
-        val state = notificationState.get()
+        val state = alarmState.get()
         val actionState = actionState.get()
 
         if (state !is ResultState.Success) {

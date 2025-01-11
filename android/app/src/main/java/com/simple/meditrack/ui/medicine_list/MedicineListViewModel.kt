@@ -124,18 +124,20 @@ class MedicineListViewModel(
         }
 
 
-        if (quantity == Medicine.UNLIMITED) {
+        (if (quantity == Medicine.UNLIMITED) {
             translate["Không giới hạn"] + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
+        } else if (quantity <= 0) {
+            null
         } else {
             translate["Còn"] + " " + quantity.formatQuality() + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
-        }.let {
+        })?.let {
             descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
         }
 
 
         val expiresInDays = countForNextDays.keys.lastOrNull() ?: 0
 
-        if (quantity <= 0) {
+        (if (quantity != Medicine.UNLIMITED && quantity <= 0) {
             Pair(translate["Thuốc này đã hết"].orEmpty(), theme.colorError)
         } else if (expiresInDays <= 0) {
             Pair(translate["Thuốc này chỉ đủ dùng trong hôm nay"].orEmpty(), theme.colorError)
@@ -143,7 +145,7 @@ class MedicineListViewModel(
             Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorError)
         } else {
             Pair(translate["Thuốc này đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
-        }.let {
+        }).let {
             descriptionList.add(it)
         }
 
