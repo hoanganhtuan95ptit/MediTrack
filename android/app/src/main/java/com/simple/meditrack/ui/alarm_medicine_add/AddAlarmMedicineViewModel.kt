@@ -258,14 +258,14 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["Ghi chú"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_medicine_item_dosage"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         CheckboxViewItem(
             id = "CHECK_${Id.QUANTITY}",
-            text = translate["Nhận thông báo khi gần hết thuốc"].orEmpty(),
+            text = translate["message_receive_notification_medicine_item"].orEmpty(),
             image = if (isLowOnMedication) {
                 R.drawable.ic_tick_circle_24dp
             } else {
@@ -279,7 +279,7 @@ class AddAlarmMedicineViewModel(
 
         if (isLowOnMedication) InputViewItem(
             id = Id.QUANTITY,
-            hint = translate["Nhập số lượng thuốc"].orEmpty(),
+            hint = translate["hint_enter_medicine_item_quantity"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
             text = if (medicine != null && medicine.quantity == Medicine.UNLIMITED) {
                 value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString().orEmpty()
@@ -294,7 +294,7 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["title_enter_medicine_item_quantity"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -331,15 +331,15 @@ class AddAlarmMedicineViewModel(
 
         val info = ButtonInfo(
             title = if (isNameBlank) {
-                translate["Vui lòng nhập tên thuốc"].orEmpty()
+                translate["message_please_enter_medicine_item_name"].orEmpty()
             } else if (isDosageBlank) {
-                translate["Vui lòng nhập liều lượng dùng"].orEmpty()
+                translate["message_please_enter_medicine_item_dosage"].orEmpty()
             } else if (isQuantityBlank) {
-                translate["Vui lòng nhập số lượng thuốc"].orEmpty()
+                translate["message_please_enter_medicine_item_quantity"].orEmpty()
             } else if (medicineId.value.isNullOrBlank()) {
-                translate["Thêm thuốc"].orEmpty()
+                translate["action_add_medicine_item"].orEmpty()
             } else {
-                translate["Cập nhật thuốc"].orEmpty()
+                translate["action_update_medicine_item"].orEmpty()
             },
             isClicked = isClicked,
             background = Background(
