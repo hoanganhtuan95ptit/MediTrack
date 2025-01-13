@@ -253,3 +253,6 @@ class NotificationViewModel(
         NONE, FOCUS
     }
 }
+
+//https://www.flaticon.com/stickers-pack/tiger-expression-1?word=animal
+//https://www.flaticon.com/stickers-pack/savannah-1?word=animal

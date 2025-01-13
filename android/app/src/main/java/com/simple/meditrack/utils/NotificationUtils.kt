@@ -33,7 +33,7 @@ object NotificationUtils {
             soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
         }
 
-        val channelId = "alarm_notification_2"
+        val channelId = "alarm_notification"
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
