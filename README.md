@@ -1,5 +1,8 @@
 # Medication Reminder App – Your Trusted Health Companion
 
+## [Demo Link](https://github.com/hoanganhtuan95ptit/MediTrack/raw/refs/heads/main/android/app-debug.apk)  
+
+
 In the hustle and bustle of daily life, remembering to take your medication on time can be a challenge. However, with the **Medication Reminder App**, you never have to worry about missing a dose again. This app is designed with two special features to help you manage your health more easily and effectively:
 
 ## 1. Accurate Medication Reminders
