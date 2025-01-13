@@ -42,6 +42,7 @@ import com.simple.meditrack.ui.view.TextStyle
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.formatTime
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
@@ -245,7 +246,7 @@ class AddAlarmViewModel(
                 id = it.key,
                 data = it.value,
                 text = it.value.medicine?.name.orEmpty(),
-                description = it.value.dosage.toString() + " " + translate[it.value.medicine?.unit?.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
+                description = it.value.dosage.formatQuality() + " " + translate["unit_" + it.value.medicine?.unit?.toUnit()?.name.orEmpty()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
 
                 margin = Margin(
                     top = DP.DP_16,
