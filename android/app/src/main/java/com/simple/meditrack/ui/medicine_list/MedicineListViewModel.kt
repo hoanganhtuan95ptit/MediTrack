@@ -132,12 +132,6 @@ class MedicineListViewModel(
 
         val descriptionList = arrayListOf<Pair<String, Int>>()
 
-        note.ifBlank {
-            null
-        }?.let {
-            descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
-        }
-
 
         (if (quantity == Medicine.UNLIMITED) {
             translate["quality_unlimited"].orEmpty().replace("\$unit", translate["unit_" + unit.toUnit()?.name.orEmpty().lowercase()].orEmpty())
@@ -149,17 +143,22 @@ class MedicineListViewModel(
             descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
         }
 
+        note.ifBlank {
+            null
+        }?.let {
+            descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
+        }
 
         val expiresInDays = countForNextDays.keys.lastOrNull() ?: 0
 
         (if (quantity != Medicine.UNLIMITED && quantity <= 0) {
-            Pair(translate["Thuốc này đã hết"].orEmpty(), theme.colorError)
+            Pair(translate["message_quality_is_out"].orEmpty(), theme.colorError)
         } else if (expiresInDays <= 0) {
-            Pair(translate["Thuốc này chỉ đủ dùng trong hôm nay"].orEmpty(), theme.colorError)
+            Pair(translate["message_quality_is_only_enough_for_today"].orEmpty(), theme.colorError)
         } else if (expiresInDays <= 3) {
-            Pair(translate["Thuốc này chỉ đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorError)
+            Pair(translate["message_quality_is_only_enough_for_x_day"].orEmpty().replace("\$day", "$expiresInDays"), theme.colorError)
         } else {
-            Pair(translate["Thuốc này đủ dùng trong $expiresInDays ngày nữa"].orEmpty(), theme.colorPrimary)
+            Pair(translate["message_quality_is_enough_for_x_day"].orEmpty().replace("\$day", "$expiresInDays"), theme.colorPrimary)
         }).let {
             descriptionList.add(it)
         }

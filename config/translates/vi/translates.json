@@ -36,6 +36,10 @@
   "message_please_enter_medicine_item_name": "Vui lòng nhập tên thuốc",
   "message_please_enter_medicine_item_dosage": "Vui lòng nhập liều lượng dùng",
   "message_please_enter_medicine_item_quantity": "Vui lòng nhập số lượng thuốc",
+  "message_quality_is_out": "Thuốc này đã hết",
+  "message_quality_is_only_enough_for_today": "Thuốc này chỉ đủ dùng trong hôm nay",
+  "message_quality_is_only_enough_for_x_day": "Thuốc này chỉ đủ dùng trong $day ngày",
+  "message_quality_is_enough_for_x_day": "Thuốc này đủ dùng trong $day ngày",
 
   "unit_tablet": "viên",
   "unit_liquid": "ml",
