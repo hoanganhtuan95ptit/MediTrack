@@ -1,8 +1,7 @@
-package com.simple.meditrack.ui.alarm_medicine_add
+package com.simple.meditrack.ui.medicine_item_add
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
@@ -55,7 +54,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 import java.util.UUID
 
 
-class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddAlarmMedicineViewModel>() {
+class AddAlarmMedicineFragment : TransitionFragment<FragmentListBinding, AddMedicineItemViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 

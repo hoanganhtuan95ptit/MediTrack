@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.alarm_medicine_add
+package com.simple.meditrack.ui.medicine_item_add
 
 import android.text.InputType
 import android.text.style.ForegroundColorSpan
@@ -37,7 +37,7 @@ import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.parseQuality
 import com.simple.meditrack.utils.exts.with
 
-class AddAlarmMedicineViewModel(
+class AddMedicineItemViewModel(
     private val searchMedicineUseCase: SearchMedicineUseCase,
     private val getMedicineByIdAsyncUseCase: GetMedicineByIdAsyncUseCase
 ) : TransitionViewModel() {

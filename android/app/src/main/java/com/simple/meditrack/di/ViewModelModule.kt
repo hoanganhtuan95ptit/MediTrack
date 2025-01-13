@@ -3,7 +3,7 @@ package com.simple.meditrack.di
 import com.simple.meditrack.ui.MainViewModel
 import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
 import com.simple.meditrack.ui.alarm_add.image.ImagePickerViewModel
-import com.simple.meditrack.ui.alarm_medicine_add.AddAlarmMedicineViewModel
+import com.simple.meditrack.ui.medicine_item_add.AddMedicineItemViewModel
 import com.simple.meditrack.ui.unit.ChooseUnitViewModel
 import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
 import com.simple.meditrack.ui.base.PageViewModel
@@ -52,7 +52,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AddAlarmMedicineViewModel(get(), get())
+        AddMedicineItemViewModel(get(), get())
     }
 
 
