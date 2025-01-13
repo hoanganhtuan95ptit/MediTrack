@@ -78,15 +78,14 @@ class AddAlarmMedicineViewModel(
 
         val text = if (medicineId.value.isNullOrBlank()) {
 
-            translate["Thêm thuốc"].orEmpty()
+            translate["title_screen_add_medicine_item"].orEmpty()
         } else {
 
-            translate["Thuốc"].orEmpty()
+            translate["title_screen_update_medicine_item"].orEmpty()
         }
 
         postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
     }
-
 
     val medicine: LiveData<Medicine> = combineSources(medicineId) {
 
@@ -129,6 +128,7 @@ class AddAlarmMedicineViewModel(
         postValue(medicine.quantity != Medicine.UNLIMITED)
     }
 
+
     val medicineSearch: LiveData<List<Medicine>> = combineSources(name) {
 
         searchMedicineUseCase.execute(SearchMedicineUseCase.Param(name.value ?: return@combineSources)).collect {
@@ -165,7 +165,7 @@ class AddAlarmMedicineViewModel(
 
         InputViewItem(
             id = Id.NAME,
-            hint = translate["Nhập tên thuốc"].orEmpty(),
+            hint = translate["hint_enter_medicine_item_name"].orEmpty(),
             text = name,
             background = Background(
                 strokeColor = theme.colorDivider,
@@ -174,7 +174,7 @@ class AddAlarmMedicineViewModel(
             )
         ).let {
 
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["title_enter_medicine_item_name"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -222,14 +222,14 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["title_enter_medicine_item_unit"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.DOSAGE,
-            hint = translate["Nhập liều lượng dùng"].orEmpty(),
+            hint = translate["hint_enter_medicine_item_dosage"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.DOSAGE }?.text?.toString() ?: medicineItem?.dosage?.formatQuality().orEmpty(),
             background = Background(
@@ -240,14 +240,14 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["Liều lượng dùng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate[""].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NOTE,
-            hint = translate["Nhập ghi chú"].orEmpty(),
+            hint = translate["hint_enter_medicine_item_note"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT,
             text = medicine?.note ?: value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString().orEmpty(),
             background = Background(
@@ -315,7 +315,6 @@ class AddAlarmMedicineViewModel(
         val viewItemList = viewItemList.getOrEmpty()
         val isLowOnMedication = isLowOnMedication.value ?: false
 
-        val texts = viewItemList.filterIsInstance<TextViewItem>()
         val inputs = viewItemList.filterIsInstance<InputViewItem>()
 
         val name = inputs.find { it.id == Id.NAME }?.text

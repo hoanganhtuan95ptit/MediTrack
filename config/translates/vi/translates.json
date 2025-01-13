@@ -2,20 +2,29 @@
   "title_screen_list_alarm": "Thông báo",
   "title_screen_add_alarm": "Thêm thông báo",
   "title_screen_update_alarm": "Cập nhật thông báo",
+  "title_screen_add_medicine_item": "Thêm thuốc",
+  "title_screen_update_medicine_item": "Cập nhật thuốc",
 
-  "title_enter_time": "Giờ (✶)",
-  "title_enter_name": "Tên thông báo (✶)",
-  "title_enter_note": "Ghi chú",
-  "title_enter_medicine": "Thuốc (✶)",
+  "title_enter_alarm_time": "Giờ (✶)",
+  "title_enter_alarm_name": "Tên thông báo (✶)",
+  "title_enter_alarm_note": "Ghi chú",
+  "title_enter_medicine_item": "Thuốc (✶)",
+  "title_enter_medicine_item_name": "Tên thuốc (✶)",
+  "title_enter_medicine_item_unit": "Loại thuốc (✶)",
+  "title_enter_medicine_item_dosage": "Liều lượng dùng (✶)",
 
-  "hint_enter_name": "Nhập tên thông báo",
-  "hint_enter_note": "Nhập ghi chú",
+  "hint_enter_alarm_name": "Nhập tên thông báo",
+  "hint_enter_alarm_note": "Nhập ghi chú",
+  "hint_enter_medicine_item_name": "Nhập tên thuốc",
+  "hint_enter_medicine_item_dosage" : "Nhập liều lượng dùng",
+  "hint_enter_medicine_item_note": "Nhập ghi chú",
 
   "action_add_alarm": "Thêm thông báo",
   "action_update_alarm": "Cập nhật thông báo",
   "action_delete_alarm": "Xóa thông báo",
-  "action_medicine_item": "Thêm thuốc",
+  "action_add_medicine_item": "Thêm thuốc",
 
   "message_please_enter_name_alarm": "Vui lòng nhập tên thông báo",
-  "message_please_add_medicine": "Vui lòng thêm thuốc"
+  "message_please_add_medicine_item": "Vui lòng thêm thuốc",
+  "message_receive_notification_medicine_item"  : "Nhận thông báo khi gần hết thuốc"
 }

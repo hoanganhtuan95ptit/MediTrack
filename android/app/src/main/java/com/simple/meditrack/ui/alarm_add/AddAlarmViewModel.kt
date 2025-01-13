@@ -196,14 +196,14 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["title_enter_time"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["title_enter_alarm_time"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NAME,
-            hint = translate["hint_enter_name"].orEmpty(),
+            hint = translate["hint_enter_alarm_name"].orEmpty(),
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString() ?: alarm.value?.name.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
@@ -213,14 +213,14 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["title_enter_name"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["title_enter_alarm_name"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NOTE,
-            hint = translate["hint_enter_note"].orEmpty(),
+            hint = translate["hint_enter_alarm_note"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: alarm.value?.note.orEmpty(),
             background = Background(
@@ -231,13 +231,13 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_note"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_alarm_note"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         list.add(SpaceViewItem(height = DP.DP_16))
-        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["title_enter_medicine"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["title_enter_medicine_item"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
 
         medicineMap.map {
 
@@ -262,7 +262,7 @@ class AddAlarmViewModel(
 
         TextViewItem(
             id = Id.ADD_MEDICINE,
-            text = translate["action_medicine_item"].orEmpty(),
+            text = translate["action_add_medicine_item"].orEmpty(),
             image = TextViewItem.Image(
                 end = R.drawable.ic_add_circle_24dp
             ),
@@ -334,7 +334,7 @@ class AddAlarmViewModel(
             text = if (isNameBlank) {
                 translate["message_please_enter_name_alarm"].orEmpty()
             } else if (isMedicineBlank) {
-                translate["message_please_add_medicine"].orEmpty()
+                translate["message_please_add_medicine_item"].orEmpty()
             } else if (alarm.id.isBlank()) {
                 translate["action_add_alarm"].orEmpty()
             } else {
