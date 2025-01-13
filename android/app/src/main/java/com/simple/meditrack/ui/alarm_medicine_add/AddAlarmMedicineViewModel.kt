@@ -240,7 +240,7 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate[""].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.DOSAGE, text = translate["title_enter_medicine_item_dosage"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -258,7 +258,7 @@ class AddAlarmMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_medicine_item_dosage"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_medicine_item_note"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
