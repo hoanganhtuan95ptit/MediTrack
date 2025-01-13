@@ -1,5 +1,6 @@
 package com.simple.meditrack.di
 
+import com.simple.meditrack.domain.usecases.GetKeyTranslateAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.CloseAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.DeleteAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
@@ -14,6 +15,9 @@ import org.koin.dsl.module
 
 @JvmField
 val usecaseModule = module {
+
+    single { GetKeyTranslateAsyncUseCase(get()) }
+
 
     single { CloseAlarmUseCase(get(), get()) }
 

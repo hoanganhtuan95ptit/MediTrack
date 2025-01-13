@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.simple.meditrack.data.dao.RoomMedicine.Companion.toEntity
-import com.simple.meditrack.data.dao.RoomMedicine.Companion.toRoom
+import com.simple.meditrack.data.dao.MedicineRoom.Companion.toEntity
+import com.simple.meditrack.data.dao.MedicineRoom.Companion.toRoom
 import com.simple.meditrack.entities.Medicine
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +27,7 @@ interface MedicineDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE 1=1")
-    fun getRoomListAllAsync(): Flow<List<RoomMedicine>>
+    fun getRoomListAllAsync(): Flow<List<MedicineRoom>>
 
 
     fun getListByAsync(limit: Int): Flow<List<Medicine>> = getRoomListByAsync(limit = limit).map {
@@ -38,7 +38,7 @@ interface MedicineDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE 1=1 LIMIT :limit")
-    fun getRoomListByAsync(limit: Int): Flow<List<RoomMedicine>>
+    fun getRoomListByAsync(limit: Int): Flow<List<MedicineRoom>>
 
 
     fun searchListByNameAsync(query: String, limit: Int): Flow<List<Medicine>> = searchRoomListByNameAsync(query = query, limit = limit).map {
@@ -49,7 +49,7 @@ interface MedicineDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE name LIKE :query LIMIT :limit")
-    fun searchRoomListByNameAsync(query: String, limit: Int): Flow<List<RoomMedicine>>
+    fun searchRoomListByNameAsync(query: String, limit: Int): Flow<List<MedicineRoom>>
 
 
     fun getListByIdAsync(id: String): Flow<List<Medicine>> = getRoomListByIdAsync(id = id).map {
@@ -60,7 +60,7 @@ interface MedicineDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
-    fun getRoomListByIdAsync(id: String): Flow<List<RoomMedicine>>
+    fun getRoomListByIdAsync(id: String): Flow<List<MedicineRoom>>
 
 
     @Query("DELETE FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
@@ -76,7 +76,7 @@ interface MedicineDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdateRoom(room: RoomMedicine)
+    fun insertOrUpdateRoom(room: MedicineRoom)
 
 
     fun insertOrUpdate(item: List<Medicine>) {
@@ -85,7 +85,7 @@ interface MedicineDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdateRoom(rooms: List<RoomMedicine>)
+    fun insertOrUpdateRoom(rooms: List<MedicineRoom>)
 }
 
 @Entity(
@@ -94,7 +94,7 @@ interface MedicineDao {
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class RoomMedicine(
+open class MedicineRoom(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val image: String,
@@ -109,7 +109,7 @@ open class RoomMedicine(
 ) {
     companion object {
 
-        fun Medicine.toRoom() = RoomMedicine(
+        fun Medicine.toRoom() = MedicineRoom(
             id = id,
 
             name = name,
@@ -123,7 +123,7 @@ open class RoomMedicine(
             createTime = createTime
         )
 
-        fun RoomMedicine.toEntity() = Medicine(
+        fun MedicineRoom.toEntity() = Medicine(
             id = id,
 
             name = name,

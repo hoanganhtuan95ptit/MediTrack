@@ -2,6 +2,7 @@ package com.simple.meditrack
 
 import android.app.Application
 import android.content.Context
+import com.simple.meditrack.di.apiModule
 import com.simple.meditrack.di.daoModule
 import com.simple.meditrack.di.repositoryModule
 import com.simple.meditrack.di.usecaseModule
@@ -29,7 +30,7 @@ class App : Application() {
             modules(
 //                appModule,
 //
-//                apiModule,
+                apiModule,
 //
                 daoModule,
 //

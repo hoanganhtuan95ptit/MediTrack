@@ -108,7 +108,17 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
     private fun observeData() = with(viewModel) {
 
-        lockTransition(Tag.VIEW_ITEM.name)
+        lockTransition(Tag.SCREEN.name, Tag.VIEW_ITEM.name)
+
+        screenInfo.observe(viewLifecycleOwner) {
+
+            val binding = binding ?: return@observe
+
+            binding.tvHeader.text = it.header
+            binding.tvAction.text = it.action
+
+            unlockTransition(Tag.SCREEN.name)
+        }
 
         alarmState.observe(viewLifecycleOwner) { state ->
 
@@ -153,6 +163,7 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
     private enum class Tag {
 
+        SCREEN,
         VIEW_ITEM
     }
 }

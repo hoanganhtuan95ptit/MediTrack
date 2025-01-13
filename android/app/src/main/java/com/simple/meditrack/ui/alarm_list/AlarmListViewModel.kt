@@ -7,6 +7,7 @@ import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
+import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.toEvent
@@ -19,8 +20,8 @@ import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatTime
 import com.simple.state.ResultState
-import java.text.DecimalFormat
 
 class AlarmListViewModel(
     private val getListAlarmAsyncUseCase: GetListAlarmAsyncUseCase
@@ -44,6 +45,20 @@ class AlarmListViewModel(
         }
     }
 
+
+    val screenInfo: LiveData<ScreenInfo> = combineSources(theme, translate) {
+
+        val translate = translate.getOrEmpty()
+
+        val info = ScreenInfo(
+            header = translate["title_alarm_list"].orEmpty(),
+            action = translate["action_add_alarm"].orEmpty()
+        )
+
+        postDifferentValue(info)
+    }
+
+
     val alarmState = mediatorLiveData<ResultState<List<Alarm>>> {
 
         postValue(ResultState.Start)
@@ -54,6 +69,7 @@ class AlarmListViewModel(
         }
     }
 
+    @VisibleForTesting
     val alarmViewItem: LiveData<List<ViewItem>> = combineSources(theme, alarmState) {
 
         val theme = theme.value ?: return@combineSources
@@ -73,15 +89,13 @@ class AlarmListViewModel(
 
         state.data.map {
 
-            val hour = DecimalFormat("00").format(it.hour)
-
             AlarmViewItem(
                 id = it.id,
                 data = it,
                 name = it.name,
                 image = it.image,
                 description = it.note,
-                time = "$hour:${DecimalFormat("00").format(it.minute)}"
+                time = "${it.hour.formatTime()}:${it.minute.formatTime()}"
             )
         }.takeIf {
 
@@ -105,4 +119,9 @@ class AlarmListViewModel(
     }
 
     val alarmViewItemEvent: LiveData<Event<List<ViewItem>>> = alarmViewItem.toEvent()
+
+    data class ScreenInfo(
+        val header: CharSequence,
+        val action: CharSequence
+    )
 }

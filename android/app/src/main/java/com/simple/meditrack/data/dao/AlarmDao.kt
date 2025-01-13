@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.simple.core.utils.extentions.toJson
 import com.simple.core.utils.extentions.toListOrEmpty
-import com.simple.meditrack.data.dao.RoomAlarm.Companion.toEntity
-import com.simple.meditrack.data.dao.RoomAlarm.Companion.toRoom
+import com.simple.meditrack.data.dao.AlarmRoom.Companion.toEntity
+import com.simple.meditrack.data.dao.AlarmRoom.Companion.toRoom
 import com.simple.meditrack.entities.Alarm
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -29,7 +29,7 @@ interface AlarmDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE 1=1")
-    fun getRoomListAllAsync(): Flow<List<RoomAlarm>>
+    fun getRoomListAllAsync(): Flow<List<AlarmRoom>>
 
 
     fun getListByIdAsync(id: String): Flow<List<Alarm>> = getRoomListByIdAsync(id = id).map {
@@ -40,7 +40,7 @@ interface AlarmDao {
     }
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
-    fun getRoomListByIdAsync(id: String): Flow<List<RoomAlarm>>
+    fun getRoomListByIdAsync(id: String): Flow<List<AlarmRoom>>
 
 
     @Query("DELETE FROM $TABLE_NAME WHERE id COLLATE NOCASE == :id")
@@ -56,7 +56,7 @@ interface AlarmDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdateRoom(room: RoomAlarm)
+    fun insertOrUpdateRoom(room: AlarmRoom)
 
 
     fun insertOrUpdate(item: List<Alarm>) {
@@ -65,7 +65,7 @@ interface AlarmDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdateRoom(rooms: List<RoomAlarm>)
+    fun insertOrUpdateRoom(rooms: List<AlarmRoom>)
 }
 
 @Entity(
@@ -74,7 +74,7 @@ interface AlarmDao {
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class RoomAlarm(
+open class AlarmRoom(
     val id: String = UUID.randomUUID().toString(),
     val idInt: Int = (System.currentTimeMillis() / 1000).toInt(),
 
@@ -95,7 +95,7 @@ open class RoomAlarm(
 ) {
     companion object {
 
-        fun Alarm.toRoom() = RoomAlarm(
+        fun Alarm.toRoom() = AlarmRoom(
             id = id,
             idInt = idInt,
 
@@ -115,7 +115,7 @@ open class RoomAlarm(
             createTime = createTime
         )
 
-        fun RoomAlarm.toEntity() = Alarm(
+        fun AlarmRoom.toEntity() = Alarm(
             id = id,
             idInt = idInt,
 

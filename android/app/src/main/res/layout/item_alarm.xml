@@ -59,7 +59,6 @@
         android:id="@+id/iv_image"
         android:layout_width="90dp"
         android:layout_height="90dp"
-        android:src="@drawable/img_reminder_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </com.simple.coreapp.ui.view.round.RoundConstraintLayout>
