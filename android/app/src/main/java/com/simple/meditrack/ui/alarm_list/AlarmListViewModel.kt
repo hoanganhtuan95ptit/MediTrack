@@ -51,7 +51,7 @@ class AlarmListViewModel(
         val translate = translate.getOrEmpty()
 
         val info = ScreenInfo(
-            header = translate["title_alarm_list"].orEmpty(),
+            header = translate["title_screen_list_alarm"].orEmpty(),
             action = translate["action_add_alarm"].orEmpty()
         )
 

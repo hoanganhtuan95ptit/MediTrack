@@ -244,11 +244,11 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
     private fun observeData() = with(viewModel) {
 
-        lockTransition(Tag.TITLE.name, Tag.BUTTON.name, Tag.ACTION_1.name)
+        lockTransition(Tag.TITLE.name, Tag.BUTTON.name)
 
-        title.observe(viewLifecycleOwner) {
+        title.asFlow().launchCollect(viewLifecycleOwner) {
 
-            val binding = binding ?: return@observe
+            val binding = binding ?: return@launchCollect
 
             binding.frameHeader.tvTitle.text = it
 
@@ -259,22 +259,15 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
             val binding = binding ?: return@launchCollect
 
-            binding.tvAction.text = it.title
-            binding.tvAction.isClickable = it.isClicked
-            binding.tvAction.delegate.setBackground(it.background)
+            binding.tvAction.text = it.action0.text
+            binding.tvAction.isClickable = it.action0.isClicked
+            binding.tvAction.delegate.setBackground(it.action0.background)
+
+            binding.tvAction1.text = it.action1.text
+            binding.tvAction1.setVisible(it.action1.isShow)
+            binding.tvAction1.delegate.setBackground(it.action1.background)
 
             unlockTransition(Tag.BUTTON.name)
-        }
-
-        action1Info.asFlow().launchCollect(viewLifecycleOwner) {
-
-            val binding = binding ?: return@launchCollect
-
-            binding.tvAction1.text = it.title
-            binding.tvAction1.setVisible(it.isShow)
-            binding.tvAction1.delegate.setBackground(it.background)
-
-            unlockTransition(Tag.ACTION_1.name)
         }
 
         viewItemListEvent.launchCollect(viewLifecycleOwner) { list, anim ->
@@ -314,7 +307,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
     private enum class Tag {
 
-        TITLE, BUTTON, ACTION_1, VIEW_ITEM
+        TITLE, BUTTON, VIEW_ITEM
     }
 }
 

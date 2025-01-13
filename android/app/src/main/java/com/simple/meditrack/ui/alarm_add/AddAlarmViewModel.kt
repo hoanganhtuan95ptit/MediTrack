@@ -42,13 +42,14 @@ import com.simple.meditrack.ui.view.TextStyle
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
+import com.simple.meditrack.utils.exts.formatTime
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.isStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
+import java.util.Calendar
 import java.util.UUID
 
 class AddAlarmViewModel(
@@ -81,10 +82,12 @@ class AddAlarmViewModel(
 
         getAlarmByIdAsyncUseCase.execute(GetAlarmByIdAsyncUseCase.Param(id = alarmId.value ?: return@combineSources)).collect {
 
+            val calendar = Calendar.getInstance()
+
             val alarm = it ?: Alarm(
                 id = "",
-                hour = 0,
-                minute = 0,
+                hour = calendar.get(Calendar.HOUR_OF_DAY),
+                minute = calendar.get(Calendar.MINUTE),
 
                 image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
 
@@ -95,18 +98,19 @@ class AddAlarmViewModel(
         }
     }
 
-    val title: LiveData<CharSequence> = combineSources(theme, alarm, translate) {
+    val title: LiveData<CharSequence> = combineSources(theme, translate, alarm) {
 
         val theme = theme.value ?: return@combineSources
-        val alarm = alarm.value ?: return@combineSources
         val translate = translate.value ?: return@combineSources
+
+        val alarm = alarm.value ?: return@combineSources
 
         val text = if (alarm.id.isBlank()) {
 
-            translate["Thêm thông báo"].orEmpty()
+            translate["title_screen_add_alarm"].orEmpty()
         } else {
 
-            translate["Thông báo"].orEmpty()
+            translate["title_screen_update_alarm"].orEmpty()
         }
 
         postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
@@ -165,7 +169,7 @@ class AddAlarmViewModel(
         TextViewItem(
             id = Id.TIME,
             data = listOf(hour, minute),
-            text = "${DecimalFormat("00").format(hour)}:${DecimalFormat("00").format(minute)}".with(ForegroundColorSpan(theme.colorOnSurface)),
+            text = "${hour.formatTime()}:${minute.formatTime()}".with(ForegroundColorSpan(theme.colorOnSurface)),
             image = TextViewItem.Image(
                 end = R.drawable.ic_arrow_down_24dp
             ),
@@ -192,14 +196,14 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["Giờ (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.TIME, text = translate["title_enter_time"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NAME,
-            hint = translate["Nhập tên thông báo"].orEmpty(),
+            hint = translate["hint_enter_name"].orEmpty(),
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NAME }?.text?.toString() ?: alarm.value?.name.orEmpty(),
             background = Background(
                 strokeColor = theme.colorDivider,
@@ -209,14 +213,14 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thông báo (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["title_enter_name"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NOTE,
-            hint = translate["Nhập ghi chú"].orEmpty(),
+            hint = translate["hint_enter_note"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: alarm.value?.note.orEmpty(),
             background = Background(
@@ -227,13 +231,13 @@ class AddAlarmViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["Ghi chú"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_note"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         list.add(SpaceViewItem(height = DP.DP_16))
-        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["Thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+        list.add(TextViewItem(id = "TITLE_" + Id.MEDICINE, text = translate["title_enter_medicine"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
 
         medicineMap.map {
 
@@ -258,7 +262,7 @@ class AddAlarmViewModel(
 
         TextViewItem(
             id = Id.ADD_MEDICINE,
-            text = translate["Thêm thuốc"].orEmpty(),
+            text = translate["action_medicine_item"].orEmpty(),
             image = TextViewItem.Image(
                 end = R.drawable.ic_add_circle_24dp
             ),
@@ -299,7 +303,7 @@ class AddAlarmViewModel(
 
     val insertOrUpdateState: LiveData<ResultState<Alarm>> = MediatorLiveData()
 
-    val actionInfo: LiveData<ActionInfo> = listenerSources(theme, alarm, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
+    val actionInfo: LiveData<ButtonInfo> = listenerSources(theme, alarm, translate, medicineMap, viewItemList, refreshButtonInfo, insertOrUpdateState) {
 
         val theme = theme.value ?: return@listenerSources
         val alarm = alarm.value ?: return@listenerSources
@@ -326,18 +330,18 @@ class AddAlarmViewModel(
         val isLoading = insertOrUpdateState.value.isStart()
         val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange
 
-        val info = ActionInfo(
-            title = if (isNameBlank) {
-                translate["Vui lòng nhập tên thông báo"].orEmpty()
+        val action0 = ActionInfo(
+            text = if (isNameBlank) {
+                translate["message_please_enter_name_alarm"].orEmpty()
             } else if (isMedicineBlank) {
-                translate["Vui lòng thêm thuốc"].orEmpty()
+                translate["message_please_add_medicine"].orEmpty()
             } else if (alarm.id.isBlank()) {
-                translate["Thêm thông báo"].orEmpty()
+                translate["action_add_alarm"].orEmpty()
             } else {
-                translate["Cập nhật thông báo"].orEmpty()
+                translate["action_update_alarm"].orEmpty()
             },
+            isShow = true,
             isClicked = isClicked,
-            isLoading = isLoading,
             background = Background(
                 backgroundColor = if (isClicked) {
                     theme.colorPrimary
@@ -347,24 +351,21 @@ class AddAlarmViewModel(
             )
         )
 
-        postDifferentValueIfActive(info)
-    }
-
-    val action1Info: LiveData<Action1Info> = listenerSources(theme, alarm, deleteAlarmState) {
-
-        val theme = theme.value ?: return@listenerSources
-        val alarm = alarm.value ?: return@listenerSources
-        val translate = translate.value ?: return@listenerSources
-
         val isShow = alarm.id.isNotBlank()
 
-        val info = Action1Info(
-            title = if (isShow) {
-                translate["Xóa thông báo"].orEmpty().with(ForegroundColorSpan(theme.colorError))
+        val action1 = ActionInfo(
+            text = if (isShow) {
+                translate["action_delete_alarm"].orEmpty().with(ForegroundColorSpan(theme.colorError))
             } else {
                 translate[""].orEmpty()
             },
-            isShow = isShow
+            isShow = isShow,
+            isClicked = true
+        )
+
+        val info = ButtonInfo(
+            action0 = action0,
+            action1 = action1
         )
 
         postDifferentValueIfActive(info)
@@ -461,18 +462,17 @@ class AddAlarmViewModel(
         }
     }
 
-    data class ActionInfo(
-        val title: String,
-        val isClicked: Boolean,
-        val isLoading: Boolean,
-        val background: Background,
+    data class ButtonInfo(
+        val action0: ActionInfo,
+        val action1: ActionInfo
     )
 
-    data class Action1Info(
-        val title: CharSequence,
+    data class ActionInfo(
+        val text: CharSequence,
 
         val isShow: Boolean,
+        val isClicked: Boolean,
 
-        val background: Background? = null,
+        val background: Background? = null
     )
 }
