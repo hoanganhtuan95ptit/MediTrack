@@ -93,10 +93,10 @@ class AddMedicineViewModel(
 
         val text = if (medicine.id.isBlank()) {
 
-            translate["Thêm thuốc"].orEmpty()
+            translate["title_screen_add_medicine"].orEmpty()
         } else {
 
-            translate["Thuốc"].orEmpty()
+            translate["title_screen_update_medicine"].orEmpty()
         }
 
         postDifferentValue(text.with(ForegroundColorSpan(theme.colorOnBackground)))
@@ -154,7 +154,7 @@ class AddMedicineViewModel(
 
         InputViewItem(
             id = Id.NAME,
-            hint = translate["Nhập tên thuốc"].orEmpty(),
+            hint = translate["hint_enter_medicine_name"].orEmpty(),
             text = name,
             background = Background(
                 strokeColor = theme.colorDivider,
@@ -163,7 +163,7 @@ class AddMedicineViewModel(
             )
         ).let {
 
-            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["Tên thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.NAME, text = translate["title_enter_medicine_name"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -171,7 +171,7 @@ class AddMedicineViewModel(
         TextViewItem(
             id = Id.UNIT,
             data = unit,
-            text = translate[unit.name].orEmpty(),
+            text = translate[unit.name.lowercase()].orEmpty(),
             image = TextViewItem.Image(
                 end = R.drawable.ic_arrow_down_24dp
             ),
@@ -189,14 +189,14 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["Loại thuốc (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.UNIT, text = translate["title_enter_medicine_unit"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         InputViewItem(
             id = Id.NOTE,
-            hint = translate["Nhập ghi chú"].orEmpty(),
+            hint = translate["hint_enter_medicine_note"].orEmpty(),
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.NOTE }?.text?.toString() ?: medicine?.note.orEmpty(),
             background = Background(
@@ -207,14 +207,14 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["Ghi chú"].orEmpty()))
+            list.add(TextViewItem(id = "TITLE_" + Id.NOTE, text = translate["title_enter_medicine_note"].orEmpty()))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
 
         CheckboxViewItem(
             id = "CHECK_${Id.QUANTITY}",
-            text = translate["Nhận thông báo khi gần hết thuốc"].orEmpty(),
+            text = translate["message_receive_notification_medicine"].orEmpty(),
             image = if (isLowOnMedication) {
                 R.drawable.ic_tick_circle_24dp
             } else {
@@ -228,7 +228,7 @@ class AddMedicineViewModel(
 
         if (isLowOnMedication) InputViewItem(
             id = Id.QUANTITY,
-            hint = translate["Nhập số lượng thuốc"].orEmpty(),
+            hint = translate["hint_enter_medicine_quantity"].orEmpty(),
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL,
             text = value?.filterIsInstance<InputViewItem>()?.find { it.id == Id.QUANTITY }?.text?.toString() ?: medicine?.quantity?.takeIf { it > 0 }?.formatQuality() ?: "0",
             background = Background(
@@ -239,7 +239,7 @@ class AddMedicineViewModel(
         ).let {
 
             list.add(SpaceViewItem(height = DP.DP_16))
-            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["Số lượng (✶)"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
+            list.add(TextViewItem(id = "TITLE_" + Id.QUANTITY, text = translate["title_enter_medicine_quantity"].orEmpty().with("(✶)", ForegroundColorSpan(theme.colorError))))
             list.add(SpaceViewItem(height = DP.DP_8))
             list.add(it)
         }
@@ -285,13 +285,13 @@ class AddMedicineViewModel(
 
         val action0 = ActionInfo(
             text = if (isNameBlank) {
-                translate["Vui lòng nhập tên thuốc"].orEmpty()
+                translate["message_please_enter_medicine_name"].orEmpty()
             } else if (isQuantityBlank) {
-                translate["Vui lòng nhập số lượng thuốc"].orEmpty()
+                translate["message_please_enter_medicine_quantity"].orEmpty()
             } else if (medicineId.value.isNullOrBlank()) {
-                translate["Thêm thuốc"].orEmpty()
+                translate["action_add_medicine"].orEmpty()
             } else {
-                translate["Cập nhật thuốc"].orEmpty()
+                translate["action_update_medicine"].orEmpty()
             },
 
             isShow = true,
@@ -308,7 +308,7 @@ class AddMedicineViewModel(
 
         val action1 = ActionInfo(
             text = if (medicine.id.isNotBlank()) {
-                translate["Xóa thuốc"].orEmpty().with(ForegroundColorSpan(theme.colorError))
+                translate["action_delete_medicine"].orEmpty().with(ForegroundColorSpan(theme.colorError))
             } else {
                 translate[""].orEmpty()
             },
