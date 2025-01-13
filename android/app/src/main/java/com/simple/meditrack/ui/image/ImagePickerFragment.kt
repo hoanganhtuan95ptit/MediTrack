@@ -1,4 +1,4 @@
-package com.simple.meditrack.ui.alarm_add.image
+package com.simple.meditrack.ui.image
 
 import android.os.Bundle
 import android.view.View

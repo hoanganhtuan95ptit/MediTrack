@@ -53,7 +53,7 @@ class ChooseUnitViewModel : TransitionViewModel() {
 
         TextViewItem(
             id = Id.NAME,
-            text = translate["Chọn loại thuốc"].orEmpty(),
+            text = translate["title_screen_pick_unit"].orEmpty(),
             textStyle = TextStyle(
                 textSize = 20f,
                 textGravity = Gravity.CENTER
@@ -87,7 +87,7 @@ class ChooseUnitViewModel : TransitionViewModel() {
     private fun Medicine.Unit.toViewItem(unitSelected: Medicine.Unit, theme: AppTheme, translate: Map<String, String>) = TextViewItem(
         id = Id.UNIT + "_" + this.name,
         data = this,
-        text = translate[this.name].orEmpty(),
+        text = translate[this.name.lowercase()].orEmpty(),
         size = Size(
             width = ViewGroup.LayoutParams.WRAP_CONTENT,
             height = ViewGroup.LayoutParams.WRAP_CONTENT

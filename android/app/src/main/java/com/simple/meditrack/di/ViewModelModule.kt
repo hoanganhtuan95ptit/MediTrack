@@ -2,7 +2,7 @@ package com.simple.meditrack.di
 
 import com.simple.meditrack.ui.MainViewModel
 import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
-import com.simple.meditrack.ui.alarm_add.image.ImagePickerViewModel
+import com.simple.meditrack.ui.image.ImagePickerViewModel
 import com.simple.meditrack.ui.medicine_item_add.AddMedicineItemViewModel
 import com.simple.meditrack.ui.unit.ChooseUnitViewModel
 import com.simple.meditrack.ui.alarm_list.AlarmListViewModel

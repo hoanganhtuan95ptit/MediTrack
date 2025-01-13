@@ -1,5 +1,24 @@
 package com.simple.meditrack
 
+val DEFAULT_IMAGE = listOf(
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_1.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_2.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_3.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_4.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_5.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_6.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_7.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_8.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_9.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_10.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_11.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_12.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_13.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_14.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_15.png",
+    "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_16.png",
+)
+
 val DEFAULT_TRANSLATE = mapOf(
     "title_screen_list_alarm" to "Alarms",
     "title_screen_add_alarm" to "Add Alarm",
@@ -70,3 +89,4 @@ val DEFAULT_TRANSLATE = mapOf(
     "quality_number" to "\$quality \$unit left",
     "quality_unlimited" to "Unlimited \$unit"
 )
+
