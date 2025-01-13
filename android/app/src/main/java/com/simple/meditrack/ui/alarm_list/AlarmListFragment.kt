@@ -15,7 +15,6 @@ import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
 import com.simple.adapter.MultiAdapter
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
@@ -26,9 +25,10 @@ import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
-import com.simple.meditrack.databinding.FragmentAlarmListBinding
+import com.simple.meditrack.databinding.FragmentPageListBinding
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmAdapter
 import com.simple.meditrack.ui.base.adapters.EmptyAdapter
+import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
@@ -36,7 +36,7 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.ResultState
 import kotlinx.coroutines.launch
 
-class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmListViewModel>() {
+class AlarmListFragment : TransitionFragment<FragmentPageListBinding, AlarmListViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
@@ -112,10 +112,12 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
 
         screenInfo.observe(viewLifecycleOwner) {
 
+            val theme = theme.value ?: return@observe
             val binding = binding ?: return@observe
 
             binding.tvHeader.text = it.header
             binding.tvAction.text = it.action
+            binding.ivAction.setColorFilter(theme.colorOnPrimary)
 
             unlockTransition(Tag.SCREEN.name)
         }

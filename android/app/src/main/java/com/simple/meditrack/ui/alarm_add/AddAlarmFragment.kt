@@ -120,13 +120,13 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
                     image = R.drawable.img_delete,
 
-                    positive = translate["Xóa"].orEmpty(),
-                    negative = translate["Đóng"].orEmpty(),
+                    positive = translate["action_delete"].orEmpty(),
+                    negative = translate["action_close"].orEmpty(),
 
                     keyRequestPositive = "DELETE",
 
-                    title = translate["Xóa thông báo"].orEmpty(),
-                    message = translate["Bạn có chắc chắn muốn xóa thông báo không"].orEmpty(),
+                    title = translate["title_delete_alarm"].orEmpty(),
+                    message = translate["message_delete_alarm"].orEmpty(),
                 )
             }
         }

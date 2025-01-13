@@ -53,11 +53,12 @@ class MedicineListViewModel(
 
     val screenInfo: LiveData<ScreenInfo> = combineSources(theme, translate) {
 
+        val theme = theme.value?: return@combineSources
         val translate = translate.getOrEmpty()
 
         val info = ScreenInfo(
             header = translate["title_screen_list_medicine"].orEmpty(),
-            action = translate["action_add_medicine"].orEmpty()
+            action = translate["action_add_medicine"].orEmpty().with(ForegroundColorSpan(theme.colorOnPrimary))
         )
 
         postDifferentValue(info)

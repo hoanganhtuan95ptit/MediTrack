@@ -1,5 +1,6 @@
 package com.simple.meditrack.ui.alarm_list
 
+import android.text.style.ForegroundColorSpan
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
@@ -21,6 +22,7 @@ import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatTime
+import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 
 class AlarmListViewModel(
@@ -48,11 +50,12 @@ class AlarmListViewModel(
 
     val screenInfo: LiveData<ScreenInfo> = combineSources(theme, translate) {
 
+        val theme = theme.value ?: return@combineSources
         val translate = translate.getOrEmpty()
 
         val info = ScreenInfo(
             header = translate["title_screen_list_alarm"].orEmpty(),
-            action = translate["action_add_alarm"].orEmpty()
+            action = translate["action_add_alarm"].orEmpty().with(ForegroundColorSpan(theme.colorOnPrimary))
         )
 
         postDifferentValue(info)

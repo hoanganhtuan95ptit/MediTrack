@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
@@ -21,18 +20,15 @@ import com.simple.coreapp.utils.extentions.submitListAwait
 import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
-import com.simple.meditrack.databinding.FragmentMedicineListBinding
-import com.simple.meditrack.ui.alarm_list.AlarmListFragment
+import com.simple.meditrack.databinding.FragmentPageListBinding
 import com.simple.meditrack.ui.base.adapters.EmptyAdapter
 import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineAdapter
-import com.simple.meditrack.utils.AlarmUtils
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect
 import com.simple.meditrack.utils.sendDeeplink
-import kotlinx.coroutines.launch
 
-class MedicineListFragment : TransitionFragment<FragmentMedicineListBinding, MedicineListViewModel>() {
+class MedicineListFragment : TransitionFragment<FragmentPageListBinding, MedicineListViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
 
@@ -98,10 +94,12 @@ class MedicineListFragment : TransitionFragment<FragmentMedicineListBinding, Med
 
         screenInfo.observe(viewLifecycleOwner) {
 
+            val theme = theme.value ?: return@observe
             val binding = binding ?: return@observe
 
             binding.tvHeader.text = it.header
             binding.tvAction.text = it.action
+            binding.ivAction.setColorFilter(theme.colorOnPrimary)
 
             unlockTransition(Tag.SCREEN.name)
         }
