@@ -29,6 +29,7 @@ import com.simple.meditrack.ui.base.adapters.TextAdapter
 import com.simple.meditrack.ui.notification.adapters.NotificationMedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.NotificationUtils
+import com.simple.meditrack.utils.RingtoneUtils
 import com.simple.state.doSuccess
 import com.simple.state.toSuccess
 import kotlinx.coroutines.flow.filterNotNull
@@ -117,7 +118,8 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
 
         alarmState.observe(viewLifecycleOwner) { state ->
 
-            state.doSuccess {
+            if (arguments?.getBoolean(Param.FROM_NOTIFICATION) != true) state.doSuccess {
+
                 NotificationUtils.sendNotification(requireContext(), it)
             }
         }
@@ -125,6 +127,16 @@ class NotificationFragment : TransitionFragment<FragmentNotificationBinding, Not
         actionState.observe(viewLifecycleOwner) {
 
             val alarm = alarmState.value?.toSuccess()?.data
+
+            if (arguments?.getBoolean(Param.FROM_NOTIFICATION) != true && it == NotificationViewModel.ActionState.NOT_VIEW) {
+
+                RingtoneUtils.play()
+            }
+
+            if (it == NotificationViewModel.ActionState.VIEWED) {
+
+                RingtoneUtils.stop()
+            }
 
             if (alarm != null && it == NotificationViewModel.ActionState.VIEWED) {
 

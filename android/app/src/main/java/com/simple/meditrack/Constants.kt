@@ -31,6 +31,7 @@ object Param {
     const val MEDICINE = "MEDICINE"
     const val IMAGE_PATH = "IMAGE_PATH"
     const val LANGUAGE_CODE = "LANGUAGE_CODE"
+    const val FROM_NOTIFICATION = "FROM_NOTIFICATION"
     const val TRANSITION_DURATION = "TRANSITION_DURATION"
 
     const val VOICE_ID = "VOICE_ID"

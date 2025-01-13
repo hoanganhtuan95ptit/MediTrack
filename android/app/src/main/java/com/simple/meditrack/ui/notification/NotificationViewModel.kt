@@ -51,7 +51,7 @@ class NotificationViewModel(
 
         getKeyTranslateAsyncUseCase.execute().collect {
 
-            appTranslate.tryEmit(it)
+            postDifferentValue(it)
         }
     }
 
