@@ -96,8 +96,8 @@ class AlarmListFragment : TransitionFragment<FragmentAlarmListBinding, AlarmList
                 transitionName to view
             )
 
-//            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
-            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
+            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
+//            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
         }
 
         adapter = MultiAdapter(alarmAdapter, EmptyAdapter()).apply {

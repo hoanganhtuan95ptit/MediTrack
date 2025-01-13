@@ -16,7 +16,9 @@ import com.simple.meditrack.utils.appTranslate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 
-class MainViewModel(private val getKeyTranslateAsyncUseCase: GetKeyTranslateAsyncUseCase) : BaseViewModel() {
+class MainViewModel(
+    private val getKeyTranslateAsyncUseCase: GetKeyTranslateAsyncUseCase
+) : BaseViewModel() {
 
     @VisibleForTesting
     val keyTranslateSync: LiveData<Map<String, String>> = mediatorLiveData {

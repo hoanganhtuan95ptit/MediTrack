@@ -9,10 +9,12 @@ import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.handler
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.get
+import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postValue
 import com.simple.meditrack.R
+import com.simple.meditrack.domain.usecases.GetKeyTranslateAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.CloseAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
@@ -21,6 +23,7 @@ import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewIte
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
+import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.toSuccess
@@ -30,7 +33,8 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(
     private val closeAlarmUseCase: CloseAlarmUseCase,
-    private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase
+    private val getAlarmByIdAsyncUseCase: GetAlarmByIdAsyncUseCase,
+    private val getKeyTranslateAsyncUseCase: GetKeyTranslateAsyncUseCase
 ) : TransitionViewModel() {
 
     val id: LiveData<String> = mediatorLiveData { }
@@ -43,6 +47,15 @@ class NotificationViewModel(
         }
     }
 
+    val translate: LiveData<Map<String, String>> = mediatorLiveData {
+
+        getKeyTranslateAsyncUseCase.execute().collect {
+
+            appTranslate.tryEmit(it)
+        }
+    }
+
+
     val alarmState: LiveData<ResultState<Alarm>> = combineSources(id) {
 
         postValue(ResultState.Start)
@@ -52,7 +65,6 @@ class NotificationViewModel(
             postDifferentValue(ResultState.Success(it!!))
         }
     }
-
 
     val titleInfo: LiveData<TitleInfo> = combineSources(alarmState) {
 
@@ -161,18 +173,20 @@ class NotificationViewModel(
         postDifferentValue(list)
     }
 
-    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, actionState) {
+    val buttonInfo: LiveData<ButtonInfo> = combineSources(theme, translate, actionState) {
 
         val theme = theme.get()
+        val translate = translate.getOrEmpty()
+
         val actionState = actionState.get()
 
 
         val title = if (actionState == ActionState.NOT_VIEW) {
-            "Tôi đã nhìn thấy thông báo"
+            translate["message_seen_notification"].orEmpty()
         } else if (actionState == ActionState.VIEWED) {
-            "Vui lòng tích chọn các loại thuốc đã "
+            translate["message_please_select_medicine"].orEmpty()
         } else {
-            "Đã uống thuốc"
+            translate["message_took_medicine"].orEmpty()
         }
 
         val info = ButtonInfo(
@@ -253,6 +267,3 @@ class NotificationViewModel(
         NONE, FOCUS
     }
 }
-
-//https://www.flaticon.com/stickers-pack/tiger-expression-1?word=animal
-//https://www.flaticon.com/stickers-pack/savannah-1?word=animal

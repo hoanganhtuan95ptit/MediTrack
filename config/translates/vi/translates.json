@@ -55,6 +55,9 @@
   "message_quality_is_only_enough_for_today": "Thuốc này chỉ đủ dùng trong hôm nay",
   "message_quality_is_only_enough_for_x_day": "Thuốc này chỉ đủ dùng trong $day ngày",
   "message_quality_is_enough_for_x_day": "Thuốc này đủ dùng trong $day ngày",
+  "message_seen_notification": "Tôi đã nhìn thấy thông báo",
+  "message_please_select_medicine": "Vui lòng tích chọn các loại thuốc đã",
+  "message_took_medicine": "Đã uống thuốc",
 
   "unit_tablet": "viên",
   "unit_liquid": "ml",
