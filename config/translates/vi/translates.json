@@ -4,6 +4,7 @@
   "title_screen_update_alarm": "Cập nhật thông báo",
   "title_screen_add_medicine_item": "Thêm thuốc",
   "title_screen_update_medicine_item": "Cập nhật thuốc",
+  "title_screen_list_medicine": "Thuốc",
 
   "title_enter_alarm_time": "Giờ (✶)",
   "title_enter_alarm_name": "Tên thông báo (✶)",
@@ -25,6 +26,7 @@
   "action_add_alarm": "Thêm thông báo",
   "action_update_alarm": "Cập nhật thông báo",
   "action_delete_alarm": "Xóa thông báo",
+  "action_add_medicine": "Thêm thuốc",
   "action_add_medicine_item": "Thêm thuốc",
   "action_update_medicine_item": "Cập nhật thuốc",
 
@@ -35,6 +37,12 @@
   "message_please_enter_medicine_item_dosage": "Vui lòng nhập liều lượng dùng",
   "message_please_enter_medicine_item_quantity": "Vui lòng nhập số lượng thuốc",
 
-  "unit_tablet": "Viên",
-  "unit_liquid": "ml"
+  "unit_tablet": "viên",
+  "unit_liquid": "ml",
+
+  "tablet": "Dạng viên",
+  "liquid": "Dạng lỏng",
+
+  "quality_number": "Còn $quality $unit",
+  "quality_unlimited": "Không giới hạn $unit"
 }

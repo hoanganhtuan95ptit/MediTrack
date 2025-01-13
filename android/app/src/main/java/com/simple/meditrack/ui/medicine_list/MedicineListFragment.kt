@@ -22,6 +22,7 @@ import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentMedicineListBinding
+import com.simple.meditrack.ui.alarm_list.AlarmListFragment
 import com.simple.meditrack.ui.base.adapters.EmptyAdapter
 import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineAdapter
@@ -93,7 +94,17 @@ class MedicineListFragment : TransitionFragment<FragmentMedicineListBinding, Med
 
     private fun observeData() = with(viewModel) {
 
-        lockTransition(Tag.VIEW_ITEM.name)
+        lockTransition(Tag.SCREEN.name, Tag.VIEW_ITEM.name)
+
+        screenInfo.observe(viewLifecycleOwner) {
+
+            val binding = binding ?: return@observe
+
+            binding.tvHeader.text = it.header
+            binding.tvAction.text = it.action
+
+            unlockTransition(Tag.SCREEN.name)
+        }
 
         medicineViewItemEvent.launchCollect(viewLifecycleOwner) { it, anim ->
 
@@ -116,16 +127,11 @@ class MedicineListFragment : TransitionFragment<FragmentMedicineListBinding, Med
                 unlockTransition(Tag.VIEW_ITEM.name)
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-
-            AlarmUtils.setDailyAlarm(requireActivity())
-        }
     }
 
     private enum class Tag {
 
-        VIEW_ITEM
+        SCREEN, VIEW_ITEM
     }
 }
 

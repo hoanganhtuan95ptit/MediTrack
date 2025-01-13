@@ -9,6 +9,7 @@ import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
+import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.toEvent
@@ -16,6 +17,7 @@ import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.GetListMedicineAsyncUseCase
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
+import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
 import com.simple.meditrack.ui.base.adapters.EmptyViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
@@ -48,6 +50,19 @@ class MedicineListViewModel(
             postDifferentValue(it)
         }
     }
+
+    val screenInfo: LiveData<ScreenInfo> = combineSources(theme, translate) {
+
+        val translate = translate.getOrEmpty()
+
+        val info = ScreenInfo(
+            header = translate["title_screen_list_medicine"].orEmpty(),
+            action = translate["action_add_medicine"].orEmpty()
+        )
+
+        postDifferentValue(info)
+    }
+
 
     @VisibleForTesting
     val medicineState = mediatorLiveData<ResultState<List<Medicine>>> {
@@ -125,11 +140,11 @@ class MedicineListViewModel(
 
 
         (if (quantity == Medicine.UNLIMITED) {
-            translate["Không giới hạn"] + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
+            translate["quality_unlimited"].orEmpty().replace("\$unit", translate["unit_" + unit.toUnit()?.name.orEmpty().lowercase()].orEmpty())
         } else if (quantity <= 0) {
             null
         } else {
-            translate["Còn"] + " " + quantity.formatQuality() + " " + translate[unit.toUnit()?.name.orEmpty()].orEmpty()
+            translate["quality_number"].orEmpty().replace("\$quality", quantity.formatQuality()).replace("\$unit", translate["unit_" + unit.toUnit()?.name.orEmpty().lowercase()].orEmpty())
         })?.let {
             descriptionList.add(Pair(it, theme.colorOnSurfaceVariant))
         }
@@ -173,4 +188,9 @@ class MedicineListViewModel(
             description = description,
         )
     }
+
+    data class ScreenInfo(
+        val header: CharSequence,
+        val action: CharSequence
+    )
 }
