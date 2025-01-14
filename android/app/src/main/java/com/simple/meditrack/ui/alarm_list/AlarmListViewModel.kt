@@ -29,7 +29,6 @@ class AlarmListViewModel(
     private val getListAlarmAsyncUseCase: GetListAlarmAsyncUseCase
 ) : TransitionViewModel() {
 
-    @VisibleForTesting
     val theme: LiveData<AppTheme> = mediatorLiveData {
 
         appTheme.collect {
@@ -38,7 +37,6 @@ class AlarmListViewModel(
         }
     }
 
-    @VisibleForTesting
     val translate: LiveData<Map<String, String>> = mediatorLiveData {
 
         appTranslate.collect {

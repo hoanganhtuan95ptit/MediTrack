@@ -1,9 +1,16 @@
 package com.simple.meditrack.ui.alarm_add
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.lifecycle.asFlow
@@ -48,6 +55,7 @@ import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.doSuccess
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
@@ -56,6 +64,20 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewModel>() {
 
     private var adapter by autoCleared<MultiAdapter>()
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+
+        if (isGranted) {
+            viewModel.insertOrUpdateAlarm()
+        }
+    }
+
+    private val overlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+        if (Settings.canDrawOverlays(requireContext())) {
+            checkAndAcceptPermissionNotification()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +126,7 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
 
         binding.tvAction.setDebouncedClickListener {
 
-            viewModel.insertOrUpdateAlarm()
+            checkAndAcceptPermissionDrawOverlay()
         }
 
         binding.tvAction1.setDebouncedClickListener {
@@ -302,6 +324,81 @@ class AddAlarmFragment : TransitionFragment<FragmentListBinding, AddAlarmViewMod
         arguments.getStringOrEmpty(Param.ID).let {
 
             viewModel.updateId(it)
+        }
+    }
+
+    private fun checkAndAcceptPermissionNotification() {
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+
+            viewModel.insertOrUpdateAlarm()
+            return
+        }
+
+        val keyRequest = "PERMISSION_NOTIFICATION"
+
+        childFragmentManager.setFragmentResultListener(keyRequest, viewLifecycleOwner) { keyRequest, a ->
+
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            val translate = viewModel.translate.asFlow().firstOrNull() ?: return@launch
+
+            awaitConfirm(
+                fragmentManager = childFragmentManager,
+
+                isCancel = false,
+
+                image = R.drawable.img_permission_notification,
+
+                positive = translate["action_accept"].orEmpty(),
+
+                keyRequestPositive = keyRequest,
+
+                title = translate["title_permission_notification"].orEmpty(),
+                message = translate["message_permission_notification"].orEmpty(),
+            )
+        }
+    }
+
+    private fun checkAndAcceptPermissionDrawOverlay() {
+
+
+        if (Settings.canDrawOverlays(requireContext())) {
+
+            checkAndAcceptPermissionNotification()
+            return
+        }
+
+        val keyRequest = "PERMISSION_DRAW_OVERLAY"
+
+        childFragmentManager.setFragmentResultListener(keyRequest, viewLifecycleOwner) { keyRequest, a ->
+
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${requireContext().packageName}"))
+            overlayPermissionLauncher.launch(intent)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            val translate = viewModel.translate.asFlow().firstOrNull() ?: return@launch
+
+            awaitConfirm(
+                fragmentManager = childFragmentManager,
+
+                isCancel = false,
+
+                image = R.drawable.img_permission_draw_overlay,
+
+                positive = translate["action_accept"].orEmpty(),
+
+                keyRequestPositive = keyRequest,
+
+                title = translate["title_permission_draw_overlay"].orEmpty(),
+                message = translate["message_permission_draw_overlay"].orEmpty(),
+            )
         }
     }
 

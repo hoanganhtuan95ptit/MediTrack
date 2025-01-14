@@ -26,6 +26,8 @@
   "title_enter_medicine_item_quantity": "Quantity (✶)",
   "title_delete_alarm": "Delete Alarm",
   "title_delete_medicine": "Delete Medicine",
+  "title_permission_notification": "Grant notification permission",
+  "title_permission_draw_overlay": "Grant permission to draw over other apps",
 
   "hint_enter_alarm_name": "Enter Alarm Name",
   "hint_enter_alarm_note": "Enter Note",
@@ -47,6 +49,7 @@
   "action_update_medicine_item": "Update Medicine",
   "action_delete": "Delete",
   "action_close": "Close",
+  "action_accept": "Accept",
 
   "message_please_enter_name_alarm": "Please enter alarm name",
   "message_please_add_medicine_item": "Please add medicine",
@@ -66,6 +69,8 @@
   "message_took_medicine": "Medicine taken",
   "message_delete_alarm": "Are you sure you want to delete the alarm?",
   "message_delete_medicine": "Are you sure you want to delete the medicine?",
+  "message_permission_notification": "Please enable notifications to receive medication reminders.",
+  "message_permission_draw_overlay": "Please grant permission to draw over other apps so the notification screen can appear.",
 
   "unit_tablet": "tablet",
   "unit_liquid": "ml",

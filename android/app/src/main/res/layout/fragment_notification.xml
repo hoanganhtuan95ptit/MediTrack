@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFD043"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -39,8 +39,7 @@
             android:layout_height="240dp"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:elevation="6dp"
-            tools:src="@drawable/img_reminder_0" />
+            android:elevation="6dp" />
     </LinearLayout>
 
     <com.simple.coreapp.ui.view.round.RoundLinearLayout
@@ -78,7 +77,7 @@
             app:area_margin="4dp"
             app:border_radius="150dp"
             app:bounce_on_start="true"
-            app:outer_color="#FFD043"
+            app:outer_color="?attr/colorPrimary"
             app:slider_height="80dp"
             app:slider_locked="false"
             app:text_color="#000000"

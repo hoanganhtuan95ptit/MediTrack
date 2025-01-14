@@ -332,7 +332,7 @@ class AddAlarmViewModel(
         val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange
 
         val action0 = ActionInfo(
-            text = if (isNameBlank) {
+            text = (if (isNameBlank) {
                 translate["message_please_enter_name_alarm"].orEmpty()
             } else if (isMedicineBlank) {
                 translate["message_please_add_medicine_item"].orEmpty()
@@ -340,7 +340,7 @@ class AddAlarmViewModel(
                 translate["action_add_alarm"].orEmpty()
             } else {
                 translate["action_update_alarm"].orEmpty()
-            },
+            }),
             isShow = true,
             isClicked = isClicked,
             background = Background(

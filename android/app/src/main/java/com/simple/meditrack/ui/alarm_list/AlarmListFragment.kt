@@ -1,12 +1,8 @@
 package com.simple.meditrack.ui.alarm_list
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
@@ -40,14 +36,6 @@ class AlarmListFragment : TransitionFragment<FragmentPageListBinding, AlarmListV
 
     private var adapter by autoCleared<MultiAdapter>()
 
-    private val overlayPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (Settings.canDrawOverlays(requireContext())) {
-            // Quyền được cấp
-        } else {
-            // Quyền bị từ chối
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,12 +54,6 @@ class AlarmListFragment : TransitionFragment<FragmentPageListBinding, AlarmListV
             val transitionName = binding.frameAdd.transitionName
 
             sendDeeplink(Deeplink.ADD_ALARM, extras = bundleOf(Param.ROOT_TRANSITION_NAME to transitionName), sharedElement = mapOf(transitionName to binding.frameAdd))
-        }
-
-        if (!Settings.canDrawOverlays(requireContext())) {
-
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${requireContext().packageName}"))
-            overlayPermissionLauncher.launch(intent)
         }
 
         setupRecyclerView()
@@ -96,8 +78,8 @@ class AlarmListFragment : TransitionFragment<FragmentPageListBinding, AlarmListV
                 transitionName to view
             )
 
-//            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
-            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
+            sendDeeplink(Deeplink.NOTIFICATION, extras = extras, sharedElement = sharedElement)
+//            sendDeeplink(Deeplink.ADD_ALARM, extras = extras, sharedElement = sharedElement)
         }
 
         adapter = MultiAdapter(alarmAdapter, EmptyAdapter()).apply {
