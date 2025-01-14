@@ -4,8 +4,13 @@
 |-------------------------------|-----------------------------------------|-----------------------------------------|-----------------------------------------|-----------------------------------------|
 |![](https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/screenshort/Screenshot_1736851845.png)|![](https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/screenshort/Screenshot_1736851761.png)|![](https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/screenshort/Screenshot_1736851763.png)|![](https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/screenshort/Screenshot_1736851527.png)|![](https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/screenshort/Screenshot_1736851502.png)  
 
-## [Demo Link](https://github.com/hoanganhtuan95ptit/MediTrack/raw/refs/heads/main/android/app-debug.apk)  
+## Demo
 
+#### [Demo APK](https://github.com/hoanganhtuan95ptit/MediTrack/raw/refs/heads/main/android/app-debug.apk)  
+
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="20%">](https://play.google.com/store/apps/details?id=com.bee.frog)
+
+## Description
 
 In the hustle and bustle of daily life, remembering to take your medication on time can be a challenge. However, with the **Medication Reminder App**, you never have to worry about missing a dose again. This app is designed with two special features to help you manage your health more easily and effectively:
 
