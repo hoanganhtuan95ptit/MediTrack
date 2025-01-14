@@ -1,5 +1,6 @@
 package com.simple.meditrack.data.dao
 
+import androidx.annotation.Keep
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -68,10 +69,8 @@ interface AlarmDao {
     fun insertOrUpdateRoom(rooms: List<AlarmRoom>)
 }
 
-@Entity(
-    tableName = TABLE_NAME,
-    primaryKeys = ["id"]
-)
+@Keep
+@Entity(tableName = TABLE_NAME, primaryKeys = ["id"])
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class AlarmRoom(

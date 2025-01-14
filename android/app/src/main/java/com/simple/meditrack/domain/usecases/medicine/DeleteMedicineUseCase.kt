@@ -1,6 +1,5 @@
 package com.simple.meditrack.domain.usecases.medicine
 
-import com.simple.meditrack.domain.repositories.AlarmRepository
 import com.simple.meditrack.domain.repositories.MedicineRepository
 
 class DeleteMedicineUseCase(

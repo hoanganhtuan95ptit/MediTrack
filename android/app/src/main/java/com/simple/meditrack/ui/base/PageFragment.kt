@@ -2,28 +2,30 @@ package com.simple.meditrack.ui.base
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withStateAtLeast
 import com.simple.coreapp.utils.ext.getViewModel
-import com.simple.meditrack.Deeplink
 import com.simple.meditrack.databinding.FragmentPageBinding
 import com.simple.meditrack.ui.MainViewModel
-import com.simple.meditrack.ui.base.transition.TransitionFragment
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
-import com.simple.meditrack.utils.sendDeeplink
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class PageFragment(val index: String) : TransitionFragment<FragmentPageBinding, PageViewModel>() {
+class PageFragment(val index: String) : Fragment() {
 
     private val mainViewModel: MainViewModel by lazy {
         getViewModel(requireActivity(), MainViewModel::class)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentPageBinding.inflate(inflater).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,11 +45,11 @@ class PageFragment(val index: String) : TransitionFragment<FragmentPageBinding, 
                 }
             }.first()
 
-            if (index == "1") {
-                sendDeeplink(Deeplink.ALARM_LIST)
-            } else {
-                sendDeeplink(Deeplink.MEDICINE_LIST)
-            }
+//            if (index == "1") {
+//                sendDeeplink(Deeplink.ALARM_LIST)
+//            } else {
+//                sendDeeplink(Deeplink.MEDICINE_LIST)
+//            }
         }
 
         childFragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -89,5 +91,3 @@ class PageFragment(val index: String) : TransitionFragment<FragmentPageBinding, 
         mainViewModel.updateBottomStatus(index, _status)
     }
 }
-
-class PageViewModel : TransitionViewModel()

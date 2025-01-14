@@ -1,7 +1,6 @@
 package com.simple.meditrack.ui.medicine_list
 
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
@@ -17,7 +16,6 @@ import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.GetListMedicineAsyncUseCase
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
 import com.simple.meditrack.ui.base.adapters.EmptyViewItem
 import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
@@ -27,7 +25,6 @@ import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
-import java.text.DecimalFormat
 
 class MedicineListViewModel(
     private val getListMedicineAsyncUseCase: GetListMedicineAsyncUseCase

@@ -13,7 +13,7 @@ import com.simple.meditrack.data.dao.MedicineDao
 import com.simple.meditrack.data.dao.MedicineRoom
 import org.koin.dsl.module
 
-const val versionDao = 3
+const val versionDao = 1
 
 @Database(entities = [AlarmRoom::class, MedicineRoom::class, KeyTranslateRoom::class], version = versionDao, exportSchema = false)
 abstract class MediTrackRoomDatabase : RoomDatabase() {
@@ -56,8 +56,8 @@ val daoModule = module {
 
     single {
         Room.databaseBuilder(get(), MediTrackRoomDatabase::class.java, "alarm_database")
-            .addMigrations(MIGRATION_1_2)
-            .addMigrations(MIGRATION_2_3)
+//            .addMigrations(MIGRATION_1_2)
+//            .addMigrations(MIGRATION_2_3)
             .build()
     }
 

@@ -23,7 +23,6 @@ import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewIte
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
-import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.toSuccess

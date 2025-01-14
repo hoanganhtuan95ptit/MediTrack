@@ -1,5 +1,6 @@
 package com.simple.meditrack.data.dao
 
+import androidx.annotation.Keep
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -88,10 +89,8 @@ interface MedicineDao {
     fun insertOrUpdateRoom(rooms: List<MedicineRoom>)
 }
 
-@Entity(
-    tableName = TABLE_NAME,
-    primaryKeys = ["id"]
-)
+@Keep
+@Entity(tableName = TABLE_NAME, primaryKeys = ["id"])
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 open class MedicineRoom(

@@ -1,13 +1,10 @@
 package com.simple.meditrack.ui.medicine_list.adapters
 
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.view.updateLayoutParams
 import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
 import com.simple.image.setImage
 import com.simple.meditrack.databinding.ItemMedicineBinding
-import com.simple.meditrack.ui.view.Size
 
 open class MedicineAdapter(onItemClick: (View, MedicineViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<MedicineViewItem, ItemMedicineBinding>(onItemClick) {
 
