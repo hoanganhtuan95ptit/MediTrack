@@ -22,6 +22,7 @@ import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
 import com.simple.coreapp.utils.extentions.toEvent
+import com.simple.meditrack.DEFAULT_IMAGE
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.DeleteAlarmUseCase
@@ -90,7 +91,7 @@ class AddAlarmViewModel(
                 hour = calendar.get(Calendar.HOUR_OF_DAY),
                 minute = calendar.get(Calendar.MINUTE),
 
-                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+                image = DEFAULT_IMAGE,
 
                 item = emptyList()
             )
@@ -331,16 +332,24 @@ class AddAlarmViewModel(
         val isLoading = insertOrUpdateState.value.isStart()
         val isClicked = !isNameBlank && !isMedicineBlank && !isLoading && isChange
 
+        val action0Text = if (isNameBlank) {
+            translate["message_please_enter_name_alarm"].orEmpty()
+        } else if (isMedicineBlank) {
+            translate["message_please_add_medicine_item"].orEmpty()
+        } else if (alarm.id.isBlank()) {
+            translate["action_add_alarm"].orEmpty()
+        } else {
+            translate["action_update_alarm"].orEmpty()
+        }
+
+        val action0TextColor = if (isClicked) {
+            theme.colorOnPrimary
+        } else {
+            theme.colorOnBackgroundVariant
+        }
+
         val action0 = ActionInfo(
-            text = (if (isNameBlank) {
-                translate["message_please_enter_name_alarm"].orEmpty()
-            } else if (isMedicineBlank) {
-                translate["message_please_add_medicine_item"].orEmpty()
-            } else if (alarm.id.isBlank()) {
-                translate["action_add_alarm"].orEmpty()
-            } else {
-                translate["action_update_alarm"].orEmpty()
-            }),
+            text = action0Text.with(ForegroundColorSpan(action0TextColor)),
             isShow = true,
             isClicked = isClicked,
             background = Background(

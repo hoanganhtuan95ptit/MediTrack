@@ -1,6 +1,8 @@
 package com.simple.meditrack
 
-val DEFAULT_IMAGE = listOf(
+val DEFAULT_IMAGE = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_1.png"
+
+val DEFAULT_IMAGES = listOf(
     "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_1.png",
     "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_2.png",
     "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/res/images/img_reminder_3.png",

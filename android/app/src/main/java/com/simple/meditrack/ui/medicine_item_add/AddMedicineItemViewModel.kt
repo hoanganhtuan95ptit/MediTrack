@@ -15,6 +15,7 @@ import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
 import com.simple.coreapp.utils.extentions.postValue
+import com.simple.meditrack.DEFAULT_IMAGE
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.GetMedicineByIdAsyncUseCase
@@ -94,7 +95,8 @@ class AddMedicineItemViewModel(
             val medicine = it ?: Medicine(
                 id = "",
                 name = "",
-                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+                image = DEFAULT_IMAGE
+                ,
             )
 
             postValue(medicine)
@@ -329,19 +331,28 @@ class AddMedicineItemViewModel(
 
         val isClicked = !isNameBlank && !isDosageBlank && !isQuantityBlank
 
+        val text = if (isNameBlank) {
+            translate["message_please_enter_medicine_item_name"].orEmpty()
+        } else if (isDosageBlank) {
+            translate["message_please_enter_medicine_item_dosage"].orEmpty()
+        } else if (isQuantityBlank) {
+            translate["message_please_enter_medicine_item_quantity"].orEmpty()
+        } else if (medicineId.value.isNullOrBlank()) {
+            translate["action_add_medicine_item"].orEmpty()
+        } else {
+            translate["action_update_medicine_item"].orEmpty()
+        }
+
+        val textColor = if (isClicked) {
+            theme.colorOnPrimary
+        } else {
+            theme.colorOnBackgroundVariant
+        }
         val info = ButtonInfo(
-            title = if (isNameBlank) {
-                translate["message_please_enter_medicine_item_name"].orEmpty()
-            } else if (isDosageBlank) {
-                translate["message_please_enter_medicine_item_dosage"].orEmpty()
-            } else if (isQuantityBlank) {
-                translate["message_please_enter_medicine_item_quantity"].orEmpty()
-            } else if (medicineId.value.isNullOrBlank()) {
-                translate["action_add_medicine_item"].orEmpty()
-            } else {
-                translate["action_update_medicine_item"].orEmpty()
-            },
+            title = text.with(ForegroundColorSpan(textColor)),
+
             isClicked = isClicked,
+
             background = Background(
                 backgroundColor = if (isClicked) {
                     theme.colorPrimary
@@ -393,7 +404,7 @@ class AddMedicineItemViewModel(
     }
 
     data class ButtonInfo(
-        val title: String,
+        val title: CharSequence,
         val isClicked: Boolean,
         val background: Background,
     )

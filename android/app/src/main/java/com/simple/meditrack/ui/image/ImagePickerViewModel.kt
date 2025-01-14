@@ -13,7 +13,7 @@ import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
-import com.simple.meditrack.DEFAULT_IMAGE
+import com.simple.meditrack.DEFAULT_IMAGES
 import com.simple.meditrack.ui.base.adapters.ImageViewItem
 import com.simple.meditrack.ui.base.adapters.TextViewItem
 import com.simple.meditrack.ui.view.Size
@@ -56,7 +56,7 @@ class ImagePickerViewModel : BaseViewModel() {
     @VisibleForTesting
     val images: LiveData<List<String>> = MediatorLiveData<List<String>>().apply {
 
-        value = DEFAULT_IMAGE
+        value = DEFAULT_IMAGES
     }
 
     @VisibleForTesting

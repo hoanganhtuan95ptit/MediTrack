@@ -2,7 +2,6 @@ package com.simple.meditrack.ui.medicine_add
 
 import android.text.InputType
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -18,6 +17,7 @@ import com.simple.coreapp.utils.extentions.listenerSources
 import com.simple.coreapp.utils.extentions.mediatorLiveData
 import com.simple.coreapp.utils.extentions.postDifferentValue
 import com.simple.coreapp.utils.extentions.postDifferentValueIfActive
+import com.simple.meditrack.DEFAULT_IMAGE
 import com.simple.meditrack.Id
 import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.DeleteMedicineUseCase
@@ -77,7 +77,7 @@ class AddMedicineViewModel(
             val medicine = it ?: Medicine(
                 id = "",
                 name = "",
-                image = "https://raw.githubusercontent.com/hoanganhtuan95ptit/MediTrack/refs/heads/main/android/app/src/main/res/drawable/img_reminder_0.png",
+                image = DEFAULT_IMAGE,
             )
 
             postValue(medicine)
@@ -283,16 +283,24 @@ class AddMedicineViewModel(
 
         val isClicked = !isNameBlank && !isQuantityBlank && isChange
 
+        val action0Text = if (isNameBlank) {
+            translate["message_please_enter_medicine_name"].orEmpty()
+        } else if (isQuantityBlank) {
+            translate["message_please_enter_medicine_quantity"].orEmpty()
+        } else if (medicineId.value.isNullOrBlank()) {
+            translate["action_add_medicine"].orEmpty()
+        } else {
+            translate["action_update_medicine"].orEmpty()
+        }
+
+        val action0TextColor = if (isClicked) {
+            theme.colorOnPrimary
+        } else {
+            theme.colorOnBackgroundVariant
+        }
+
         val action0 = ActionInfo(
-            text = if (isNameBlank) {
-                translate["message_please_enter_medicine_name"].orEmpty()
-            } else if (isQuantityBlank) {
-                translate["message_please_enter_medicine_quantity"].orEmpty()
-            } else if (medicineId.value.isNullOrBlank()) {
-                translate["action_add_medicine"].orEmpty()
-            } else {
-                translate["action_update_medicine"].orEmpty()
-            },
+            text = action0Text.with(ForegroundColorSpan(action0TextColor)),
 
             isShow = true,
             isClicked = isClicked,
