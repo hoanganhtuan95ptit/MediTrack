@@ -95,8 +95,7 @@ class AddMedicineItemViewModel(
             val medicine = it ?: Medicine(
                 id = "",
                 name = "",
-                image = DEFAULT_IMAGE
-                ,
+                image = DEFAULT_IMAGE,
             )
 
             postValue(medicine)
@@ -321,7 +320,7 @@ class AddMedicineItemViewModel(
 
         val name = inputs.find { it.id == Id.NAME }?.text
         val dosage = inputs.find { it.id == Id.DOSAGE }?.text
-        val quantity = inputs.find { it.id == Id.QUANTITY }?.text?.toString()?.parseQuality() ?: Medicine.UNLIMITED
+        val quantity = inputs.find { it.id == Id.QUANTITY }?.text?.takeIf { it.isNotBlank() }?.toString()?.parseQuality() ?: Medicine.UNLIMITED
 
 
         val isNameBlank = name.isNullOrBlank()

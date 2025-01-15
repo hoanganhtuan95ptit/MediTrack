@@ -67,7 +67,7 @@ class ImagePickerViewModel : BaseViewModel() {
         val size = size.value ?: return@combineSources
         val translate = translate.value ?: return@combineSources
 
-        val width = (size.width - DP.DP_12 * 2) / 3
+        val width = (size.width - DP.DP_12 * 2) / 3 - DP.DP_1
 
         val list = arrayListOf<ViewItem>()
 
@@ -77,9 +77,8 @@ class ImagePickerViewModel : BaseViewModel() {
             textStyle = TextStyle(
                 textSize = 20.0f,
                 typeface = Typeface.BOLD,
-                textGravity = Gravity.CENTER,
-
-                )
+                textGravity = Gravity.CENTER
+            )
         ).let {
 
             list.add(it)

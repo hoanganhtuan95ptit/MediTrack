@@ -8,9 +8,10 @@
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../../1CorePrivate/config/meditrack" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/test" />
+            <option value="$PROJECT_DIR$/config" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

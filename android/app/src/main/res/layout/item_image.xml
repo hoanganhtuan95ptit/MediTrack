@@ -9,7 +9,6 @@
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:src="@drawable/img_reminder_0" />
+        android:layout_height="match_parent" />
 
 </com.simple.coreapp.ui.view.round.RoundLinearLayout>
