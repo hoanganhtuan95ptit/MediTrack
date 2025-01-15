@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/iv_checkbox"
         android:layout_width="24dp"
-        android:layout_height="24dp"/>
+        android:layout_height="24dp" />
 
     <TextView
         android:id="@+id/tv_checkbos"
@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:paddingEnd="16dp"
         android:textColor="?attr/colorOnBackground"
         tools:text="Nhãn thông báo" />
 </LinearLayout>

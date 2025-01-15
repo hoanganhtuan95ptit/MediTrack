@@ -243,12 +243,17 @@ class AddAlarmViewModel(
 
         medicineMap.map {
 
+            val text = it.value.medicine?.name.orEmpty()
+
+            val description = it.value.dosage.formatQuality() + " " +
+                    translate["unit_" + it.value.medicine?.unit?.toUnit()?.name.orEmpty().lowercase()].orEmpty() + " " +
+                    it.value.medicine?.note.orEmpty()
+
             AlarmMedicineViewItem(
                 id = it.key,
                 data = it.value,
-                text = it.value.medicine?.name.orEmpty(),
-                description = it.value.dosage.formatQuality() + " " + translate["unit_" + it.value.medicine?.unit?.toUnit()?.name.orEmpty().lowercase()].orEmpty() + " " + it.value.medicine?.note.orEmpty(),
-
+                text = text.with(ForegroundColorSpan(theme.colorOnSurface)),
+                description = description.with(ForegroundColorSpan(theme.colorOnSurfaceVariant)),
                 margin = Margin(
                     top = DP.DP_16,
                     right = DP.DP_16
@@ -264,7 +269,7 @@ class AddAlarmViewModel(
 
         TextViewItem(
             id = Id.ADD_MEDICINE,
-            text = translate["action_add_medicine_item"].orEmpty(),
+            text = translate["action_add_medicine_item"].orEmpty().with(ForegroundColorSpan(theme.colorOnSurface)),
             image = TextViewItem.Image(
                 end = R.drawable.ic_add_circle_24dp
             ),

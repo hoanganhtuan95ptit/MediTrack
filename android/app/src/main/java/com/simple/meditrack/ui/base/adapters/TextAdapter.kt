@@ -8,7 +8,7 @@ import com.simple.adapter.entities.ViewItem
 import com.simple.coreapp.utils.ext.setVisible
 import com.simple.coreapp.utils.ext.updateMargin
 import com.simple.image.setImage
-import com.simple.meditrack.databinding.ItemTitleBinding
+import com.simple.meditrack.databinding.ItemTextBinding
 import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.ui.view.Margin
 import com.simple.meditrack.ui.view.Padding
@@ -17,9 +17,9 @@ import com.simple.meditrack.ui.view.TextStyle
 import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.exts.setTextStyle
 
-open class TextAdapter(onItemClick: (View, TextViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<TextViewItem, ItemTitleBinding>(onItemClick) {
+open class TextAdapter(onItemClick: (View, TextViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<TextViewItem, ItemTextBinding>(onItemClick) {
 
-    override fun bind(binding: ItemTitleBinding, viewType: Int, position: Int, item: TextViewItem, payloads: MutableList<Any>) {
+    override fun bind(binding: ItemTextBinding, viewType: Int, position: Int, item: TextViewItem, payloads: MutableList<Any>) {
         super.bind(binding, viewType, position, item, payloads)
 
         if (payloads.contains(TEXT)) {
@@ -27,7 +27,7 @@ open class TextAdapter(onItemClick: (View, TextViewItem) -> Unit = { _, _ -> }) 
         }
     }
 
-    override fun bind(binding: ItemTitleBinding, viewType: Int, position: Int, item: TextViewItem) {
+    override fun bind(binding: ItemTextBinding, viewType: Int, position: Int, item: TextViewItem) {
         super.bind(binding, viewType, position, item)
 
         binding.root.transitionName = item.id
@@ -66,7 +66,7 @@ open class TextAdapter(onItemClick: (View, TextViewItem) -> Unit = { _, _ -> }) 
         refreshText(binding, item)
     }
 
-    private fun refreshText(binding: ItemTitleBinding, item: TextViewItem) {
+    private fun refreshText(binding: ItemTextBinding, item: TextViewItem) {
 
         binding.tvTitle.text = item.text
     }

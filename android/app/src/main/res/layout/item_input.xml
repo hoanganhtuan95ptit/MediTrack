@@ -14,5 +14,7 @@
         android:minHeight="56dp"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
         tools:hint="Nhập nhãn thông báo" />
 </com.simple.coreapp.ui.view.round.RoundLinearLayout>
