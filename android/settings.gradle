@@ -24,3 +24,6 @@ dependencyResolutionManagement {
 rootProject.name = "MediTrack"
 
 include ':app'
+
+include ':config:meditrack'// can remove
+project(':config:meditrack').projectDir = file('../../1CorePrivate/config/meditrack')// can remove
