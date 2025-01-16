@@ -23,10 +23,21 @@ import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
 
 abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : TransitionViewModel>(@androidx.annotation.LayoutRes contentLayoutId: Int = 0) : BaseViewModelFragment<T, VM>(contentLayoutId) {
 
+
     private lateinit var lockTransition: MediatorLiveData<HashMap<String, ResultState<*>>>
 
     private val activityViewModel: TransitionGlobalViewModel by lazy {
         getActivityViewModel()
+    }
+
+    private var fromCreate: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val isAnim = arguments != null && requireArguments().containsKey(Param.ROOT_TRANSITION_NAME)
+
+        fromCreate = !isAnim
     }
 
     @CallSuper
@@ -52,7 +63,7 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
                 setTransitionAnimation()
             }
 
-            if (start) {
+            if (!fromCreate) if (start) {
 
                 startPostponedEnterTransition()
             } else {
@@ -77,6 +88,11 @@ abstract class TransitionFragment<T : androidx.viewbinding.ViewBinding, VM : Tra
     override fun onPause() {
         super.onPause()
         updateState(STATE, ResultState.Start)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fromCreate = false
     }
 
     fun lockTransition(vararg tag: String) = tag.forEach {

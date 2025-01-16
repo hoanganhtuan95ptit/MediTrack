@@ -42,7 +42,7 @@ object NotificationUtils {
             .setContentText(alarm.note)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
+            .setAutoCancel(false)
             .build()
 
         notificationManager.notify(alarm.idInt, notification)
