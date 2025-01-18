@@ -7,7 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.adapters.ImageViewItem
+import com.simple.coreapp.ui.adapters.InputViewItem
+import com.simple.coreapp.ui.adapters.TextViewItem
+import com.simple.coreapp.ui.base.fragments.transition.TransitionViewModel
+import com.simple.coreapp.ui.view.Padding
+import com.simple.coreapp.ui.view.round.Background
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.with
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
 import com.simple.coreapp.utils.extentions.listenerSources
@@ -24,19 +31,12 @@ import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
 import com.simple.meditrack.ui.base.adapters.CheckboxViewItem
-import com.simple.meditrack.ui.base.adapters.ImageViewItem
-import com.simple.meditrack.ui.base.adapters.InputViewItem
-import com.simple.meditrack.ui.base.adapters.TextViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewItem
-import com.simple.meditrack.ui.view.Background
-import com.simple.meditrack.ui.view.Padding
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatQuality
 import com.simple.meditrack.utils.exts.parseQuality
-import com.simple.meditrack.utils.exts.with
 
 class AddMedicineItemViewModel(
     private val searchMedicineUseCase: SearchMedicineUseCase,

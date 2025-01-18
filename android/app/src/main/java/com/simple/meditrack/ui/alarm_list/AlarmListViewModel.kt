@@ -5,7 +5,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.adapters.EmptyViewItem
+import com.simple.coreapp.ui.base.fragments.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.with
 import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -16,13 +19,10 @@ import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.alarm.GetListAlarmAsyncUseCase
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.alarm_list.adapters.AlarmViewItem
-import com.simple.meditrack.ui.base.adapters.EmptyViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatTime
-import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 
 class AlarmListViewModel(

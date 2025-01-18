@@ -10,6 +10,8 @@ import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionSet
 import com.simple.adapter.MultiAdapter
+import com.simple.coreapp.ui.adapters.EmptyAdapter
+import com.simple.coreapp.ui.base.fragments.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
@@ -21,8 +23,6 @@ import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentPageListBinding
-import com.simple.meditrack.ui.base.adapters.EmptyAdapter
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.exts.launchCollect

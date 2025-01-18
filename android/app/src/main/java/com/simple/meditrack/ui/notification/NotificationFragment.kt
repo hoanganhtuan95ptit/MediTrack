@@ -14,6 +14,8 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.ncorti.slidetoact.SlideToActView
 import com.simple.adapter.MultiAdapter
+import com.simple.coreapp.ui.adapters.TextAdapter
+import com.simple.coreapp.ui.base.fragments.transition.TransitionFragment
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.launchCollect
 import com.simple.coreapp.utils.extentions.beginTransitionAwait
@@ -24,8 +26,6 @@ import com.simple.meditrack.Deeplink
 import com.simple.meditrack.Param
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.FragmentNotificationBinding
-import com.simple.meditrack.ui.base.adapters.TextAdapter
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.ui.notification.adapters.NotificationMedicineAdapter
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.NotificationUtils

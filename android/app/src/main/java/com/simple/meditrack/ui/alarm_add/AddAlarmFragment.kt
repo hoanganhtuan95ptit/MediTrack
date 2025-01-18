@@ -22,6 +22,11 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.simple.adapter.MultiAdapter
 import com.simple.core.utils.extentions.asObject
+import com.simple.coreapp.ui.adapters.ImageAdapter
+import com.simple.coreapp.ui.adapters.InputAdapter
+import com.simple.coreapp.ui.adapters.TextAdapter
+import com.simple.coreapp.ui.base.fragments.transition.TransitionFragment
+import com.simple.coreapp.ui.view.round.setBackground
 import com.simple.coreapp.utils.autoCleared
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.bottom
@@ -43,14 +48,9 @@ import com.simple.meditrack.databinding.FragmentListBinding
 import com.simple.meditrack.entities.Alarm
 import com.simple.meditrack.ui.MainActivity
 import com.simple.meditrack.ui.alarm_add.adapters.AlarmMedicineAdapter
-import com.simple.meditrack.ui.base.adapters.ImageAdapter
-import com.simple.meditrack.ui.base.adapters.InputAdapter
-import com.simple.meditrack.ui.base.adapters.TextAdapter
-import com.simple.meditrack.ui.base.transition.TransitionFragment
 import com.simple.meditrack.utils.DeeplinkHandler
 import com.simple.meditrack.utils.doListenerEvent
 import com.simple.meditrack.utils.exts.launchCollect
-import com.simple.meditrack.utils.exts.setBackground
 import com.simple.meditrack.utils.sendDeeplink
 import com.simple.state.doSuccess
 import kotlinx.coroutines.channels.awaitClose

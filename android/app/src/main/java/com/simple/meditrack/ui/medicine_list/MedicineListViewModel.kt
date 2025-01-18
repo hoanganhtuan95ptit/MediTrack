@@ -5,7 +5,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.adapters.EmptyViewItem
+import com.simple.coreapp.ui.base.fragments.transition.TransitionViewModel
 import com.simple.coreapp.utils.ext.DP
+import com.simple.coreapp.utils.ext.with
 import com.simple.coreapp.utils.extentions.Event
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -16,14 +19,11 @@ import com.simple.meditrack.R
 import com.simple.meditrack.domain.usecases.medicine.GetListMedicineAsyncUseCase
 import com.simple.meditrack.entities.Medicine
 import com.simple.meditrack.entities.Medicine.Companion.toUnit
-import com.simple.meditrack.ui.base.adapters.EmptyViewItem
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.medicine_list.adapters.MedicineViewItem
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
 import com.simple.meditrack.utils.appTranslate
 import com.simple.meditrack.utils.exts.formatQuality
-import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 
 class MedicineListViewModel(
@@ -50,7 +50,7 @@ class MedicineListViewModel(
 
     val screenInfo: LiveData<ScreenInfo> = combineSources(theme, translate) {
 
-        val theme = theme.value?: return@combineSources
+        val theme = theme.value ?: return@combineSources
         val translate = translate.getOrEmpty()
 
         val info = ScreenInfo(

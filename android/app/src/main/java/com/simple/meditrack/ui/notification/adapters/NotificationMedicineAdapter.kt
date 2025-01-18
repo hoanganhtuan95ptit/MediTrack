@@ -3,13 +3,13 @@ package com.simple.meditrack.ui.notification.adapters
 import android.view.View
 import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.view.round.Background
+import com.simple.coreapp.ui.view.round.setBackground
 import com.simple.coreapp.utils.ext.setVisible
 import com.simple.image.setImage
 import com.simple.meditrack.R
 import com.simple.meditrack.databinding.ItemNotificationMedicineBinding
 import com.simple.meditrack.entities.Medicine
-import com.simple.meditrack.ui.view.Background
-import com.simple.meditrack.utils.exts.setBackground
 
 open class NotificationMedicineAdapter(onItemClick: (View, NotificationMedicineViewItem) -> Unit = { _, _ -> }) : ViewItemAdapter<NotificationMedicineViewItem, ItemNotificationMedicineBinding>(onItemClick) {
 

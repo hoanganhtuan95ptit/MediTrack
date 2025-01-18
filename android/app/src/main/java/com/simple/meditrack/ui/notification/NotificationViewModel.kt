@@ -5,8 +5,11 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.simple.adapter.SpaceViewItem
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.base.fragments.transition.TransitionViewModel
+import com.simple.coreapp.ui.view.round.Background
 import com.simple.coreapp.utils.ext.DP
 import com.simple.coreapp.utils.ext.handler
+import com.simple.coreapp.utils.ext.with
 import com.simple.coreapp.utils.extentions.combineSources
 import com.simple.coreapp.utils.extentions.get
 import com.simple.coreapp.utils.extentions.getOrEmpty
@@ -18,12 +21,9 @@ import com.simple.meditrack.domain.usecases.GetKeyTranslateAsyncUseCase
 import com.simple.meditrack.domain.usecases.alarm.CloseAlarmUseCase
 import com.simple.meditrack.domain.usecases.alarm.GetAlarmByIdAsyncUseCase
 import com.simple.meditrack.entities.Alarm
-import com.simple.meditrack.ui.base.transition.TransitionViewModel
 import com.simple.meditrack.ui.notification.adapters.NotificationMedicineViewItem
-import com.simple.meditrack.ui.view.Background
 import com.simple.meditrack.utils.AppTheme
 import com.simple.meditrack.utils.appTheme
-import com.simple.meditrack.utils.exts.with
 import com.simple.state.ResultState
 import com.simple.state.toSuccess
 import kotlinx.coroutines.Dispatchers

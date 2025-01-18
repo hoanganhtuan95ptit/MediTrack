@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import com.simple.adapter.BaseBindingViewHolder
 import com.simple.adapter.ViewItemAdapter
 import com.simple.adapter.entities.ViewItem
+import com.simple.coreapp.ui.view.Margin
+import com.simple.coreapp.ui.view.round.Background
+import com.simple.coreapp.ui.view.round.setBackground
+import com.simple.coreapp.ui.view.setMargin
 import com.simple.coreapp.utils.ext.setDebouncedClickListener
-import com.simple.coreapp.utils.ext.updateMargin
 import com.simple.meditrack.databinding.ItemAlarmMedicineBinding
 import com.simple.meditrack.entities.Alarm
-import com.simple.meditrack.ui.view.Background
-import com.simple.meditrack.ui.view.Margin
-import com.simple.meditrack.utils.exts.setBackground
 
 open class AlarmMedicineAdapter(
     private val onItemClick: (View, AlarmMedicineViewItem) -> Unit,
@@ -51,10 +51,7 @@ open class AlarmMedicineAdapter(
 
         binding.root.transitionName = item.id
 
-        item.margin?.let {
-            binding.frameContent.updateMargin(left = it.left, top = it.top, right = it.right, bottom = it.bottom)
-        }
-
+        binding.frameContent.setMargin(item.margin)
         binding.frameContent.delegate.setBackground(item.background)
 
         refreshText(binding, item)

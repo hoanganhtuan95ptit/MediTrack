@@ -1,9 +1,9 @@
 package com.simple.meditrack.di
 
+import com.simple.coreapp.ui.base.fragments.transition.TransitionGlobalViewModel
 import com.simple.meditrack.ui.MainViewModel
 import com.simple.meditrack.ui.alarm_add.AddAlarmViewModel
 import com.simple.meditrack.ui.alarm_list.AlarmListViewModel
-import com.simple.meditrack.ui.base.transition.TransitionGlobalViewModel
 import com.simple.meditrack.ui.image.ImagePickerViewModel
 import com.simple.meditrack.ui.medicine_add.AddMedicineViewModel
 import com.simple.meditrack.ui.medicine_item_add.AddMedicineItemViewModel
